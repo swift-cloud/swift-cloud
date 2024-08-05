@@ -34,7 +34,7 @@ extension Command {
 extension Command.RunCommand {
     func prepare(with project: Project, withBuilds: Bool = false) async throws -> Command.Prepared {
         let context = Context(stage: options.stage)
-        let builder = Build()
+        let builder = Builder()
         let store = Store()
         let client = Pulumi.Client()
 

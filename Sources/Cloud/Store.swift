@@ -21,8 +21,8 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _operations = newValue } }
     }
 
-    private var _builds: [(Build) async throws -> Void] = []
-    var builds: [(Build) async throws -> Void] {
+    private var _builds: [(Builder) async throws -> Void] = []
+    var builds: [(Builder) async throws -> Void] {
         get { queue.sync { _builds } }
         set { queue.sync { _builds = newValue } }
     }
@@ -41,7 +41,7 @@ extension Store {
         operations.append(operation)
     }
 
-    public func build(_ operation: @escaping (Build) async throws -> Void) {
+    public func build(_ operation: @escaping (Builder) async throws -> Void) {
         builds.append(operation)
     }
 }

@@ -1,9 +1,9 @@
 import Foundation
 import ShellOut
 
-public struct Build {}
+public struct Builder {}
 
-extension Build {
+extension Builder {
     public func buildAmazonLinux(targetName: String) async throws {
         if isAmazonLinux() {
             try await buildNative(
@@ -20,7 +20,7 @@ extension Build {
     }
 }
 
-extension Build {
+extension Builder {
     public func buildWasm(targetName: String) async throws {
         try await buildDocker(
             targetName: targetName,
@@ -30,7 +30,7 @@ extension Build {
     }
 }
 
-extension Build {
+extension Builder {
     private func buildNative(targetName: String, flags: String) async throws {
         try await shellOut(
             to: "swift",
@@ -62,7 +62,7 @@ extension Build {
     }
 }
 
-extension Build {
+extension Builder {
     private func isAmazonLinux() -> Bool {
         do {
             let data = try readFile(atPath: "/etc/system-release")
