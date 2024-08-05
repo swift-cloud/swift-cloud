@@ -1,6 +1,6 @@
 import Foundation
 
-public class Store: @unchecked Sendable {
+public final class Store: @unchecked Sendable {
     private let queue = DispatchQueue(label: "com.swift.cloud.store")
 
     private var _resources: [Resource] = []
