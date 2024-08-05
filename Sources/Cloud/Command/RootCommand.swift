@@ -91,7 +91,6 @@ extension Command.RunCommand {
         FileManager.default.createFile(atPath: client.configFilePath, contents: yaml.data(using: .utf8))
 
         // Execute any operations
-        print("Executing operations... \(store.operations.count)")
         for operation in store.operations {
             try await operation()
         }
