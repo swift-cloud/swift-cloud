@@ -10,12 +10,7 @@ extension Command {
         @OptionGroup var options: Options
 
         func invoke(with project: any Project) async throws {
-            let prepared = try await prepare(with: project)
-
-            print("Building...")
-            try await Build().build()
-            print("Build complete")
-
+            let prepared = try await prepare(with: project, withBuilds: true)
             let output = try await prepared.client.invoke(command: "up", arguments: ["--skip-preview", "--yes"])
             print(output)
         }

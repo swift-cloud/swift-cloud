@@ -7,7 +7,7 @@ struct App: Project {
         "swift-cloud-demo"
     }
 
-    func run(context: Context) async throws -> Outputs {
+    func build() async throws -> Outputs {
         let bucket = aws.Bucket("My New Bucket")
 
         let function = aws.Function("My Function", targetName: "Demo")

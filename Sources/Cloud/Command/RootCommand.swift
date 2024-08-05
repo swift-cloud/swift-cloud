@@ -35,6 +35,8 @@ extension Command {
 
         fileprivate var operations: [() async throws -> Void] = []
 
+        fileprivate var builds: [(Build) async throws -> Void] = []
+
         @TaskLocal static var current: Store!
 
         static func track(_ resource: Resource) {
@@ -47,6 +49,10 @@ extension Command {
 
         static func invoke(_ operation: @escaping () async throws -> Void) {
             Store.current.operations.append(operation)
+        }
+
+        static func build(_ operation: @escaping (Build) async throws -> Void) {
+            Store.current.builds.append(operation)
         }
     }
 }
@@ -61,14 +67,16 @@ extension Command {
 }
 
 extension Command.RunCommand {
-    func prepare(with project: Project) async throws -> Command.Prepared {
+    func prepare(with project: Project, withBuilds: Bool = false) async throws -> Command.Prepared {
         let context = Context(stage: options.stage)
         let store = Command.Store()
         let client = PulumiClient()
 
         // Generate the project resources and collect outputs
-        let outputs = try await Command.Store.$current.withValue(store) {
-            return try await project.run(context: context)
+        let outputs: Outputs = try await Command.Store.$current.withValue(store) {
+            return try await Context.$current.withValue(context) {
+                return try await project.build()
+            }
         }
 
         // Build the pulumi project
@@ -88,11 +96,19 @@ extension Command.RunCommand {
         // Write pulumi configuration files
         let encoder = YAMLEncoder()
         let yaml = try encoder.encode(pulumiProject)
-        FileManager.default.createFile(atPath: client.configFilePath, contents: yaml.data(using: .utf8))
+        try createFile(atPath: client.configFilePath, contents: yaml)
 
         // Execute any operations
         for operation in store.operations {
             try await operation()
+        }
+
+        // Execute any builds
+        if withBuilds {
+            let builder = Build()
+            for build in store.builds {
+                try await build(builder)
+            }
         }
 
         // Upsert our stack

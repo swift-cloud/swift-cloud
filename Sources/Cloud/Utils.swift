@@ -18,3 +18,32 @@ func slugify(_ inputs: String..., separator: String = "-") -> String {
     // Step 5: Remove any leading or trailing separators
     return slug.trimmingCharacters(in: .init(charactersIn: separator))
 }
+
+func dockerFilePath(_ name: String) -> String {
+    "\(Context.cloudDirectory)/dockerfiles/\(slugify(name))"
+}
+
+func createFile(
+    atPath path: String,
+    contents: Data?,
+    withIntermediateDirectories: Bool = true
+) throws {
+    if withIntermediateDirectories {
+        let directoryPath = path.components(separatedBy: "/").dropLast().joined(separator: "/")
+        try FileManager.default.createDirectory(atPath: directoryPath, withIntermediateDirectories: true)
+    }
+    let url = URL(fileURLWithPath: path)
+    try contents?.write(to: url)
+}
+
+func createFile(
+    atPath path: String,
+    contents: String,
+    withIntermediateDirectories: Bool = true
+) throws {
+    try createFile(
+        atPath: path,
+        contents: contents.data(using: .utf8),
+        withIntermediateDirectories: withIntermediateDirectories
+    )
+}

@@ -2,11 +2,11 @@ import Foundation
 
 extension aws {
     public struct Function: Component {
-        internal let imageRepo: Resource
-        internal let image: Resource
+        internal let imageRepository = ImageRepository.shared
+        internal let dockerImage: DockerImage
         internal let role: Resource
         internal let rolePolicyAttachment: Resource
-        internal let lambda: Resource
+        internal let function: Resource
         internal let functionUrl: Resource
 
         public var url: String {
@@ -14,18 +14,10 @@ extension aws {
         }
 
         public init(_ name: String, targetName: String) {
-            let dockerFileDirectory = "\(Context.cloudDirectory)/docker/\(slugify(name))"
-            let dockerFilePath = "\(dockerFileDirectory)/Dockerfile"
-            imageRepo = Resource("shared-repo", type: "aws:ecr:Repository")
-            image = Resource(
+            dockerImage = DockerImage(
                 "\(name)-image",
-                type: "awsx:ecr:Image",
-                properties: [
-                    "repositoryUrl": "\(imageRepo.keyPath("repositoryUrl"))",
-                    "context": "\(FileManager.default.currentDirectoryPath)",
-                    "dockerfile": "\(dockerFilePath)",
-                    "platform": "\(Architecture.current.dockerPlatformString)",
-                ]
+                imageRepository: imageRepository,
+                dockerFilePath: dockerFilePath(name)
             )
             role = Resource(
                 "\(name)-role",
@@ -55,13 +47,13 @@ extension aws {
                     "policyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
                 ]
             )
-            lambda = Resource(
+            function = Resource(
                 "\(name)-lambda",
                 type: "aws:lambda:Function",
                 properties: [
                     "role": "\(role.keyPath("arn"))",
                     "packageType": "Image",
-                    "imageUri": "\(image.keyPath("imageUri"))",
+                    "imageUri": "\(dockerImage.uri)",
                     "architectures": [Architecture.current.lambdaString],
                 ]
             )
@@ -69,7 +61,7 @@ extension aws {
                 "\(name)-url",
                 type: "aws:lambda:FunctionUrl",
                 properties: [
-                    "functionName": "\(lambda.keyPath("name"))",
+                    "functionName": "\(function.keyPath("name"))",
                     "authorizationType": "NONE",
                 ]
             )
@@ -81,8 +73,10 @@ extension aws {
 
                     CMD [ "\(targetName)" ]
                     """
-                try FileManager.default.createDirectory(atPath: dockerFileDirectory, withIntermediateDirectories: true)
-                FileManager.default.createFile(atPath: dockerFilePath, contents: dockerFile.data(using: .utf8))
+                try createFile(atPath: dockerFilePath(name), contents: dockerFile)
+            }
+            Command.Store.build {
+                try await $0.buildAmazonLinux(targetName: targetName)
             }
         }
     }

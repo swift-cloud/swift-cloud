@@ -8,7 +8,13 @@ public protocol Project {
 
     var name: String { get }
 
-    func run(context: Context) async throws -> Outputs
+    func build() async throws -> Outputs
+}
+
+extension Project {
+    var name: String {
+        String(describing: type(of: self))
+    }
 }
 
 extension Project {
