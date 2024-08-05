@@ -23,20 +23,22 @@ extension aws {
                 "\(name)-role",
                 type: "aws:iam:Role",
                 properties: [
-                    "assumeRolePolicy": """
-                        {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Principal": {
-                                        "Service": "lambda.amazonaws.com"
-                                    },
-                                    "Action": "sts:AssumeRole"
-                                }
-                            ]
-                        }
-                    """
+                    "assumeRolePolicy": Resource.JSON(
+                        """
+                            {
+                                "Version": "2012-10-17",
+                                "Statement": [
+                                    {
+                                        "Effect": "Allow",
+                                        "Principal": {
+                                            "Service": "lambda.amazonaws.com"
+                                        },
+                                        "Action": "sts:AssumeRole"
+                                    }
+                                ]
+                            }
+                        """
+                    )
                 ]
             )
             rolePolicyAttachment = Resource(

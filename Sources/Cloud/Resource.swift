@@ -49,3 +49,21 @@ extension Resource {
         keyPath("id")
     }
 }
+
+extension Resource {
+    public static func JSON(_ input: String) -> AnyEncodable {
+        return .init(input.compactJSON())
+    }
+
+    public static func JSON(_ input: [String: AnyEncodable]) -> AnyEncodable {
+        return [
+            "fn::toJSON": input
+        ]
+    }
+
+    public static func JSON(_ input: [AnyEncodable]) -> AnyEncodable {
+        return [
+            "fn::toJSON": input
+        ]
+    }
+}
