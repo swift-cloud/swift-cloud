@@ -97,6 +97,7 @@ extension Command.RunCommand {
 
         // Upsert our stack
         do {
+            try FileManager.default.createDirectory(atPath: client.statePath, withIntermediateDirectories: true)
             try await client.invoke(command: "stack", arguments: ["select", context.stage])
         } catch {
             try await client.invoke(command: "stack", arguments: ["init", "--stack", context.stage])
