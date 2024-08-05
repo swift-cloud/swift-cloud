@@ -12,7 +12,7 @@ public protocol Project {
 }
 
 extension Project {
-    var name: String {
+    public var name: String {
         String(describing: type(of: self))
     }
 }

@@ -2,11 +2,6 @@ import Cloud
 
 @main
 struct App: Project {
-
-    var name: String {
-        "swift-cloud-demo"
-    }
-
     func build() async throws -> Outputs {
         let bucket = aws.Bucket("My New Bucket")
 
