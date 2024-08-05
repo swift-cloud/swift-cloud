@@ -72,12 +72,12 @@ extension aws {
                 ]
             )
 
-            Command.Store.invoke {
+            Store.current.invoke {
                 let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
                 try createFile(atPath: dockerFilePath, contents: dockerFile)
             }
 
-            Command.Store.build {
+            Store.current.build {
                 try await $0.buildAmazonLinux(targetName: targetName)
             }
         }

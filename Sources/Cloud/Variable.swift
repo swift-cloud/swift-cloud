@@ -9,7 +9,7 @@ public class Variable: @unchecked Sendable {
     ) {
         self.name = name
         self.definition = definition
-        Command.Store.track(self)
+        Store.current.track(self)
     }
 
     internal func pulumiProjectVariables() -> Pulumi.Project.Variables {

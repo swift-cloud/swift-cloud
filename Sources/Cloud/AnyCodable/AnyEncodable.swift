@@ -1,30 +1,28 @@
-/**
- A type-erased `Encodable` value.
-
- The `AnyEncodable` type forwards encoding responsibilities
- to an underlying value, hiding its specific underlying type.
-
- You can encode mixed-type values in dictionaries
- and other collections that require `Encodable` conformance
- by declaring their contained type to be `AnyEncodable`:
-
-     let dictionary: [String: AnyEncodable] = [
-         "boolean": true,
-         "integer": 42,
-         "double": 3.141592653589793,
-         "string": "string",
-         "array": [1, 2, 3],
-         "nested": [
-             "a": "alpha",
-             "b": "bravo",
-             "c": "charlie"
-         ],
-         "null": nil
-     ]
-
-     let encoder = JSONEncoder()
-     let json = try! encoder.encode(dictionary)
- */
+/// A type-erased `Encodable` value.
+///
+/// The `AnyEncodable` type forwards encoding responsibilities
+/// to an underlying value, hiding its specific underlying type.
+///
+/// You can encode mixed-type values in dictionaries
+/// and other collections that require `Encodable` conformance
+/// by declaring their contained type to be `AnyEncodable`:
+///
+///     let dictionary: [String: AnyEncodable] = [
+///         "boolean": true,
+///         "integer": 42,
+///         "double": 3.141592653589793,
+///         "string": "string",
+///         "array": [1, 2, 3],
+///         "nested": [
+///             "a": "alpha",
+///             "b": "bravo",
+///             "c": "charlie"
+///         ],
+///         "null": nil
+///     ]
+///
+///     let encoder = JSONEncoder()
+///     let json = try! encoder.encode(dictionary)
 @frozen public struct AnyEncodable: Encodable {
     public let value: Any
 
@@ -85,7 +83,8 @@ extension _AnyEncodable {
         case let encodable as Encodable:
             try encodable.encode(to: encoder)
         default:
-            let context = EncodingError.Context(codingPath: container.codingPath, debugDescription: "AnyEncodable value cannot be encoded")
+            let context = EncodingError.Context(
+                codingPath: container.codingPath, debugDescription: "AnyEncodable value cannot be encoded")
             throw EncodingError.invalidValue(value, context)
         }
     }

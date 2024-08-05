@@ -1,7 +1,11 @@
 import Foundation
 
-public struct Context: Sendable {
-    public internal(set) var stage: String
+public final class Context: Sendable {
+    public let stage: String
+
+    init(stage: String) {
+        self.stage = stage
+    }
 }
 
 extension Context {

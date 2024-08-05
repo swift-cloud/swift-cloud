@@ -24,36 +24,6 @@ extension Command {
 }
 
 extension Command {
-    class Store: @unchecked Sendable {
-        fileprivate var resources: [Resource] = []
-
-        fileprivate var variables: [Variable] = []
-
-        fileprivate var operations: [() async throws -> Void] = []
-
-        fileprivate var builds: [(Build) async throws -> Void] = []
-
-        @TaskLocal static var current: Store!
-
-        static func track(_ resource: Resource) {
-            Store.current.resources.append(resource)
-        }
-
-        static func track(_ variable: Variable) {
-            Store.current.variables.append(variable)
-        }
-
-        static func invoke(_ operation: @escaping () async throws -> Void) {
-            Store.current.operations.append(operation)
-        }
-
-        static func build(_ operation: @escaping (Build) async throws -> Void) {
-            Store.current.builds.append(operation)
-        }
-    }
-}
-
-extension Command {
     struct Prepared {
         let context: Context
         let project: Project
@@ -65,11 +35,11 @@ extension Command {
 extension Command.RunCommand {
     func prepare(with project: Project, withBuilds: Bool = false) async throws -> Command.Prepared {
         let context = Context(stage: options.stage)
-        let store = Command.Store()
+        let store = Store()
         let client = PulumiClient()
 
         // Generate the project resources and collect outputs
-        let outputs: Outputs = try await Command.Store.$current.withValue(store) {
+        let outputs: Outputs = try await Store.$current.withValue(store) {
             return try await Context.$current.withValue(context) {
                 return try await project.build()
             }

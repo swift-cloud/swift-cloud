@@ -1,32 +1,30 @@
-/**
- A type-erased `Decodable` value.
-
- The `AnyDecodable` type forwards decoding responsibilities
- to an underlying value, hiding its specific underlying type.
-
- You can decode mixed-type values in dictionaries
- and other collections that require `Decodable` conformance
- by declaring their contained type to be `AnyDecodable`:
-
-     let json = """
-     {
-         "boolean": true,
-         "integer": 42,
-         "double": 3.141592653589793,
-         "string": "string",
-         "array": [1, 2, 3],
-         "nested": {
-             "a": "alpha",
-             "b": "bravo",
-             "c": "charlie"
-         },
-         "null": null
-     }
-     """.data(using: .utf8)!
-
-     let decoder = JSONDecoder()
-     let dictionary = try! decoder.decode([String: AnyDecodable].self, from: json)
- */
+/// A type-erased `Decodable` value.
+///
+/// The `AnyDecodable` type forwards decoding responsibilities
+/// to an underlying value, hiding its specific underlying type.
+///
+/// You can decode mixed-type values in dictionaries
+/// and other collections that require `Decodable` conformance
+/// by declaring their contained type to be `AnyDecodable`:
+///
+///     let json = """
+///     {
+///         "boolean": true,
+///         "integer": 42,
+///         "double": 3.141592653589793,
+///         "string": "string",
+///         "array": [1, 2, 3],
+///         "nested": {
+///             "a": "alpha",
+///             "b": "bravo",
+///             "c": "charlie"
+///         },
+///         "null": null
+///     }
+///     """.data(using: .utf8)!
+///
+///     let decoder = JSONDecoder()
+///     let dictionary = try! decoder.decode([String: AnyDecodable].self, from: json)
 @frozen public struct AnyDecodable: Decodable {
     public let value: Any
 
@@ -64,7 +62,8 @@ extension _AnyDecodable {
         } else if let dictionary = try? container.decode([String: AnyDecodable].self) {
             self.init(dictionary.mapValues { $0.value })
         } else {
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "AnyDecodable value cannot be decoded")
+            throw DecodingError.dataCorruptedError(
+                in: container, debugDescription: "AnyDecodable value cannot be decoded")
         }
     }
 }

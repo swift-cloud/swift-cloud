@@ -19,7 +19,7 @@ public class Resource: @unchecked Sendable {
         self.type = type
         self.properties = properties
         self.dependsOn = dependsOn
-        Command.Store.track(self)
+        Store.current.track(self)
     }
 
     internal func pulumiProjectResources() -> Pulumi.Project.Resources {

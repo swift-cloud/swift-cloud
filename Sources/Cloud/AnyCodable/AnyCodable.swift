@@ -1,16 +1,14 @@
-/**
- A type-erased `Codable` value.
-
- The `AnyCodable` type forwards encoding and decoding responsibilities
- to an underlying value, hiding its specific underlying type.
-
- You can encode or decode mixed-type values in dictionaries
- and other collections that require `Encodable` or `Decodable` conformance
- by declaring their contained type to be `AnyCodable`.
-
- - SeeAlso: `AnyEncodable`
- - SeeAlso: `AnyDecodable`
- */
+/// A type-erased `Codable` value.
+///
+/// The `AnyCodable` type forwards encoding and decoding responsibilities
+/// to an underlying value, hiding its specific underlying type.
+///
+/// You can encode or decode mixed-type values in dictionaries
+/// and other collections that require `Encodable` or `Decodable` conformance
+/// by declaring their contained type to be `AnyCodable`.
+///
+/// - SeeAlso: `AnyEncodable`
+/// - SeeAlso: `AnyDecodable`
 @frozen public struct AnyCodable: Codable {
     public let value: Any
 
