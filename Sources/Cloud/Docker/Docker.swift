@@ -1,56 +1,35 @@
-public struct Docker {
-    public let targetName: String
+public enum Docker {}
 
-    public let swiftVersion: String
+extension Docker {
+    public enum Dockerfile {}
+}
 
-    public let image: Image
+extension Docker.Dockerfile {
+    public static func filePath(_ name: String) -> String {
+        "\(Context.cloudDirectory)/dockerfiles/\(slugify(name))"
+    }
+}
 
-    public init(
-        targetName: String,
-        swiftVersion: String,
-        image: Image = .official
-    ) {
-        self.targetName = targetName
-        self.swiftVersion = swiftVersion
-        self.image = image
+extension Docker.Dockerfile {
+    public static func awsLambda(targetName: String, architecture: Architecture = .current) -> String {
+        """
+        FROM public.ecr.aws/lambda/provided:al2023
+
+        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) /var/runtime/bootstrap
+
+        CMD [ "\(targetName)" ]
+        """
     }
 
-    public func amazonLinuxDockerFile() -> String {
+    public static func awsECS(targetName: String, architecture: Architecture = .current) -> String {
         """
-        FROM \(image.name):\(swiftVersion)-amazonlinux2 as base
-
-        WORKDIR /build/
-
-        COPY . .
-
-        RUN swift build -c release --static-swift-stdlib
-
         FROM amazonlinux:2023
 
         WORKDIR /app/
 
-        COPY --from=base /build/.build/release/\(targetName) .
+        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
 
-        CMD ["./\(targetName)"]
+        CMD [ "\(targetName)" ]
         """
-    }
-}
-
-extension Docker {
-    public enum Image {
-        case official
-        case swiftlang
-        case custom(_ name: String)
-
-        public var name: String {
-            switch self {
-            case .official:
-                return "swift"
-            case .swiftlang:
-                return "swiftlang/swift"
-            case .custom(let name):
-                return name
-            }
-        }
     }
 }

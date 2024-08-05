@@ -19,10 +19,6 @@ func slugify(_ inputs: String..., separator: String = "-") -> String {
     return slug.trimmingCharacters(in: .init(charactersIn: separator))
 }
 
-func dockerFilePath(_ name: String) -> String {
-    "\(Context.cloudDirectory)/dockerfiles/\(slugify(name))"
-}
-
 func createFile(
     atPath path: String,
     contents: Data?,

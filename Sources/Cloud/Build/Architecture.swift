@@ -23,6 +23,15 @@ extension Architecture {
             return "x86_64"
         }
     }
+
+    public var swiftBuildLinuxDirectory: String {
+        switch self {
+        case .arm64:
+            return "aarch64-unknown-linux-gnu"
+        case .x86:
+            return "x86_64-unknown-linux-gnu"
+        }
+    }
 }
 
 extension Architecture {

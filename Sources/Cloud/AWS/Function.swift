@@ -2,7 +2,6 @@ import Foundation
 
 extension aws {
     public struct Function: Component {
-        internal let imageRepository = ImageRepository.shared
         internal let dockerImage: DockerImage
         internal let role: Resource
         internal let rolePolicyAttachment: Resource
@@ -14,11 +13,14 @@ extension aws {
         }
 
         public init(_ name: String, targetName: String) {
+            let dockerFilePath = Docker.Dockerfile.filePath(name)
+
             dockerImage = DockerImage(
                 "\(name)-image",
-                imageRepository: imageRepository,
-                dockerFilePath: dockerFilePath(name)
+                imageRepository: .shared,
+                dockerFilePath: dockerFilePath
             )
+
             role = Resource(
                 "\(name)-role",
                 type: "aws:iam:Role",
@@ -40,6 +42,7 @@ extension aws {
                         """)
                 ]
             )
+
             rolePolicyAttachment = Resource(
                 "\(name)-role-policy-attachment",
                 type: "aws:iam:RolePolicyAttachment",
@@ -48,6 +51,7 @@ extension aws {
                     "policyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
                 ]
             )
+
             function = Resource(
                 "\(name)-lambda",
                 type: "aws:lambda:Function",
@@ -58,6 +62,7 @@ extension aws {
                     "architectures": [Architecture.current.lambdaString],
                 ]
             )
+
             functionUrl = Resource(
                 "\(name)-url",
                 type: "aws:lambda:FunctionUrl",
@@ -66,16 +71,12 @@ extension aws {
                     "authorizationType": "NONE",
                 ]
             )
+
             Command.Store.invoke {
-                let dockerFile = """
-                    FROM public.ecr.aws/lambda/provided:al2023
-
-                    COPY ./.build/aarch64-unknown-linux-gnu/release/\(targetName) /var/runtime/bootstrap
-
-                    CMD [ "\(targetName)" ]
-                    """
-                try createFile(atPath: dockerFilePath(name), contents: dockerFile)
+                let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
+                try createFile(atPath: dockerFilePath, contents: dockerFile)
             }
+
             Command.Store.build {
                 try await $0.buildAmazonLinux(targetName: targetName)
             }
