@@ -8,7 +8,8 @@ struct App: Project {
         let function = aws.Function("My Function", targetName: "Demo")
 
         return Outputs([
-            "bucketName": bucket.bucketName,
+            "bucketName": bucket.name,
+            "bucketUrl": "https://\(bucket.hostname)",
             "functionUrl": function.url,
         ])
     }

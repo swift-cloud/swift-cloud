@@ -4,8 +4,12 @@ extension aws {
         internal let ownershipControls: Resource
         internal let publicAccessBlock: Resource
 
-        public var bucketName: String {
+        public var name: String {
             bucket.id
+        }
+
+        public var hostname: String {
+            bucket.keyPath("bucketRegionalDomainName")
         }
 
         public init(_ name: String) {
