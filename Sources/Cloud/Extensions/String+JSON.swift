@@ -2,7 +2,7 @@ import Foundation
 
 extension String {
     func compactJSON() -> String {
-        guard let data = self.data(using: .utf8) else {
+        guard let data = self.trimmingCharacters(in: .whitespacesAndNewlines).data(using: .utf8) else {
             fatalError("Failed to convert string to data")
         }
         guard let doc = try? JSONSerialization.jsonObject(with: data) else {
