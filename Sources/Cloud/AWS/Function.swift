@@ -1,0 +1,88 @@
+import Foundation
+
+extension aws {
+    public struct Function: Component {
+        internal let imageRepo: Resource
+        internal let image: Resource
+        internal let role: Resource
+        internal let rolePolicyAttachment: Resource
+        internal let lambda: Resource
+        internal let functionUrl: Resource
+
+        public var url: String {
+            functionUrl.keyPath("functionUrl")
+        }
+
+        public init(_ name: String, targetName: String) {
+            let dockerFileDirectory = "\(Context.cloudDirectory)/docker/\(slugify(name))"
+            let dockerFilePath = "\(dockerFileDirectory)/Dockerfile"
+            imageRepo = Resource("shared-repo", type: "aws:ecr:Repository")
+            image = Resource(
+                "\(name)-image",
+                type: "awsx:ecr:Image",
+                properties: [
+                    "repositoryUrl": "\(imageRepo.keyPath("repositoryUrl"))",
+                    "dockerfile": "\(dockerFilePath)",
+                    "platform": "\(Architecture.current.dockerPlatformString)",
+                ]
+            )
+            role = Resource(
+                "\(name)-role",
+                type: "aws:iam:Role",
+                properties: [
+                    "assumeRolePolicy": [
+                        "fn::toJSON": [
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                [
+                                    "Effect": "Allow",
+                                    "Principal": [
+                                        "Service": "lambda.amazonaws.com"
+                                    ],
+                                    "Action": "sts:AssumeRole",
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
+            )
+            rolePolicyAttachment = Resource(
+                "\(name)-role-policy-attachment",
+                type: "aws:iam:RolePolicyAttachment",
+                properties: [
+                    "role": "\(role.keyPath("name"))",
+                    "policyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                ]
+            )
+            lambda = Resource(
+                "\(name)-lambda",
+                type: "aws:lambda:Function",
+                properties: [
+                    "role": "\(role.keyPath("arn"))",
+                    "packageType": "Image",
+                    "imageUri": "\(image.keyPath("imageUri"))",
+                    "architectures": [Architecture.current.lambdaString],
+                ]
+            )
+            functionUrl = Resource(
+                "\(name)-url",
+                type: "aws:lambda:FunctionUrl",
+                properties: [
+                    "functionName": "\(lambda.keyPath("name"))",
+                    "authorizationType": "NONE",
+                ]
+            )
+            Command.Store.invoke {
+                let dockerFile = """
+                    FROM public.ecr.aws/lambda/provided:al2023
+
+                    COPY ./.build/aarch64-unknown-linux-gnu/\(targetName) /var/runtime/bootstrap
+
+                    CMD [ "\(targetName)" ]
+                    """
+                try FileManager.default.createDirectory(atPath: dockerFileDirectory, withIntermediateDirectories: true)
+                FileManager.default.createFile(atPath: dockerFilePath, contents: dockerFile.data(using: .utf8))
+            }
+        }
+    }
+}

@@ -9,7 +9,12 @@ struct App: Project {
 
     func run(context: Context) async throws -> Outputs {
         let bucket = aws.Bucket("My New Bucket")
-        
-        return Outputs(["bucketName": bucket.bucketName])
+
+        let function = aws.Function("My Function", targetName: "Demo")
+
+        return Outputs([
+            "bucketName": bucket.bucketName,
+            "functionUrl": function.url,
+        ])
     }
 }

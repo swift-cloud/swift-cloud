@@ -14,6 +14,15 @@ extension Architecture {
             return "x86_64"
         }
     }
+
+    public var lambdaString: String {
+        switch self {
+        case .arm64:
+            return "arm64"
+        case .x86:
+            return "x86_64"
+        }
+    }
 }
 
 extension Architecture {

@@ -22,7 +22,7 @@ public struct PulumiClient: Sendable {
     private let passphrase: String
 
     public var basePath: String {
-        "\(FileManager.default.currentDirectoryPath)/.cloud"
+        Context.cloudDirectory
     }
 
     public var cliPath: String {
