@@ -1,7 +1,26 @@
 import Foundation
+import RegexBuilder
 import ShellOut
 
 public struct Builder {}
+
+extension Builder {
+    public func currentSwiftVersion() async throws -> String {
+        let (output, _) = try await shellOut(to: "swift", arguments: ["--version"])
+        let regex = Regex {
+            "Swift version "
+            Capture {
+                OneOrMore(.digit)
+                "."
+                OneOrMore(.digit)
+            }
+        }
+        if let match = output.firstMatch(of: regex) {
+            return .init(match.1)
+        }
+        fatalError("Failed to parse Swift version")
+    }
+}
 
 extension Builder {
     public func buildAmazonLinux(targetName: String) async throws {
@@ -11,9 +30,10 @@ extension Builder {
                 flags: "--static-swift-stdlib"
             )
         } else {
+            let swiftVersion = try await currentSwiftVersion()
             try await buildDocker(
                 targetName: targetName,
-                imageName: "swift:5.10-amazonlinux2",
+                imageName: "swift:\(swiftVersion)-amazonlinux2",
                 flags: "--static-swift-stdlib"
             )
         }
@@ -22,9 +42,10 @@ extension Builder {
 
 extension Builder {
     public func buildWasm(targetName: String) async throws {
+        let swiftVersion = try await currentSwiftVersion()
         try await buildDocker(
             targetName: targetName,
-            imageName: "ghcr.io/swiftwasm/swift:5.10-focal",
+            imageName: "ghcr.io/swiftwasm/swift:\(swiftVersion)-focal",
             flags: "--triple wasm32-unknown-wasi"
         )
     }
