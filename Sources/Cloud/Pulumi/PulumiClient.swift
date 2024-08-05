@@ -17,7 +17,7 @@ extension Pulumi {
         private let passphrase: String
 
         public var isSetup: Bool {
-            FileManager.default.fileExists(atPath: executablePath)
+            fileExists(atPath: executablePath)
         }
 
         public init(version: String = PulumiClientVersion, passphrase: String = "passphrase") {
@@ -55,8 +55,8 @@ extension Pulumi.Client {
         let platform = Platform.current.pulumiPlatform
         let url = "https://get.pulumi.com/releases/sdk/pulumi-\(version)-\(platform)-\(arch).tar.gz"
 
-        // Create .build directory if it doesn't exist
-        try FileManager.default.createDirectory(atPath: pulumiPath, withIntermediateDirectories: true)
+        // Create cli directory if it doesn't exist
+        try createDirectory(atPath: pulumiPath)
 
         // Download Pulumi CLI
         let downloadPath = "\(cliPath)/pulumi-\(version)-\(platform).tar.gz"
@@ -93,10 +93,10 @@ extension Pulumi.Client {
         }
 
         // Clean up the downloaded archive
-        try FileManager.default.removeItem(atPath: downloadPath)
+        try removeFile(atPath: downloadPath)
 
         // Verify that the Pulumi CLI was successfully installed
-        guard FileManager.default.fileExists(atPath: executablePath) else {
+        guard fileExists(atPath: executablePath) else {
             throw SetupError.extractionFailed
         }
 
@@ -146,7 +146,7 @@ extension Pulumi.Client {
 
 extension Pulumi.Client {
     public func upsertStack(stage: String) async throws {
-        try FileManager.default.createDirectory(atPath: statePath, withIntermediateDirectories: true)
+        try createDirectory(atPath: statePath)
         do {
             try await invoke(command: "stack", arguments: ["select", stage])
         } catch {

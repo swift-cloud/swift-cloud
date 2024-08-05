@@ -19,6 +19,10 @@ func slugify(_ inputs: String..., separator: String = "-") -> String {
     return slug.trimmingCharacters(in: .init(charactersIn: separator))
 }
 
+func createDirectory(atPath path: String, withIntermediateDirectories: Bool = true) throws {
+    try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: withIntermediateDirectories)
+}
+
 func createFile(
     atPath path: String,
     contents: Data?,
@@ -26,7 +30,7 @@ func createFile(
 ) throws {
     if withIntermediateDirectories {
         let directoryPath = path.components(separatedBy: "/").dropLast().joined(separator: "/")
-        try FileManager.default.createDirectory(atPath: directoryPath, withIntermediateDirectories: true)
+        try createDirectory(atPath: directoryPath, withIntermediateDirectories: true)
     }
     let url = URL(fileURLWithPath: path)
     try contents?.write(to: url)
@@ -42,6 +46,14 @@ func createFile(
         contents: contents.data(using: .utf8),
         withIntermediateDirectories: withIntermediateDirectories
     )
+}
+
+func removeFile(atPath path: String) throws {
+    try FileManager.default.removeItem(atPath: path)
+}
+
+func fileExists(atPath path: String) -> Bool {
+    FileManager.default.fileExists(atPath: path)
 }
 
 func updateGitignore() throws {

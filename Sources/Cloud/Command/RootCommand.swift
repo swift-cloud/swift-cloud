@@ -1,6 +1,5 @@
 import ArgumentParser
 import Foundation
-import Yams
 
 struct Command: ParsableCommand {
     static let configuration = CommandConfiguration(

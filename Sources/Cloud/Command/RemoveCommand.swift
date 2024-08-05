@@ -1,6 +1,5 @@
 import ArgumentParser
 import Foundation
-import Yams
 
 extension Command {
     struct Remove: RunCommand {

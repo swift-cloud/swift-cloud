@@ -1,7 +1,5 @@
 import ArgumentParser
 import Foundation
-import ShellOut
-import Yams
 
 extension Command {
     struct Deploy: RunCommand {
