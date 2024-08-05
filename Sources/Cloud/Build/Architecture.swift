@@ -1,5 +1,3 @@
-import Foundation
-
 public enum Architecture {
     case arm64
     case x86
