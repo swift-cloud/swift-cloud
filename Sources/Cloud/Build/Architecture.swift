@@ -43,10 +43,3 @@ extension Architecture {
         #endif
     }
 }
-
-public func isAmazonLinux() -> Bool {
-    guard let data = FileManager.default.contents(atPath: "/etc/system-release") else {
-        return false
-    }
-    return String(data: data, encoding: .utf8)?.hasPrefix("Amazon Linux") ?? false
-}

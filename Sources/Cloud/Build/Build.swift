@@ -1,7 +1,9 @@
 import Foundation
 import ShellOut
 
-public struct Build {
+public struct Build {}
+
+extension Build {
     public func buildAmazonLinux(targetName: String) async throws {
         if isAmazonLinux() {
             try await buildNative(
@@ -16,7 +18,9 @@ public struct Build {
             )
         }
     }
+}
 
+extension Build {
     public func buildWasm(targetName: String) async throws {
         try await buildDocker(
             targetName: targetName,
@@ -24,11 +28,17 @@ public struct Build {
             flags: "--triple wasm32-unknown-wasi"
         )
     }
+}
 
+extension Build {
     private func buildNative(targetName: String, flags: String) async throws {
         try await shellOut(
             to: "swift",
-            arguments: ["build", "-c", "release", "--product", targetName] + flags.components(separatedBy: " ")
+            arguments: [
+                "build",
+                "-c", "release",
+                "--product", targetName,
+            ] + flags.components(separatedBy: " ")
         )
     }
 
@@ -49,5 +59,14 @@ public struct Build {
                 "bash", "-cl", "swift build -c release --product \(targetName) \(flags)",
             ]
         )
+    }
+}
+
+extension Build {
+    private func isAmazonLinux() -> Bool {
+        guard let data = FileManager.default.contents(atPath: "/etc/system-release") else {
+            return false
+        }
+        return String(data: data, encoding: .utf8)?.hasPrefix("Amazon Linux") ?? false
     }
 }
