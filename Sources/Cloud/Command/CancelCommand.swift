@@ -1,10 +1,3 @@
-//
-//  CancelCommand.swift
-//
-//
-//  Created by Andrew Barba on 8/4/24.
-//
-
 import ArgumentParser
 import Foundation
 import Yams

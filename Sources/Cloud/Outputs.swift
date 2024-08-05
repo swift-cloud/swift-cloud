@@ -1,10 +1,3 @@
-//
-//  Outputs.swift
-//
-//
-//  Created by Andrew Barba on 8/1/24.
-//
-
 public struct Outputs {
 
     internal var pulumiProjectOutputs: Pulumi.Project.Outputs

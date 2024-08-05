@@ -1,13 +1,6 @@
-//
-//  Utils.swift
-//
-//
-//  Created by Andrew Barba on 8/1/24.
-//
-
 import Foundation
 
-internal func slugify(_ inputs: String..., separator: String = "-") -> String {
+func slugify(_ inputs: String..., separator: String = "-") -> String {
     // Step 1: Trim leading and trailing whitespace
     let trimmedString = inputs.joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
 

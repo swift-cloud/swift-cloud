@@ -1,10 +1,3 @@
-//
-//  PulumiClient.swift
-//
-//
-//  Created by Andrew Barba on 8/2/24.
-//
-
 import AsyncHTTPClient
 import Foundation
 import NIOCore

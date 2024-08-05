@@ -1,10 +1,3 @@
-//
-//  Variable.swift
-//
-//
-//  Created by Andrew Barba on 7/31/24.
-//
-
 public class Variable {
     public let name: String
 
@@ -16,7 +9,7 @@ public class Variable {
     ) {
         self.name = name
         self.definition = definition
-        Command.Store.current.variables.append(self)
+        Command.Store.track(self)
     }
 
     internal func pulumiProjectVariables() -> Pulumi.Project.Variables {

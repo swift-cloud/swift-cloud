@@ -1,10 +1,3 @@
-//
-//  RootCommand.swift
-//
-//
-//  Created by Andrew Barba on 8/4/24.
-//
-
 import ArgumentParser
 import Foundation
 import Yams
@@ -36,11 +29,25 @@ extension Command {
 
 extension Command {
     class Store {
+        fileprivate var resources: [Resource] = []
+
+        fileprivate var variables: [Variable] = []
+
+        fileprivate var operations: [() async throws -> Void] = []
+
         @TaskLocal static var current: Store!
 
-        var resources: [Resource] = []
+        static func track(_ resource: Resource) {
+            Store.current.resources.append(resource)
+        }
 
-        var variables: [Variable] = []
+        static func track(_ variable: Variable) {
+            Store.current.variables.append(variable)
+        }
+
+        static func invoke(_ operation: @escaping () async throws -> Void) {
+            Store.current.operations.append(operation)
+        }
     }
 }
 
@@ -82,6 +89,11 @@ extension Command.RunCommand {
         let encoder = YAMLEncoder()
         let yaml = try encoder.encode(pulumiProject)
         FileManager.default.createFile(atPath: client.configFilePath, contents: yaml.data(using: .utf8))
+
+        // Execute any operations
+        for operation in store.operations {
+            try await operation()
+        }
 
         // Upsert our stack
         do {

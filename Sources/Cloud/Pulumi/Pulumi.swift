@@ -1,10 +1,3 @@
-//
-//  Pulumi.swift
-//
-//
-//  Created by Andrew Barba on 7/31/24.
-//
-
 public enum Pulumi {}
 
 extension Pulumi {

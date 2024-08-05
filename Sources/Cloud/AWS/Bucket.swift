@@ -1,10 +1,3 @@
-//
-//  Bucket.swift
-//
-//
-//  Created by Andrew Barba on 8/1/24.
-//
-
 extension aws {
     public struct Bucket: Component {
         internal let bucket: Resource

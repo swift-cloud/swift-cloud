@@ -1,10 +1,3 @@
-//
-//  Resource.swift
-//
-//
-//  Created by Andrew Barba on 7/31/24.
-//
-
 public class Resource {
     public let name: String
 
@@ -24,7 +17,7 @@ public class Resource {
         self.type = type
         self.properties = properties
         self.dependsOn = dependsOn
-        Command.Store.current.resources.append(self)
+        Command.Store.track(self)
     }
 
     internal func pulumiProjectResources() -> Pulumi.Project.Resources {

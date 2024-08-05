@@ -1,10 +1,3 @@
-//
-//  Project.swift
-//
-//
-//  Created by Andrew Barba on 7/31/24.
-//
-
 import ArgumentParser
 import Foundation
 import ShellOut
