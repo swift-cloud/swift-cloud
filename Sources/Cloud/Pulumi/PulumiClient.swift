@@ -1,6 +1,7 @@
 import AsyncHTTPClient
 import Foundation
 import ShellOut
+import Yams
 
 public let PulumiClientVersion = "v3.127.0"
 
@@ -15,30 +16,6 @@ extension Pulumi {
 
         private let passphrase: String
 
-        public var basePath: String {
-            Context.cloudDirectory
-        }
-
-        public var cliPath: String {
-            "\(basePath)/cli"
-        }
-
-        public var statePath: String {
-            "\(basePath)/state"
-        }
-
-        public var configFilePath: String {
-            "\(basePath)/Pulumi.yaml"
-        }
-
-        private var pulumiPath: String {
-            "\(cliPath)/pulumi-\(version)"
-        }
-
-        private var executablePath: String {
-            "\(pulumiPath)/pulumi/pulumi"
-        }
-
         public var isSetup: Bool {
             FileManager.default.fileExists(atPath: executablePath)
         }
@@ -47,90 +24,139 @@ extension Pulumi {
             self.version = version
             self.passphrase = passphrase
         }
+    }
+}
 
-        public func setup() async throws {
-            let arch = Architecture.current.pulumiArchitecture
-            let platform = Platform.current.pulumiPlatform
-            let url = "https://get.pulumi.com/releases/sdk/pulumi-\(version)-\(platform)-\(arch).tar.gz"
+extension Pulumi.Client {
+    private var cliPath: String {
+        "\(Context.cloudDirectory)/cli"
+    }
 
-            // Create .build directory if it doesn't exist
-            try FileManager.default.createDirectory(atPath: pulumiPath, withIntermediateDirectories: true)
+    private var statePath: String {
+        "\(Context.cloudDirectory)/state"
+    }
 
-            // Download Pulumi CLI
-            let downloadPath = "\(cliPath)/pulumi-\(version)-\(platform).tar.gz"
+    private var configFilePath: String {
+        "\(Context.cloudDirectory)/Pulumi.yaml"
+    }
 
-            let httpClient = HTTPClient.shared
+    private var pulumiPath: String {
+        "\(cliPath)/pulumi-\(version)"
+    }
 
-            print("Downloading Pulumi CLI...")
+    private var executablePath: String {
+        "\(pulumiPath)/pulumi/pulumi"
+    }
+}
 
-            let request = HTTPClientRequest(url: url)
-            let response = try await httpClient.execute(request, timeout: .seconds(120))
+extension Pulumi.Client {
+    public func setup() async throws {
+        let arch = Architecture.current.pulumiArchitecture
+        let platform = Platform.current.pulumiPlatform
+        let url = "https://get.pulumi.com/releases/sdk/pulumi-\(version)-\(platform)-\(arch).tar.gz"
 
-            guard response.status == .ok else {
-                throw SetupError.downloadFailed
-            }
+        // Create .build directory if it doesn't exist
+        try FileManager.default.createDirectory(atPath: pulumiPath, withIntermediateDirectories: true)
 
-            guard let contentLength = response.headers["content-length"].first.flatMap(Int.init) else {
-                throw SetupError.downloadFailed
-            }
+        // Download Pulumi CLI
+        let downloadPath = "\(cliPath)/pulumi-\(version)-\(platform).tar.gz"
 
-            let body = try await response.body.collect(upTo: contentLength)
-            let data = Data(body.readableBytesView)
+        let httpClient = HTTPClient.shared
 
-            try createFile(atPath: downloadPath, contents: data)
+        print("Downloading Pulumi CLI...")
 
-            print("Pulumi CLI downloaded successfully")
+        let request = HTTPClientRequest(url: url)
+        let response = try await httpClient.execute(request, timeout: .seconds(120))
 
-            // Extract the archive
-            if platform == "windows" {
-                // Unzip for Windows
-                try await shellOut(to: "/usr/bin/unzip", arguments: ["-o", downloadPath, "-d", pulumiPath])
-            } else {
-                // Untar for Linux and macOS
-                try await shellOut(to: "/usr/bin/tar", arguments: ["-xzf", downloadPath, "-C", pulumiPath])
-            }
-
-            print("Pulumi CLI extracted successfully")
-
-            // Clean up the downloaded archive
-            try FileManager.default.removeItem(atPath: downloadPath)
-
-            // Verify that the Pulumi CLI was successfully installed
-            guard FileManager.default.fileExists(atPath: executablePath) else {
-                throw SetupError.extractionFailed
-            }
-
-            print("Pulumi CLI setup completed successfully")
+        guard response.status == .ok else {
+            throw SetupError.downloadFailed
         }
 
-        public func setupIfNeeded() async throws {
-            if !isSetup {
-                try await setup()
-            }
+        guard let contentLength = response.headers["content-length"].first.flatMap(Int.init) else {
+            throw SetupError.downloadFailed
         }
 
-        @discardableResult
-        public func invoke(
-            command: String,
-            arguments: [String] = []
-        ) async throws -> String {
-            try await setupIfNeeded()
+        let body = try await response.body.collect(upTo: contentLength)
+        let data = Data(body.readableBytesView)
 
-            var environment = ProcessInfo.processInfo.environment
-            environment["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-            environment["PULUMI_CONFIG_PASSPHRASE"] = self.passphrase
-            environment["PULUMI_SKIP_UPDATE_CHECK"] = "true"
-            environment["PULUMI_EXPERIMENTAL"] = "true"
-            environment["PULUMI_SKIP_CONFIRMATIONS"] = "true"
+        try createFile(atPath: downloadPath, contents: data)
 
-            let (stdout, _) = try await shellOut(
-                to: executablePath,
-                arguments: [command] + arguments + ["--non-interactive"],
-                at: basePath,
-                environment: environment
-            )
+        print("Pulumi CLI downloaded successfully")
 
-            return stdout
+        // Extract the archive
+        if platform == "windows" {
+            // Unzip for Windows
+            try await shellOut(to: "/usr/bin/unzip", arguments: ["-o", downloadPath, "-d", pulumiPath])
+        } else {
+            // Untar for Linux and macOS
+            try await shellOut(to: "/usr/bin/tar", arguments: ["-xzf", downloadPath, "-C", pulumiPath])
         }
+
+        // Clean up the downloaded archive
+        try FileManager.default.removeItem(atPath: downloadPath)
+
+        // Verify that the Pulumi CLI was successfully installed
+        guard FileManager.default.fileExists(atPath: executablePath) else {
+            throw SetupError.extractionFailed
+        }
+
+        print("Pulumi CLI setup completed successfully")
+    }
+}
+
+extension Pulumi.Client {
+    @discardableResult
+    public func invoke(
+        command: String,
+        arguments: [String] = []
+    ) async throws -> String {
+        if !isSetup {
+            try await setup()
+        }
+
+        var environment = ProcessInfo.processInfo.environment
+        environment["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        environment["PULUMI_CONFIG_PASSPHRASE"] = self.passphrase
+        environment["PULUMI_SKIP_UPDATE_CHECK"] = "true"
+        environment["PULUMI_EXPERIMENTAL"] = "true"
+        environment["PULUMI_SKIP_CONFIRMATIONS"] = "true"
+
+        let (stdout, _) = try await shellOut(
+            to: executablePath,
+            arguments: [command] + arguments + ["--non-interactive"],
+            at: Context.cloudDirectory,
+            environment: environment
+        )
+
+        return stdout
+    }
+}
+
+extension Pulumi.Client {
+    public func writePulumiProject(_ project: Pulumi.Project) throws {
+        let encoder = YAMLEncoder()
+        encoder.options.indent = 2
+        encoder.options.mappingStyle = .block
+        encoder.options.sequenceStyle = .block
+        encoder.options.sortKeys = true
+        let yaml = try encoder.encode(project)
+        try createFile(atPath: configFilePath, contents: yaml)
+    }
+}
+
+extension Pulumi.Client {
+    public func upsertStack(stage: String) async throws {
+        try FileManager.default.createDirectory(atPath: statePath, withIntermediateDirectories: true)
+        do {
+            try await invoke(command: "stack", arguments: ["select", stage])
+        } catch {
+            try await invoke(command: "stack", arguments: ["init", "--stack", stage])
+        }
+    }
+}
+
+extension Pulumi.Client {
+    public func localProjectBackend() -> Pulumi.Project.Backend {
+        .init(url: .local(path: statePath))
     }
 }

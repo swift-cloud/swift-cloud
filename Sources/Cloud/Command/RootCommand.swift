@@ -35,6 +35,7 @@ extension Command {
 extension Command.RunCommand {
     func prepare(with project: Project, withBuilds: Bool = false) async throws -> Command.Prepared {
         let context = Context(stage: options.stage)
+        let builder = Build()
         let store = Store()
         let client = Pulumi.Client()
 
@@ -49,7 +50,7 @@ extension Command.RunCommand {
         let pulumiProject = Pulumi.Project(
             name: slugify(project.name),
             runtime: .yaml,
-            backend: .init(url: .local(path: client.statePath)),
+            backend: client.localProjectBackend(),
             resources: store.resources.reduce(into: [:]) {
                 $0.merge($1.pulumiProjectResources()) { $1 }
             },
@@ -60,13 +61,7 @@ extension Command.RunCommand {
         )
 
         // Write pulumi configuration files
-        let encoder = YAMLEncoder()
-        encoder.options.indent = 2
-        encoder.options.mappingStyle = .block
-        encoder.options.sequenceStyle = .block
-        encoder.options.sortKeys = true
-        let yaml = try encoder.encode(pulumiProject)
-        try createFile(atPath: client.configFilePath, contents: yaml)
+        try client.writePulumiProject(pulumiProject)
 
         // Execute any operations
         for operation in store.operations {
@@ -75,19 +70,13 @@ extension Command.RunCommand {
 
         // Execute any builds
         if withBuilds {
-            let builder = Build()
             for build in store.builds {
                 try await build(builder)
             }
         }
 
         // Upsert our stack
-        do {
-            try FileManager.default.createDirectory(atPath: client.statePath, withIntermediateDirectories: true)
-            try await client.invoke(command: "stack", arguments: ["select", context.stage])
-        } catch {
-            try await client.invoke(command: "stack", arguments: ["init", "--stack", context.stage])
-        }
+        try await client.upsertStack(stage: context.stage)
 
         // Update gitignore
         try? updateGitignore()
