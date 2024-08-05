@@ -7,10 +7,7 @@ public struct Variable: Sendable {
 
     public let definition: AnyEncodable
 
-    public init(
-        _ name: String,
-        definition: AnyEncodable
-    ) {
+    public init(_ name: String, definition: AnyEncodable) {
         self.name = name
         self.definition = definition
         Store.current.track(self)
