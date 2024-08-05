@@ -27,7 +27,7 @@ extension Command {
     struct Prepared {
         let context: Context
         let project: Project
-        let client: PulumiClient
+        let client: Pulumi.Client
         let outputs: Outputs
     }
 }
@@ -36,7 +36,7 @@ extension Command.RunCommand {
     func prepare(with project: Project, withBuilds: Bool = false) async throws -> Command.Prepared {
         let context = Context(stage: options.stage)
         let store = Store()
-        let client = PulumiClient()
+        let client = Pulumi.Client()
 
         // Generate the project resources and collect outputs
         let outputs: Outputs = try await Store.$current.withValue(store) {
