@@ -11,7 +11,7 @@ public struct Resource: Sendable {
 
     public let properties: [String: AnyEncodable]?
 
-    public var dependsOn: [Resource]?
+    public let dependsOn: [Resource]?
 
     public init(
         _ name: String,
