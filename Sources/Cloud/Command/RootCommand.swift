@@ -95,6 +95,10 @@ extension Command.RunCommand {
 
         // Write pulumi configuration files
         let encoder = YAMLEncoder()
+        encoder.options.indent = 2
+        encoder.options.mappingStyle = .block
+        encoder.options.sequenceStyle = .block
+        encoder.options.sortKeys = true
         let yaml = try encoder.encode(pulumiProject)
         try createFile(atPath: client.configFilePath, contents: yaml)
 
