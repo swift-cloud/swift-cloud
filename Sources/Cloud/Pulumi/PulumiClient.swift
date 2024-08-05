@@ -1,7 +1,5 @@
 import AsyncHTTPClient
 import Foundation
-import NIOCore
-import NIOFoundationCompat
 import ShellOut
 
 public let PulumiClientVersion = "v3.127.0"
