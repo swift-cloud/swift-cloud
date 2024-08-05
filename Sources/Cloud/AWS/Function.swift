@@ -76,7 +76,7 @@ extension aws {
                 let dockerFile = """
                     FROM public.ecr.aws/lambda/provided:al2023
 
-                    COPY ./.build/aarch64-unknown-linux-gnu/\(targetName) /var/runtime/bootstrap
+                    COPY ./.build/aarch64-unknown-linux-gnu/release/\(targetName) /var/runtime/bootstrap
 
                     CMD [ "\(targetName)" ]
                     """
