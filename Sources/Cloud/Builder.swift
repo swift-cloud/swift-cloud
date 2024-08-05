@@ -2,7 +2,11 @@ import Foundation
 import RegexBuilder
 import ShellOut
 
-public struct Builder {}
+public struct Builder {
+    public enum BuildError: Error {
+        case invalidSwiftVersion
+    }
+}
 
 extension Builder {
     public func currentSwiftVersion() async throws -> String {
@@ -15,10 +19,10 @@ extension Builder {
                 OneOrMore(.digit)
             }
         }
-        if let match = output.firstMatch(of: regex) {
-            return .init(match.1)
+        guard let match = output.firstMatch(of: regex) else {
+            throw BuildError.invalidSwiftVersion
         }
-        fatalError("Failed to parse Swift version")
+        return .init(match.1)
     }
 }
 
