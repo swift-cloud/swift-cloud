@@ -1,1 +1,1 @@
-public protocol Component {}
+public protocol Component: Sendable {}

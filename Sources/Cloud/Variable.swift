@@ -1,4 +1,4 @@
-public class Variable {
+public class Variable: @unchecked Sendable {
     public let name: String
 
     public var definition: AnyEncodable

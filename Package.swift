@@ -24,15 +24,24 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "ShellOut", package: "ShellOut"),
                 .product(name: "Yams", package: "Yams"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .executableTarget(
             name: "Demo",
-            dependencies: ["Cloud"]
+            dependencies: ["Cloud"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .testTarget(
             name: "CloudTests",
-            dependencies: ["Cloud"]
+            dependencies: ["Cloud"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
     ]
 )

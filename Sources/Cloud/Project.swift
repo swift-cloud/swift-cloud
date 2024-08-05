@@ -3,7 +3,7 @@ import Foundation
 import ShellOut
 import Yams
 
-public protocol Project {
+public protocol Project: Sendable {
     init()
 
     var name: String { get }
@@ -20,7 +20,7 @@ extension Project {
 extension Project {
     public static func main() async throws {
         let project = Self()
-        let command = try Command.parseAsRoot(Command.commandLineArguments())
+        let command = try Command.parseAsRoot()
         switch command {
         case let command as Command.RunCommand:
             try await command.invoke(with: project)

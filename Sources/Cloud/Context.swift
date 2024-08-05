@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Context {
+public struct Context: Sendable {
     public internal(set) var stage: String
 }
 

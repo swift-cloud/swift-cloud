@@ -1,4 +1,4 @@
-public struct Outputs {
+public struct Outputs: Sendable {
 
     internal var pulumiProjectOutputs: Pulumi.Project.Outputs
 

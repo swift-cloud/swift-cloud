@@ -1,6 +1,6 @@
 import Foundation
 
-public class Resource {
+public class Resource: @unchecked Sendable {
     public let name: String
 
     public let type: String

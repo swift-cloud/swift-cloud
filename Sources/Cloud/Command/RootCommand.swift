@@ -7,10 +7,6 @@ struct Command: ParsableCommand {
         abstract: "A utility to deploy Swift applications to the cloud.",
         subcommands: [Deploy.self, Preview.self, Cancel.self, Remove.self]
     )
-
-    static func commandLineArguments() -> [String] {
-        return [] + CommandLine.arguments.dropFirst()
-    }
 }
 
 extension Command {
@@ -28,7 +24,7 @@ extension Command {
 }
 
 extension Command {
-    class Store {
+    class Store: @unchecked Sendable {
         fileprivate var resources: [Resource] = []
 
         fileprivate var variables: [Variable] = []
