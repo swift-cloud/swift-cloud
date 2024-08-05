@@ -1,6 +1,16 @@
-public enum Architecture {
+public enum Architecture: Sendable, CaseIterable {
     case arm64
     case x86
+}
+
+extension Architecture {
+    public static var current: Architecture {
+        #if arch(arm64)
+            return .arm64
+        #else
+            return .x86
+        #endif
+    }
 }
 
 extension Architecture {
@@ -38,15 +48,5 @@ extension Architecture {
         case .x86:
             return "x64"
         }
-    }
-}
-
-extension Architecture {
-    public static var current: Architecture {
-        #if arch(arm64)
-            return .arm64
-        #else
-            return .x86
-        #endif
     }
 }

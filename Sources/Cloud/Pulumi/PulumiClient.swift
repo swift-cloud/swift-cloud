@@ -53,24 +53,12 @@ public struct PulumiClient: Sendable {
     }
 
     public func setup() async throws {
-        // Determine the platform and download URL
-        let (platform, url): (String, String) = {
-            let arch = Architecture.current.pulumiArchitecture
-            #if os(Linux)
-                return ("linux", "https://get.pulumi.com/releases/sdk/pulumi-\(version)-linux-\(arch).tar.gz")
-            #elseif os(macOS)
-                return ("darwin", "https://get.pulumi.com/releases/sdk/pulumi-\(version)-darwin-\(arch).tar.gz")
-            #elseif os(Windows)
-                return ("windows", "https://get.pulumi.com/releases/sdk/pulumi-\(version)-windows-\(arch).zip")
-            #else
-                fatalError("Unsupported platform")
-            #endif
-        }()
-
-        let fm = FileManager.default
+        let arch = Architecture.current.pulumiArchitecture
+        let platform = Platform.current.pulumiPlatform
+        let url = "https://get.pulumi.com/releases/sdk/pulumi-\(version)-\(platform)-\(arch).tar.gz"
 
         // Create .build directory if it doesn't exist
-        try fm.createDirectory(atPath: pulumiPath, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(atPath: pulumiPath, withIntermediateDirectories: true)
 
         // Download Pulumi CLI
         let downloadPath = "\(cliPath)/pulumi-\(version)-\(platform).tar.gz"
@@ -93,9 +81,7 @@ public struct PulumiClient: Sendable {
         let body = try await response.body.collect(upTo: contentLength)
         let data = Data(body.readableBytesView)
 
-        guard fm.createFile(atPath: downloadPath, contents: data) else {
-            throw DownloadError.downloadFailed
-        }
+        try createFile(atPath: downloadPath, contents: data)
 
         print("Pulumi CLI downloaded successfully")
 
@@ -111,10 +97,10 @@ public struct PulumiClient: Sendable {
         print("Pulumi CLI extracted successfully")
 
         // Clean up the downloaded archive
-        try fm.removeItem(atPath: downloadPath)
+        try FileManager.default.removeItem(atPath: downloadPath)
 
         // Verify that the Pulumi CLI was successfully installed
-        guard fm.fileExists(atPath: executablePath) else {
+        guard FileManager.default.fileExists(atPath: executablePath) else {
             throw DownloadError.extractionFailed
         }
 
