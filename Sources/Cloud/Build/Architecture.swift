@@ -30,6 +30,15 @@ extension Architecture {
             return "x86_64-unknown-linux-gnu"
         }
     }
+
+    public var pulumiArchitecture: String {
+        switch self {
+        case .arm64:
+            return "arm64"
+        case .x86:
+            return "x64"
+        }
+    }
 }
 
 extension Architecture {

@@ -55,13 +55,7 @@ public struct PulumiClient: Sendable {
     public func setup() async throws {
         // Determine the platform and download URL
         let (platform, url): (String, String) = {
-            // Determine architecture
-            let arch: String
-            #if arch(arm64)
-                arch = "arm64"
-            #else
-                arch = "x64"
-            #endif
+            let arch = Architecture.current.pulumiArchitecture
             #if os(Linux)
                 return ("linux", "https://get.pulumi.com/releases/sdk/pulumi-\(version)-linux-\(arch).tar.gz")
             #elseif os(macOS)
