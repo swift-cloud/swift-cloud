@@ -146,10 +146,12 @@ public struct PulumiClient: Sendable {
         environment["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         environment["PULUMI_CONFIG_PASSPHRASE"] = self.passphrase
         environment["PULUMI_SKIP_UPDATE_CHECK"] = "true"
+        environment["PULUMI_EXPERIMENTAL"] = "true"
+        environment["PULUMI_SKIP_CONFIRMATIONS"] = "true"
 
         let (stdout, _) = try await shellOut(
             to: executablePath,
-            arguments: [command] + arguments,
+            arguments: [command] + arguments + ["--non-interactive"],
             at: basePath,
             environment: environment
         )
