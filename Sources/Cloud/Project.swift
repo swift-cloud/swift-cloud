@@ -1,7 +1,4 @@
 import ArgumentParser
-import Foundation
-import ShellOut
-import Yams
 
 public protocol Project: Sendable {
     init()

@@ -1,6 +1,6 @@
 public struct Outputs: Sendable {
 
-    internal var pulumiProjectOutputs: Pulumi.Project.Outputs
+    internal let pulumiProjectOutputs: Pulumi.Project.Outputs
 
     public init(_ outputs: [String: String] = [:]) {
         self.pulumiProjectOutputs = outputs
