@@ -1,7 +1,9 @@
 import Foundation
 
 extension aws {
-    public class DockerImage: Resource {
+    public struct DockerImage: ResourceProvider {
+        public let resource: Resource
+
         public var uri: String {
             keyPath("imageUri")
         }
@@ -13,7 +15,7 @@ extension aws {
             context: String? = nil,
             platform: String? = nil
         ) {
-            super.init(
+            resource = .init(
                 name,
                 type: "awsx:ecr:Image",
                 properties: [

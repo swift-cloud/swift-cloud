@@ -1,11 +1,13 @@
 extension aws {
-    public class ImageRepository: Resource {
+    public struct ImageRepository: ResourceProvider {
+        public let resource: Resource
+
         public var url: String {
             keyPath("repositoryUrl")
         }
 
         public init(_ name: String) {
-            super.init(name, type: "aws:ecr:Repository")
+            resource = .init(name, type: "aws:ecr:Repository")
         }
     }
 }

@@ -1,11 +1,15 @@
 import Foundation
 
-public class Resource: @unchecked Sendable {
+public protocol ResourceProvider: Sendable {
+    var resource: Resource { get }
+}
+
+public struct Resource: Sendable {
     public let name: String
 
     public let type: String
 
-    public var properties: [String: AnyEncodable]?
+    public let properties: [String: AnyEncodable]?
 
     public var dependsOn: [Resource]?
 
@@ -22,7 +26,7 @@ public class Resource: @unchecked Sendable {
         Store.current.track(self)
     }
 
-    internal func pulumiProjectResources() -> Pulumi.Project.Resources {
+    func pulumiProjectResources() -> Pulumi.Project.Resources {
         return [
             slugify(name): .init(
                 type: type,
@@ -35,10 +39,13 @@ public class Resource: @unchecked Sendable {
     }
 }
 
-extension Resource {
+extension Resource: ResourceProvider {
+    public var resource: Resource { self }
+}
 
+extension ResourceProvider {
     public func keyPath(_ paths: String...) -> String {
-        let root = slugify(name)
+        let root = slugify(resource.name)
         let parts = [root] + paths
         return "${\(parts.joined(separator: "."))}"
     }
@@ -57,7 +64,24 @@ extension Resource {
         guard let data = try? JSONSerialization.jsonObject(with: .init(input.utf8)) else {
             fatalError("Invalid JSON string: \(input)")
         }
-        return ["fn::toJSON": AnyEncodable(data)]
+        switch data {
+        case let value as Bool:
+            return ["fn::toJSON": value]
+        case let value as String:
+            return ["fn::toJSON": value]
+        case let value as Int:
+            return ["fn::toJSON": value]
+        case let value as Float:
+            return ["fn::toJSON": value]
+        case let value as Double:
+            return ["fn::toJSON": value]
+        case let value as [String: Sendable]:
+            return ["fn::toJSON": value]
+        case let value as [Sendable]:
+            return ["fn::toJSON": value]
+        default:
+            fatalError("Invalid JSON string: \(input)")
+        }
     }
 
     public static func JSON(_ input: [String: AnyEncodable]) -> AnyEncodable {

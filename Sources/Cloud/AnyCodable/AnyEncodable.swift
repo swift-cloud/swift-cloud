@@ -23,18 +23,18 @@
 ///
 ///     let encoder = JSONEncoder()
 ///     let json = try! encoder.encode(dictionary)
-@frozen public struct AnyEncodable: Encodable {
-    public let value: Any
+@frozen public struct AnyEncodable: Encodable, Sendable {
+    public let value: Sendable
 
-    public init<T>(_ value: T?) {
+    public init<T: Sendable>(_ value: T?) {
         self.value = value ?? ()
     }
 }
 
 @usableFromInline
-protocol _AnyEncodable {
-    var value: Any { get }
-    init<T>(_ value: T?)
+protocol _AnyEncodable: Sendable {
+    var value: Sendable { get }
+    init<T: Sendable>(_ value: T?)
 }
 
 extension AnyEncodable: _AnyEncodable {}
@@ -76,9 +76,9 @@ extension _AnyEncodable {
             try container.encode(double)
         case let string as String:
             try container.encode(string)
-        case let array as [Any?]:
+        case let array as [Sendable?]:
             try container.encode(array.map { AnyEncodable($0) })
-        case let dictionary as [String: Any?]:
+        case let dictionary as [String: Sendable?]:
             try container.encode(dictionary.mapValues { AnyEncodable($0) })
         case let encodable as Encodable:
             try encodable.encode(to: encoder)
@@ -168,7 +168,7 @@ extension AnyEncodable: ExpressibleByDictionaryLiteral {}
 
 extension _AnyEncodable {
     public init(nilLiteral _: ()) {
-        self.init(nil as Any?)
+        self.init(nil as Sendable?)
     }
 
     public init(booleanLiteral value: Bool) {
@@ -191,12 +191,12 @@ extension _AnyEncodable {
         self.init(value)
     }
 
-    public init(arrayLiteral elements: Any...) {
+    public init(arrayLiteral elements: Sendable...) {
         self.init(elements)
     }
 
-    public init(dictionaryLiteral elements: (AnyHashable, Any)...) {
-        self.init([AnyHashable: Any](elements, uniquingKeysWith: { first, _ in first }))
+    public init(dictionaryLiteral elements: (String, Sendable)...) {
+        self.init([String: Sendable](elements, uniquingKeysWith: { first, _ in first }))
     }
 }
 

@@ -1,7 +1,11 @@
-public class Variable: @unchecked Sendable {
+public protocol VariableProvider: Sendable {
+    var variable: Variable { get }
+}
+
+public struct Variable: Sendable {
     public let name: String
 
-    public var definition: AnyEncodable
+    public let definition: AnyEncodable
 
     public init(
         _ name: String,
@@ -12,17 +16,21 @@ public class Variable: @unchecked Sendable {
         Store.current.track(self)
     }
 
-    internal func pulumiProjectVariables() -> Pulumi.Project.Variables {
+    func pulumiProjectVariables() -> Pulumi.Project.Variables {
         return [
             slugify(name): definition
         ]
     }
 }
 
-extension Variable {
+extension Variable: VariableProvider {
+    public var variable: Variable { self }
+}
+
+extension VariableProvider {
 
     public func keyPath(_ paths: String...) -> String {
-        let root = slugify(name)
+        let root = slugify(variable.name)
         let parts = [root] + paths
         return "${\(parts.joined(separator: "."))}"
     }

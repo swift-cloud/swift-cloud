@@ -9,10 +9,10 @@
 ///
 /// - SeeAlso: `AnyEncodable`
 /// - SeeAlso: `AnyDecodable`
-@frozen public struct AnyCodable: Codable {
-    public let value: Any
+@frozen public struct AnyCodable: Codable, Sendable {
+    public let value: Sendable
 
-    public init<T>(_ value: T?) {
+    public init<T: Sendable>(_ value: T?) {
         self.value = value ?? ()
     }
 }
