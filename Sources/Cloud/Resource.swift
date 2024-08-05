@@ -57,6 +57,14 @@ extension ResourceProvider {
     public var id: String {
         keyPath("id")
     }
+
+    public var arn: String {
+        keyPath("arn")
+    }
+
+    public var name: String {
+        keyPath("name")
+    }
 }
 
 extension Resource {

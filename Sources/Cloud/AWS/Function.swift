@@ -47,7 +47,7 @@ extension aws {
                 "\(name)-role-policy-attachment",
                 type: "aws:iam:RolePolicyAttachment",
                 properties: [
-                    "role": "\(role.keyPath("name"))",
+                    "role": "\(role.name)",
                     "policyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
                 ]
             )
@@ -56,7 +56,7 @@ extension aws {
                 "\(name)-lambda",
                 type: "aws:lambda:Function",
                 properties: [
-                    "role": "\(role.keyPath("arn"))",
+                    "role": "\(role.arn)",
                     "packageType": "Image",
                     "imageUri": "\(dockerImage.uri)",
                     "architectures": [Architecture.current.lambdaArchitecture],
@@ -67,7 +67,7 @@ extension aws {
                 "\(name)-url",
                 type: "aws:lambda:FunctionUrl",
                 properties: [
-                    "functionName": "\(function.keyPath("name"))",
+                    "functionName": "\(function.name)",
                     "authorizationType": "NONE",
                 ]
             )
