@@ -1,7 +1,7 @@
 import Cloud
 
 @main
-struct App: Project {
+struct Demo: Project {
     func build() async throws -> Outputs {
         let bucket = aws.Bucket("My New Bucket")
 

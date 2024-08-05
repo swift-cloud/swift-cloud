@@ -5,7 +5,7 @@ public protocol ResourceProvider: Sendable {
 }
 
 public struct Resource: Sendable {
-    public let name: String
+    fileprivate let _name: String
 
     public let type: String
 
@@ -19,7 +19,7 @@ public struct Resource: Sendable {
         properties: [String: AnyEncodable]? = nil,
         dependsOn: [Resource]? = nil
     ) {
-        self.name = name
+        self._name = name
         self.type = type
         self.properties = properties
         self.dependsOn = dependsOn
@@ -28,7 +28,7 @@ public struct Resource: Sendable {
 
     func pulumiProjectResources() -> Pulumi.Project.Resources {
         return [
-            slugify(name): .init(
+            slugify(_name): .init(
                 type: type,
                 properties: properties,
                 options: dependsOn.map {
@@ -45,7 +45,7 @@ extension Resource: ResourceProvider {
 
 extension ResourceProvider {
     public func keyPath(_ paths: String...) -> String {
-        let root = slugify(resource.name)
+        let root = slugify(resource._name)
         let parts = [root] + paths
         return "${\(parts.joined(separator: "."))}"
     }
