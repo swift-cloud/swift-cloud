@@ -1,3 +1,5 @@
+import Foundation
+
 public class Resource {
     public let name: String
 
@@ -52,18 +54,17 @@ extension Resource {
 
 extension Resource {
     public static func JSON(_ input: String) -> AnyEncodable {
-        return .init(input.compactJSON())
+        guard let data = try? JSONSerialization.jsonObject(with: .init(input.utf8)) else {
+            fatalError("Invalid JSON string: \(input)")
+        }
+        return ["fn::toJSON": AnyEncodable(data)]
     }
 
     public static func JSON(_ input: [String: AnyEncodable]) -> AnyEncodable {
-        return [
-            "fn::toJSON": input
-        ]
+        return ["fn::toJSON": input]
     }
 
     public static func JSON(_ input: [AnyEncodable]) -> AnyEncodable {
-        return [
-            "fn::toJSON": input
-        ]
+        return ["fn::toJSON": input]
     }
 }
