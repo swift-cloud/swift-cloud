@@ -89,6 +89,9 @@ extension Command.RunCommand {
             try await client.invoke(command: "stack", arguments: ["init", "--stack", context.stage])
         }
 
+        // Update gitignore
+        try? updateGitignore()
+
         return Command.Prepared(
             context: context,
             project: project,
