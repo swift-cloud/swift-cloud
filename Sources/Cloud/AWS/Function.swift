@@ -59,7 +59,7 @@ extension aws {
                     "role": "\(role.keyPath("arn"))",
                     "packageType": "Image",
                     "imageUri": "\(dockerImage.uri)",
-                    "architectures": [Architecture.current.lambdaString],
+                    "architectures": [Architecture.current.lambdaArchitecture],
                 ]
             )
 

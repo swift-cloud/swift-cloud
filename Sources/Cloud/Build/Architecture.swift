@@ -4,7 +4,7 @@ public enum Architecture {
 }
 
 extension Architecture {
-    public var dockerPlatformString: String {
+    public var dockerPlatform: String {
         switch self {
         case .arm64:
             return "arm64"
@@ -13,7 +13,7 @@ extension Architecture {
         }
     }
 
-    public var lambdaString: String {
+    public var lambdaArchitecture: String {
         switch self {
         case .arm64:
             return "arm64"

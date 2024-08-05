@@ -20,7 +20,7 @@ extension aws {
                     "repositoryUrl": "\(imageRepository.url)",
                     "context": "\(context ?? FileManager.default.currentDirectoryPath)",
                     "dockerfile": "\(dockerFilePath)",
-                    "platform": "\(platform ?? Architecture.current.dockerPlatformString)",
+                    "platform": "\(platform ?? Architecture.current.dockerPlatform)",
                 ]
             )
         }

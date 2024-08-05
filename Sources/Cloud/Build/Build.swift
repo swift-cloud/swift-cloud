@@ -51,7 +51,7 @@ extension Build {
             to: "docker",
             arguments: [
                 "run",
-                "--platform", "linux/\(Architecture.current.dockerPlatformString)",
+                "--platform", "linux/\(Architecture.current.dockerPlatform)",
                 "--rm",
                 "-v", "\(FileManager.default.currentDirectoryPath):/workspace",
                 "-w", "/workspace",
