@@ -53,7 +53,7 @@ extension Build {
                 "run",
                 "--platform", "linux/\(Architecture.current.dockerPlatform)",
                 "--rm",
-                "-v", "\(FileManager.default.currentDirectoryPath):/workspace",
+                "-v", "\(currentDirectoryPath()):/workspace",
                 "-w", "/workspace",
                 imageName,
                 "bash", "-cl", "swift build -c release --product \(targetName) \(flags)",
@@ -64,9 +64,12 @@ extension Build {
 
 extension Build {
     private func isAmazonLinux() -> Bool {
-        guard let data = FileManager.default.contents(atPath: "/etc/system-release") else {
+        do {
+            let data = try readFile(atPath: "/etc/system-release")
+            let text = String(data: data, encoding: .utf8)
+            return text?.hasPrefix("Amazon Linux") ?? false
+        } catch {
             return false
         }
-        return String(data: data, encoding: .utf8)?.hasPrefix("Amazon Linux") ?? false
     }
 }

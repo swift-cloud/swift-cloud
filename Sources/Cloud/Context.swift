@@ -13,5 +13,5 @@ extension Context {
 }
 
 extension Context {
-    public static let cloudDirectory = "\(FileManager.default.currentDirectoryPath)/.cloud"
+    public static let cloudDirectory = "\(currentDirectoryPath())/.cloud"
 }
