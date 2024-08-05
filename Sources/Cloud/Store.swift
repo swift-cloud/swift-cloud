@@ -4,33 +4,31 @@ public class Store: @unchecked Sendable {
     private let queue = DispatchQueue(label: "cloud.command.store")
 
     private var _resources: [Resource] = []
-    public internal(set) var resources: [Resource] {
+    var resources: [Resource] {
         get { queue.sync { _resources } }
         set { queue.sync { _resources = newValue } }
     }
 
     private var _variables: [Variable] = []
-    public internal(set) var variables: [Variable] {
+    var variables: [Variable] {
         get { queue.sync { _variables } }
         set { queue.sync { _variables = newValue } }
     }
 
     private var _operations: [() async throws -> Void] = []
-    public internal(set) var operations: [() async throws -> Void] {
+    var operations: [() async throws -> Void] {
         get { queue.sync { _operations } }
         set { queue.sync { _operations = newValue } }
     }
 
     private var _builds: [(Build) async throws -> Void] = []
-    public internal(set) var builds: [(Build) async throws -> Void] {
+    var builds: [(Build) async throws -> Void] {
         get { queue.sync { _builds } }
         set { queue.sync { _builds = newValue } }
     }
 }
 
 extension Store {
-    @TaskLocal public static var current: Store!
-
     public func track(_ resource: Resource) {
         resources.append(resource)
     }
@@ -46,4 +44,8 @@ extension Store {
     public func build(_ operation: @escaping (Build) async throws -> Void) {
         builds.append(operation)
     }
+}
+
+extension Store {
+    @TaskLocal public static var current: Store!
 }
