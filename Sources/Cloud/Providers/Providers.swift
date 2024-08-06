@@ -7,10 +7,10 @@ public enum gcp {}
 public enum planetscale {}
 public enum vercel {}
 
-public protocol Provider: Sendable {
-    var plugin: Pulumi.Plugin { get }
+public struct Provider: Sendable {
+    let plugin: Pulumi.Plugin
 
-    var configuration: [String: String?] { get }
+    let configuration: [String: String]
 }
 
 extension Provider {
