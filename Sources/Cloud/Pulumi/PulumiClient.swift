@@ -133,6 +133,15 @@ extension Pulumi.Client {
 }
 
 extension Pulumi.Client {
+    public func installPlugin(_ plugin: Pulumi.Plugin) async throws {
+        try await invoke(
+            command: "plugin",
+            arguments: ["install", plugin.name, plugin.version, "--server", plugin.server]
+        )
+    }
+}
+
+extension Pulumi.Client {
     public func writePulumiProject(_ project: Pulumi.Project) throws {
         let encoder = YAMLEncoder()
         encoder.options.indent = 2
