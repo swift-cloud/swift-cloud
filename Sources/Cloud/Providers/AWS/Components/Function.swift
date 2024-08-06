@@ -135,7 +135,8 @@ extension aws.Function {
                     }
                     """
                 ),
-            ]
+            ],
+            options: function.options
         )
 
         return self

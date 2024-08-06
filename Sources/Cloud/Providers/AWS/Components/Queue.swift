@@ -77,7 +77,8 @@ extension aws.Queue {
                     }
                     """
                 ),
-            ]
+            ],
+            options: function.function.options
         )
 
         let _ = Resource(
