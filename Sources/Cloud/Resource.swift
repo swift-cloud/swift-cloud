@@ -127,19 +127,7 @@ extension Resource {
             fatalError("Invalid JSON string: \(input)")
         }
         switch data {
-        case let value as Bool:
-            return ["fn::toJSON": value]
-        case let value as String:
-            return ["fn::toJSON": value]
-        case let value as Int:
-            return ["fn::toJSON": value]
-        case let value as Float:
-            return ["fn::toJSON": value]
-        case let value as Double:
-            return ["fn::toJSON": value]
-        case let value as [String: Sendable]:
-            return ["fn::toJSON": value]
-        case let value as [Sendable]:
+        case let value as Sendable:
             return ["fn::toJSON": value]
         default:
             fatalError("Invalid JSON string: \(input)")
