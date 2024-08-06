@@ -6,8 +6,15 @@ extension aws {
             keyPath("repositoryUrl")
         }
 
-        public init(_ name: String) {
-            resource = .init(name, type: "aws:ecr:Repository")
+        public init(
+            _ name: String,
+            options: Resource.Options? = nil
+        ) {
+            resource = .init(
+                name,
+                type: "aws:ecr:Repository",
+                options: options
+            )
         }
     }
 }

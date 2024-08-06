@@ -13,7 +13,8 @@ extension aws {
             imageRepository: ImageRepository,
             dockerFilePath: String,
             context: String? = nil,
-            platform: String? = nil
+            platform: String? = nil,
+            options: Resource.Options? = nil
         ) {
             resource = .init(
                 name,
@@ -23,7 +24,8 @@ extension aws {
                     "context": "\(context ?? currentDirectoryPath())",
                     "dockerfile": "\(dockerFilePath)",
                     "platform": "\(platform ?? Architecture.current.dockerPlatform)",
-                ]
+                ],
+                options: options
             )
         }
     }

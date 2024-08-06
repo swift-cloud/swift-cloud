@@ -50,9 +50,11 @@ extension Pulumi {
         public struct Resource: Encodable {
             public struct Options: Encodable {
                 public var dependsOn: [String]?
+                public var protect: Bool?
+                public var provider: String?
             }
             public var type: String
-            public var properties: [String: AnyEncodable]?
+            public var properties: [String: AnyEncodable?]?
             public var options: Options?
         }
 

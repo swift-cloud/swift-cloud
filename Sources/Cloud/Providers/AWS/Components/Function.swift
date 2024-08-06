@@ -12,7 +12,11 @@ extension aws {
             functionUrl.keyPath("functionUrl")
         }
 
-        public init(_ name: String, targetName: String) {
+        public init(
+            _ name: String,
+            targetName: String,
+            options: Resource.Options? = nil
+        ) {
             let dockerFilePath = Docker.Dockerfile.filePath(name)
 
             dockerImage = DockerImage(

@@ -12,8 +12,15 @@ extension aws {
             bucket.keyPath("bucketRegionalDomainName")
         }
 
-        public init(_ name: String) {
-            bucket = Resource(name, type: "aws:s3:Bucket")
+        public init(
+            _ name: String,
+            options: Resource.Options? = nil
+        ) {
+            bucket = Resource(
+                name,
+                type: "aws:s3:Bucket",
+                options: options
+            )
 
             ownershipControls = Resource(
                 "\(name)-ownershipControls",
@@ -23,7 +30,8 @@ extension aws {
                     "rule": [
                         "objectOwnership": "ObjectWriter"
                     ],
-                ]
+                ],
+                options: options
             )
 
             publicAccessBlock = Resource(
@@ -32,7 +40,8 @@ extension aws {
                 properties: [
                     "bucket": "\(bucket.ref)",
                     "blockPublicAcls": false,
-                ]
+                ],
+                options: options
             )
         }
     }

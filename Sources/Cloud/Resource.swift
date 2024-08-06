@@ -6,23 +6,20 @@ public protocol ResourceProvider: Sendable {
 
 public struct Resource: Sendable {
     fileprivate let _name: String
-
     public let type: String
-
-    public let properties: [String: AnyEncodable]?
-
-    public let dependsOn: [Resource]?
+    public let properties: [String: AnyEncodable?]?
+    public let options: Options?
 
     public init(
         _ name: String,
         type: String,
-        properties: [String: AnyEncodable]? = nil,
-        dependsOn: [Resource]? = nil
+        properties: [String: AnyEncodable?]? = nil,
+        options: Options? = nil
     ) {
         self._name = name
         self.type = type
         self.properties = properties
-        self.dependsOn = dependsOn
+        self.options = options
         Store.current.track(self)
     }
 
@@ -31,11 +28,33 @@ public struct Resource: Sendable {
             slugify(_name): .init(
                 type: type,
                 properties: properties,
-                options: dependsOn.map {
-                    .init(dependsOn: $0.map { $0.ref })
+                options: options.map {
+                    .init(
+                        dependsOn: $0.dependsOn?.map { $0.ref },
+                        protect: $0.protect,
+                        provider: $0.provider?.ref
+                    )
                 }
             )
         ]
+    }
+}
+
+extension Resource {
+    public struct Options: Sendable {
+        public let dependsOn: [any ResourceProvider]?
+        public let protect: Bool?
+        public let provider: (any ResourceProvider)?
+
+        public init(
+            dependsOn: [any ResourceProvider]? = nil,
+            protect: Bool? = nil,
+            provider: (any ResourceProvider)? = nil
+        ) {
+            self.dependsOn = dependsOn
+            self.protect = protect
+            self.provider = provider
+        }
     }
 }
 
