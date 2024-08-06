@@ -7,9 +7,12 @@ struct Demo: Project {
 
         let function = aws.Function(
             "My Function",
-            targetName: "Demo",
-            options: .protect()
+            targetName: "Demo"
         )
+
+        let queue = aws.Queue("My Queue")
+
+        queue.subscribe(function)
 
         return Outputs([
             "bucketName": bucket.name,
