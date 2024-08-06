@@ -20,5 +20,10 @@ extension aws {
 }
 
 extension aws.ImageRepository {
-    public static let shared = aws.ImageRepository("sc-shared-repo")
+    public static func shared(options: Resource.Options? = nil) -> Self {
+        return aws.ImageRepository(
+            "shared-image-repository",
+            options: .provider(options?.provider)
+        )
+    }
 }

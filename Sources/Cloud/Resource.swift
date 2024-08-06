@@ -59,31 +59,31 @@ extension Resource {
 }
 
 extension Resource.Options {
-    public static func protect(_ value: Bool = true) -> Resource.Options {
+    public static func protect(_ value: Bool? = true) -> Resource.Options {
         .init(protect: value)
     }
 
-    public static func provider(_ provider: any ResourceProvider) -> Resource.Options {
+    public static func provider(_ provider: (any ResourceProvider)?) -> Resource.Options {
         .init(provider: provider)
     }
 
-    public static func dependsOn(_ resources: [any ResourceProvider]) -> Resource.Options {
+    public static func dependsOn(_ resources: [any ResourceProvider]?) -> Resource.Options {
         .init(dependsOn: resources)
     }
 
-    public func protect(_ value: Bool = true) -> Resource.Options {
+    public func protect(_ value: Bool? = true) -> Resource.Options {
         var copy = self
         copy.protect = value
         return copy
     }
 
-    public func provider(_ provider: any ResourceProvider) -> Resource.Options {
+    public func provider(_ provider: (any ResourceProvider)?) -> Resource.Options {
         var copy = self
         copy.provider = provider
         return copy
     }
 
-    public func dependsOn(_ resources: [any ResourceProvider]) -> Resource.Options {
+    public func dependsOn(_ resources: [any ResourceProvider]?) -> Resource.Options {
         var copy = self
         copy.dependsOn = resources
         return copy

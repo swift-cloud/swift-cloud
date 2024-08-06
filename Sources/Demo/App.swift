@@ -5,7 +5,11 @@ struct Demo: Project {
     func build() async throws -> Outputs {
         let bucket = aws.Bucket("My New Bucket")
 
-        let function = aws.Function("My Function", targetName: "Demo")
+        let function = aws.Function(
+            "My Function",
+            targetName: "Demo",
+            options: .protect()
+        )
 
         return Outputs([
             "bucketName": bucket.name,

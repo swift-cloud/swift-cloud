@@ -21,8 +21,9 @@ extension aws {
 
             dockerImage = DockerImage(
                 "\(name)-image",
-                imageRepository: .shared,
-                dockerFilePath: dockerFilePath
+                imageRepository: .shared(options: options),
+                dockerFilePath: dockerFilePath,
+                options: options
             )
 
             role = Resource(
@@ -44,7 +45,8 @@ extension aws {
                             ]
                         }
                         """)
-                ]
+                ],
+                options: options
             )
 
             rolePolicyAttachment = Resource(
@@ -53,7 +55,8 @@ extension aws {
                 properties: [
                     "role": "\(role.name)",
                     "policyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-                ]
+                ],
+                options: options
             )
 
             function = Resource(
@@ -64,7 +67,8 @@ extension aws {
                     "packageType": "Image",
                     "imageUri": "\(dockerImage.uri)",
                     "architectures": [Architecture.current.lambdaArchitecture],
-                ]
+                ],
+                options: options
             )
 
             functionUrl = Resource(
@@ -73,7 +77,8 @@ extension aws {
                 properties: [
                     "functionName": "\(function.name)",
                     "authorizationType": "NONE",
-                ]
+                ],
+                options: options
             )
 
             Store.current.invoke {
