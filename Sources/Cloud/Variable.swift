@@ -3,19 +3,22 @@ public protocol VariableProvider: Sendable {
 }
 
 public struct Variable: Sendable {
-    public let name: String
-
+    public let chosenName: String
     public let definition: AnyEncodable
 
+    internal var internalName: String {
+        tokenize(chosenName)
+    }
+
     public init(_ name: String, definition: AnyEncodable) {
-        self.name = name
+        self.chosenName = name
         self.definition = definition
         Store.current.track(self)
     }
 
     func pulumiProjectVariables() -> Pulumi.Project.Variables {
         return [
-            slugify(name): definition
+            internalName: definition
         ]
     }
 }
@@ -27,8 +30,7 @@ extension Variable: VariableProvider {
 extension VariableProvider {
 
     public func keyPath(_ paths: String...) -> String {
-        let root = slugify(variable.name)
-        let parts = [root] + paths
+        let parts = [variable.internalName] + paths
         return "${\(parts.joined(separator: "."))}"
     }
 

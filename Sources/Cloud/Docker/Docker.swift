@@ -6,7 +6,7 @@ extension Docker {
 
 extension Docker.Dockerfile {
     public static func filePath(_ name: String) -> String {
-        "\(Context.cloudDirectory)/dockerfiles/Dockerfile.\(slugify(name))"
+        "\(Context.cloudDirectory)/dockerfiles/Dockerfile.\(tokenize(name))"
     }
 }
 

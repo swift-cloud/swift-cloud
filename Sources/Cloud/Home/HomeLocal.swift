@@ -18,7 +18,7 @@ public struct LocalHome: Home {
     }
 
     private func dataFilePath(_ fileName: String, with context: Context) -> String {
-        return "\(Context.cloudDirectory)/data/\(slugify(context.project.name))/\(slugify(fileName)).json"
+        return "\(Context.cloudDirectory)/data/\(tokenize(context.project.name))/\(tokenize(fileName)).json"
     }
 }
 

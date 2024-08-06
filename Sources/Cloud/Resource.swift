@@ -5,10 +5,14 @@ public protocol ResourceProvider: Sendable {
 }
 
 public struct Resource: Sendable {
-    fileprivate let _name: String
+    public let chosenName: String
     public let type: String
     public let properties: [String: AnyEncodable?]?
     public let options: Options?
+
+    internal var internalName: String {
+        tokenize(chosenName)
+    }
 
     public init(
         _ name: String,
@@ -16,7 +20,7 @@ public struct Resource: Sendable {
         properties: [String: AnyEncodable?]? = nil,
         options: Options? = nil
     ) {
-        self._name = name
+        self.chosenName = name
         self.type = type
         self.properties = properties
         self.options = options
@@ -25,7 +29,7 @@ public struct Resource: Sendable {
 
     func pulumiProjectResources() -> Pulumi.Project.Resources {
         return [
-            slugify(_name): .init(
+            internalName: .init(
                 type: type,
                 properties: properties,
                 options: options.map {
@@ -96,8 +100,7 @@ extension Resource: ResourceProvider {
 
 extension ResourceProvider {
     public func keyPath(_ paths: String...) -> String {
-        let root = slugify(resource._name)
-        let parts = [root] + paths
+        let parts = [resource.internalName] + paths
         return "${\(parts.joined(separator: "."))}"
     }
 

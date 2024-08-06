@@ -33,7 +33,7 @@ extension Pulumi.Client {
     }
 
     private var statePath: String {
-        "\(Context.cloudDirectory)/state"
+        "\(Context.cloudDirectory)"
     }
 
     private var configFilePath: String {
