@@ -52,8 +52,35 @@ extension aws.Queue {
         _ function: aws.Function,
         batchSize: Int = 1,
         maximumConcurrency: Int? = nil
-    ) -> Resource {
-        Resource(
+    ) -> aws.Queue {
+        let _ = Resource(
+            name: "\(function.function.internalName)-\(queue.internalName)-role-policy",
+            type: "aws:iam:RolePolicy",
+            properties: [
+                "role": .init(function.role.id),
+                "policy": Resource.JSON(
+                    """
+                    {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "sqs:ReceiveMessage",
+                                    "sqs:DeleteMessage",
+                                    "sqs:GetQueueAttributes",
+                                    "sqs:GetQueueUrl"
+                                ],
+                                "Resource": "\(queue.arn)"
+                            }
+                        ]
+                    }
+                    """
+                ),
+            ]
+        )
+
+        let _ = Resource(
             name: "\(queue.internalName)-subscription",
             type: "aws:lambda:EventSourceMapping",
             properties: [
@@ -66,5 +93,7 @@ extension aws.Queue {
             ],
             options: function.function.options
         )
+
+        return self
     }
 }

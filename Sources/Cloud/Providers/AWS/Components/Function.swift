@@ -65,7 +65,7 @@ extension aws {
             )
 
             function = Resource(
-                name: "\(name)-lambda",
+                name: "\(name)",
                 type: "aws:lambda:Function",
                 properties: [
                     "role": "\(role.arn)",
@@ -108,5 +108,36 @@ extension aws {
                 try await $0.builder.buildAmazonLinux(targetName: targetName)
             }
         }
+    }
+}
+
+extension aws.Function {
+    @discardableResult
+    public func link(_ queue: aws.Queue) -> aws.Function {
+        let _ = Resource(
+            name: "\(function.internalName)-\(queue.queue.internalName)-role-policy",
+            type: "aws:iam:RolePolicy",
+            properties: [
+                "role": .init(role.id),
+                "policy": Resource.JSON(
+                    """
+                    {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "sqs:SendMessage"
+                                ],
+                                "Resource": "\(queue.queue.arn)"
+                            }
+                        ]
+                    }
+                    """
+                ),
+            ]
+        )
+
+        return self
     }
 }

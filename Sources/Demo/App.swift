@@ -10,14 +10,15 @@ struct Demo: Project {
             targetName: "Demo"
         )
 
-        let queue = aws.Queue("My Queue")
+        let queue = aws.Queue("My Queue").subscribe(function)
 
-        queue.subscribe(function)
+        function.link(queue)
 
         return Outputs([
             "bucketName": bucket.name,
             "bucketUrl": "https://\(bucket.hostname)",
             "functionUrl": function.url,
+            "queueUrl": queue.url,
         ])
     }
 }
