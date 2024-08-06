@@ -28,10 +28,6 @@ extension Pulumi {
 }
 
 extension Pulumi.Client {
-    private var cliPath: String {
-        "\(Context.cloudDirectory)/cli"
-    }
-
     private var statePath: String {
         "\(Context.cloudDirectory)"
     }
@@ -41,11 +37,11 @@ extension Pulumi.Client {
     }
 
     private var pulumiPath: String {
-        "\(cliPath)/pulumi-\(version)"
+        "\(Context.cloudBinDirectory)/pulumi-\(version)"
     }
 
     private var executablePath: String {
-        "\(pulumiPath)/pulumi/pulumi"
+        "\(pulumiPath)/pulumi"
     }
 }
 
@@ -59,7 +55,7 @@ extension Pulumi.Client {
         try createDirectory(atPath: pulumiPath)
 
         // Download Pulumi CLI
-        let downloadPath = "\(cliPath)/pulumi-\(version)-\(platform).tar.gz"
+        let downloadPath = "\(Context.cloudAssetsDirectory)/pulumi-\(version)-\(platform).tar.gz"
 
         let httpClient = HTTPClient.shared
 
@@ -86,10 +82,18 @@ extension Pulumi.Client {
         // Extract the archive
         if platform == "windows" {
             // Unzip for Windows
-            try await shellOut(to: "/usr/bin/unzip", arguments: ["-o", downloadPath, "-d", pulumiPath])
+            try await shellOut(
+                to: "powershell",
+                arguments: [
+                    "-Command", "Expand-Archive", "-Path", downloadPath, "-DestinationPath", pulumiPath, "-Force",
+                ]
+            )
         } else {
             // Untar for Linux and macOS
-            try await shellOut(to: "/usr/bin/tar", arguments: ["-xzf", downloadPath, "-C", pulumiPath])
+            try await shellOut(
+                to: "/usr/bin/tar",
+                arguments: ["-xzf", downloadPath, "-C", pulumiPath, "--strip-components=1"]
+            )
         }
 
         // Clean up the downloaded archive

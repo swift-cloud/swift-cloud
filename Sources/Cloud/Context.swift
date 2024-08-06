@@ -23,4 +23,8 @@ extension Context {
 
 extension Context {
     public static let cloudDirectory = "\(currentDirectoryPath())/.cloud"
+
+    public static let cloudAssetsDirectory = "\(cloudDirectory)/assets"
+
+    public static let cloudBinDirectory = "\(cloudDirectory)/bin"
 }
