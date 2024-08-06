@@ -13,7 +13,7 @@ public struct Variable: Sendable {
     public init(_ name: String, definition: AnyEncodable) {
         self.chosenName = name
         self.definition = definition
-        Store.current.track(self)
+        Context.current.store.track(self)
     }
 
     func pulumiProjectVariables() -> Pulumi.Project.Variables {

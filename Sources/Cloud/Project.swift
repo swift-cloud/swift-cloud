@@ -1,4 +1,5 @@
 import ArgumentParser
+import ConsoleKitTerminal
 
 public protocol Project: Sendable {
     init()
@@ -32,11 +33,23 @@ extension Project {
 
 extension Project {
     public static func main() async throws {
-        let project = Self()
         let command = try Command.parseAsRoot()
         switch command {
         case let command as Command.RunCommand:
-            try await command.invoke(with: project)
+            let project = Self()
+            let terminal = Terminal()
+            let builder = Builder()
+            let store = Store()
+            let context = Context(
+                stage: command.options.stage,
+                project: project,
+                store: store,
+                builder: builder,
+                terminal: terminal
+            )
+            try await Context.$current.withValue(context) {
+                try await command.invoke(with: context)
+            }
         default:
             let error = ValidationError("Unknown command")
             Command.exit(withError: error)

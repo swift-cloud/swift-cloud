@@ -47,6 +47,12 @@ extension Pulumi.Plugin {
         repo: "pulumi/pulumi-gcp"
     )
 
+    public static let heroku = Pulumi.Plugin(
+        name: "heroku",
+        version: "1.0.3",
+        repo: "pulumiverse/pulumi-heroku"
+    )
+
     public static let planetscale = Pulumi.Plugin(
         name: "planetscale",
         version: "0.0.7",

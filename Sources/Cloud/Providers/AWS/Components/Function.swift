@@ -99,13 +99,13 @@ extension aws {
                 options: options
             )
 
-            Store.current.invoke {
+            Context.current.store.invoke { _ in
                 let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
                 try createFile(atPath: dockerFilePath, contents: dockerFile)
             }
 
-            Store.current.build {
-                try await $0.buildAmazonLinux(targetName: targetName)
+            Context.current.store.build {
+                try await $0.builder.buildAmazonLinux(targetName: targetName)
             }
         }
     }

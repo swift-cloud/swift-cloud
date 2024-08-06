@@ -24,7 +24,7 @@ public struct Resource: Sendable {
         self.type = type
         self.properties = properties
         self.options = options
-        Store.current.track(self)
+        Context.current.store.track(self)
     }
 
     func pulumiProjectResources() -> Pulumi.Project.Resources {

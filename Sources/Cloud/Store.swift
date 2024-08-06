@@ -15,14 +15,14 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _variables = newValue } }
     }
 
-    private var _operations: [() async throws -> Void] = []
-    var operations: [() async throws -> Void] {
+    private var _operations: [(Context) async throws -> Void] = []
+    var operations: [(Context) async throws -> Void] {
         get { queue.sync { _operations } }
         set { queue.sync { _operations = newValue } }
     }
 
-    private var _builds: [(Builder) async throws -> Void] = []
-    var builds: [(Builder) async throws -> Void] {
+    private var _builds: [(Context) async throws -> Void] = []
+    var builds: [(Context) async throws -> Void] {
         get { queue.sync { _builds } }
         set { queue.sync { _builds = newValue } }
     }
@@ -37,15 +37,11 @@ extension Store {
         variables.append(variable)
     }
 
-    public func invoke(_ operation: @escaping () async throws -> Void) {
+    public func invoke(_ operation: @escaping (Context) async throws -> Void) {
         operations.append(operation)
     }
 
-    public func build(_ operation: @escaping (Builder) async throws -> Void) {
+    public func build(_ operation: @escaping (Context) async throws -> Void) {
         builds.append(operation)
     }
-}
-
-extension Store {
-    @TaskLocal public static var current: Store!
 }

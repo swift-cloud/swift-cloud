@@ -7,8 +7,8 @@ extension Command {
 
         @OptionGroup var options: Options
 
-        func invoke(with project: any Project) async throws {
-            let prepared = try await prepare(with: project)
+        func invoke(with context: Context) async throws {
+            let prepared = try await prepare(with: context)
             let output = try await prepared.client.invoke(command: "cancel")
             print(output)
         }
