@@ -86,6 +86,12 @@ extension Command.RunCommand {
         // Upsert our stack
         try await client.upsertStack(stage: context.stage)
 
+        // Configure all providers
+        for provider in project.providers {
+            try await client.installPlugin(provider.plugin)
+            try await client.configure(provider)
+        }
+
         // Update gitignore
         try? updateGitignore()
 

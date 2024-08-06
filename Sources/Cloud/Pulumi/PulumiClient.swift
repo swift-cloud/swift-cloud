@@ -136,8 +136,21 @@ extension Pulumi.Client {
     public func installPlugin(_ plugin: Pulumi.Plugin) async throws {
         try await invoke(
             command: "plugin",
-            arguments: ["install", plugin.name, plugin.version, "--server", plugin.server]
+            arguments: ["install", "resource", plugin.name, plugin.version, "--server", plugin.server]
         )
+    }
+}
+
+extension Pulumi.Client {
+    public func configure(_ provider: Provider) async throws {
+        for (key, value) in provider.configuration {
+            let configKey = "\(provider.name):\(key)"
+            if let value {
+                try await invoke(command: "config", arguments: ["set", configKey, value])
+            } else {
+                try await invoke(command: "config", arguments: ["rm", configKey])
+            }
+        }
     }
 }
 

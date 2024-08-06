@@ -7,6 +7,8 @@ public protocol Project: Sendable {
 
     var home: Home { get }
 
+    var providers: [Provider] { get }
+
     func build() async throws -> Outputs
 }
 
@@ -19,6 +21,12 @@ extension Project {
 extension Project {
     public var home: Home {
         .local()
+    }
+}
+
+extension Project {
+    public var providers: [Provider] {
+        []
     }
 }
 
