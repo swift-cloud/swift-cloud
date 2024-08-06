@@ -15,7 +15,7 @@ public struct Resource: Sendable {
     }
 
     public init(
-        _ name: String,
+        name: String,
         type: String,
         properties: [String: AnyEncodable?]? = nil,
         options: Options? = nil

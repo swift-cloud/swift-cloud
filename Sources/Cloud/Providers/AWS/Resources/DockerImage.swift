@@ -16,8 +16,8 @@ extension aws {
             platform: String? = nil,
             options: Resource.Options? = nil
         ) {
-            resource = .init(
-                name,
+            resource = Resource(
+                name: name,
                 type: "awsx:ecr:Image",
                 properties: [
                     "repositoryUrl": "\(imageRepository.url)",

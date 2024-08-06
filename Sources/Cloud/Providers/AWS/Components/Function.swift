@@ -32,7 +32,7 @@ extension aws {
             )
 
             role = Resource(
-                "\(name)-role",
+                name: "\(name)-role",
                 type: "aws:iam:Role",
                 properties: [
                     "assumeRolePolicy": Resource.JSON(
@@ -55,7 +55,7 @@ extension aws {
             )
 
             rolePolicyAttachment = Resource(
-                "\(name)-role-policy-attachment",
+                name: "\(name)-role-policy-attachment",
                 type: "aws:iam:RolePolicyAttachment",
                 properties: [
                     "role": "\(role.name)",
@@ -65,7 +65,7 @@ extension aws {
             )
 
             function = Resource(
-                "\(name)-lambda",
+                name: "\(name)-lambda",
                 type: "aws:lambda:Function",
                 properties: [
                     "role": "\(role.arn)",
@@ -81,7 +81,7 @@ extension aws {
             )
 
             functionUrl = Resource(
-                "\(name)-url",
+                name: "\(name)-url",
                 type: "aws:lambda:FunctionUrl",
                 properties: [
                     "functionName": "\(function.name)",

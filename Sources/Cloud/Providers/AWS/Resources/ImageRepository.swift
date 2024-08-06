@@ -11,8 +11,8 @@ extension aws {
             forceDelete: Bool = true,
             options: Resource.Options? = nil
         ) {
-            resource = .init(
-                name,
+            resource = Resource(
+                name: name,
                 type: "aws:ecr:Repository",
                 properties: [
                     "forceDelete": .init(forceDelete)

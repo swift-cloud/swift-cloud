@@ -18,7 +18,7 @@ extension aws {
             options: Resource.Options? = nil
         ) {
             bucket = Resource(
-                name,
+                name: name,
                 type: "aws:s3:Bucket",
                 properties: [
                     "forceDestroy": .init(forceDestroy)
@@ -27,7 +27,7 @@ extension aws {
             )
 
             ownershipControls = Resource(
-                "\(name)-ownershipControls",
+                name: "\(name)-ownershipControls",
                 type: "aws:s3:BucketOwnershipControls",
                 properties: [
                     "bucket": "\(bucket.ref)",
@@ -39,7 +39,7 @@ extension aws {
             )
 
             publicAccessBlock = Resource(
-                "\(name)-publicAccessBlock",
+                name: "\(name)-publicAccessBlock",
                 type: "aws:s3:BucketPublicAccessBlock",
                 properties: [
                     "bucket": "\(bucket.ref)",

@@ -10,7 +10,7 @@ public struct Variable: Sendable {
         tokenize(chosenName)
     }
 
-    public init(_ name: String, definition: AnyEncodable) {
+    public init(name: String, definition: AnyEncodable) {
         self.chosenName = name
         self.definition = definition
         Context.current.store.track(self)

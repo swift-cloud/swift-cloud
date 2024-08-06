@@ -32,7 +32,7 @@ extension aws {
             region: String? = nil
         ) {
             resource = Resource(
-                name,
+                name: name,
                 type: "pulumi:providers:aws",
                 properties: [
                     "accessKey": .init(accessKey),
