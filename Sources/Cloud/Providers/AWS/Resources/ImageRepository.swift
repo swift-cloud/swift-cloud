@@ -8,11 +8,15 @@ extension aws {
 
         public init(
             _ name: String,
+            forceDelete: Bool = true,
             options: Resource.Options? = nil
         ) {
             resource = .init(
                 name,
                 type: "aws:ecr:Repository",
+                properties: [
+                    "forceDelete": .init(forceDelete)
+                ],
                 options: options
             )
         }

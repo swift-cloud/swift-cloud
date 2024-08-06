@@ -15,6 +15,11 @@ extension aws {
         public init(
             _ name: String,
             targetName: String,
+            memory: Int? = nil,
+            timeout: TimeInterval? = nil,
+            reservedConcurrency: Int? = nil,
+            cors: Bool? = nil,
+            environment: [String: String]? = nil,
             options: Resource.Options? = nil
         ) {
             let dockerFilePath = Docker.Dockerfile.filePath(name)
@@ -67,6 +72,10 @@ extension aws {
                     "packageType": "Image",
                     "imageUri": "\(dockerImage.uri)",
                     "architectures": [Architecture.current.lambdaArchitecture],
+                    "memorySize": .init(memory),
+                    "timeout": timeout.map { .init(Int($0)) },
+                    "environment": environment.map { ["variables": $0] },
+                    "reservedConcurrentExecutions": .init(reservedConcurrency),
                 ],
                 options: options
             )
@@ -77,6 +86,15 @@ extension aws {
                 properties: [
                     "functionName": "\(function.name)",
                     "authorizationType": "NONE",
+                    "cors": cors == true
+                        ? [
+                            "allowCredentials": true,
+                            "allowOrigins": ["*"],
+                            "allowMethods": ["*"],
+                            "allowHeaders": ["*"],
+                            "maxAge": 86400,
+                        ]
+                        : nil,
                 ],
                 options: options
             )

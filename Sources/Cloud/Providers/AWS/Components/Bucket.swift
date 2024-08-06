@@ -14,11 +14,15 @@ extension aws {
 
         public init(
             _ name: String,
+            forceDestroy: Bool = true,
             options: Resource.Options? = nil
         ) {
             bucket = Resource(
                 name,
                 type: "aws:s3:Bucket",
+                properties: [
+                    "forceDestroy": .init(forceDestroy)
+                ],
                 options: options
             )
 

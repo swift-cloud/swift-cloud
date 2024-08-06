@@ -14,11 +14,11 @@ extension aws {
                 name,
                 type: "pulumi:providers:aws",
                 properties: [
-                    "accessKey": accessKey?.encodable(),
-                    "secretKey": secretKey?.encodable(),
-                    "token": token?.encodable(),
-                    "profile": profile?.encodable(),
-                    "region": region?.encodable(),
+                    "accessKey": .init(accessKey),
+                    "secretKey": .init(secretKey),
+                    "token": .init(token),
+                    "profile": .init(profile),
+                    "region": .init(region),
                 ]
             )
         }
