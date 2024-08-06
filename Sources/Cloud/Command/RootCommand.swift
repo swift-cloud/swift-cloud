@@ -33,10 +33,19 @@ extension Command {
 
 extension Command.RunCommand {
     func prepare(with project: Project, withBuilds: Bool = false) async throws -> Command.Prepared {
-        let context = Context(stage: options.stage)
+        let context = Context(stage: options.stage, project: project)
+
+        // Bootstrap the home
+        try await project.home.bootstrap(with: context)
+
+        // Create pulumi client with passphrase
+        let client = Pulumi.Client(
+            passphrase: try await project.home.passphrase(with: context)
+        )
+
+        // Create shared state
         let builder = Builder()
         let store = Store()
-        let client = Pulumi.Client()
 
         // Generate the project resources and collect outputs
         let outputs: Outputs = try await Store.$current.withValue(store) {

@@ -2,9 +2,11 @@ import Foundation
 
 public final class Context: Sendable {
     public let stage: String
+    public let project: Project
 
-    init(stage: String) {
+    init(stage: String, project: Project) {
         self.stage = stage
+        self.project = project
     }
 }
 

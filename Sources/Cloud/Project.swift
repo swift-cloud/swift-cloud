@@ -5,12 +5,20 @@ public protocol Project: Sendable {
 
     var name: String { get }
 
+    var home: Home { get }
+
     func build() async throws -> Outputs
 }
 
 extension Project {
     public var name: String {
         String(describing: type(of: self))
+    }
+}
+
+extension Project {
+    public var home: Home {
+        .local()
     }
 }
 
