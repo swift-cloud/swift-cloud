@@ -14,7 +14,8 @@ extension Provider {
                 "token": token,
                 "profile": profile,
                 "region": region,
-            ]
+            ],
+            dependencies: [.awsx]
         )
     }
 }

@@ -17,6 +17,18 @@ extension Pulumi.Plugin {
         repo: "pulumi/pulumi-aws"
     )
 
+    public static let awsx = Pulumi.Plugin(
+        name: "awsx",
+        version: "2.13.0",
+        repo: "pulumi/pulumi-awsx"
+    )
+
+    public static let awsNative = Pulumi.Plugin(
+        name: "aws-native",
+        version: "0.114.0",
+        repo: "pulumi/pulumi-aws-native"
+    )
+
     public static let azure = Pulumi.Plugin(
         name: "azure",
         version: "5.86.0",

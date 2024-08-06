@@ -78,7 +78,7 @@ extension Command.RunCommand {
 
         // Configure all providers
         for provider in context.project.providers {
-            try await client.installPlugin(provider.plugin)
+            try await client.installPlugins([provider.plugin] + provider.dependencies)
             try await client.configure(provider)
         }
 

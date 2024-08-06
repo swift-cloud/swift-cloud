@@ -137,6 +137,12 @@ extension Pulumi.Client {
 }
 
 extension Pulumi.Client {
+    public func installPlugins(_ plugins: [Pulumi.Plugin]) async throws {
+        for plugin in plugins {
+            try await installPlugin(plugin)
+        }
+    }
+
     public func installPlugin(_ plugin: Pulumi.Plugin) async throws {
         try await invoke(
             command: "plugin",
