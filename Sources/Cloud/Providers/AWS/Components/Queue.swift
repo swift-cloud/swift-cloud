@@ -2,8 +2,12 @@ import Foundation
 
 extension aws {
     public struct Queue: Component {
-        internal let queue: Resource
-        internal let deadLetterQueue: Resource
+        public let queue: Resource
+        public let deadLetterQueue: Resource
+
+        public var name: String {
+            queue.name
+        }
 
         public var url: String {
             queue.keyPath("url")
@@ -53,33 +57,7 @@ extension aws.Queue {
         batchSize: Int = 1,
         maximumConcurrency: Int? = nil
     ) -> aws.Queue {
-        let _ = Resource(
-            name: "\(function.function.internalName)-\(queue.internalName)-role-policy",
-            type: "aws:iam:RolePolicy",
-            properties: [
-                "role": .init(function.role.id),
-                "policy": Resource.JSON(
-                    """
-                    {
-                        "Version": "2012-10-17",
-                        "Statement": [
-                            {
-                                "Effect": "Allow",
-                                "Action": [
-                                    "sqs:ReceiveMessage",
-                                    "sqs:DeleteMessage",
-                                    "sqs:GetQueueAttributes",
-                                    "sqs:GetQueueUrl"
-                                ],
-                                "Resource": "\(queue.arn)"
-                            }
-                        ]
-                    }
-                    """
-                ),
-            ],
-            options: function.function.options
-        )
+        function.link(self)
 
         let _ = Resource(
             name: "\(queue.internalName)-subscription",
@@ -96,5 +74,21 @@ extension aws.Queue {
         )
 
         return self
+    }
+}
+
+extension aws.Queue: Linkable {
+    public var actions: [String] {
+        [
+            "sqs:SendMessage",
+            "sqs:ReceiveMessage",
+            "sqs:DeleteMessage",
+            "sqs:GetQueueAttributes",
+            "sqs:GetQueueUrl",
+        ]
+    }
+
+    public var resources: [String] {
+        [queue.arn]
     }
 }

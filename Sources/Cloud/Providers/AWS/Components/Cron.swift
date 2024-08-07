@@ -1,24 +1,14 @@
 extension aws {
     public struct Cron: Component {
-        public enum Expression: Sendable {
-            case cron(_ value: String)
-            case rate(_ value: String)
+        public let eventRule: Resource
+        public let eventTarget: Resource
 
-            var value: String {
-                switch self {
-                case .cron(let value):
-                    return "cron(\(value))"
-                case .rate(let value):
-                    return "rate(\(value))"
-                }
-            }
+        public var name: String {
+            eventRule.name
         }
 
-        internal let eventRule: Resource
-        internal let eventTarget: Resource
-
         public var id: String {
-            eventTarget.id
+            eventRule.id
         }
 
         public init(
@@ -46,6 +36,22 @@ extension aws {
                     "targetId": "\(tokenize(name))-\(function.function.internalName)-target-id",
                 ]
             )
+        }
+    }
+}
+
+extension aws.Cron {
+    public enum Expression: Sendable {
+        case cron(_ value: String)
+        case rate(_ value: String)
+
+        var value: String {
+            switch self {
+            case .cron(let value):
+                return "cron(\(value))"
+            case .rate(let value):
+                return "rate(\(value))"
+            }
         }
     }
 }

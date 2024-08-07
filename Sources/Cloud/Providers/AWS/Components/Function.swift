@@ -2,11 +2,15 @@ import Foundation
 
 extension aws {
     public struct Function: Component {
-        internal let dockerImage: DockerImage
-        internal let role: Resource
-        internal let rolePolicyAttachment: Resource
-        internal let function: Resource
-        internal let functionUrl: Resource
+        public let dockerImage: DockerImage
+        public let role: Resource
+        public let rolePolicyAttachment: Resource
+        public let function: Resource
+        public let functionUrl: Resource
+
+        public var name: String {
+            function.name
+        }
 
         public var url: String {
             functionUrl.keyPath("functionUrl")
@@ -111,34 +115,14 @@ extension aws {
     }
 }
 
-extension aws.Function {
-    @discardableResult
-    public func link(_ queue: aws.Queue) -> aws.Function {
-        let _ = Resource(
-            name: "\(function.internalName)-\(queue.queue.internalName)-role-policy",
-            type: "aws:iam:RolePolicy",
-            properties: [
-                "role": .init(role.id),
-                "policy": Resource.JSON(
-                    """
-                    {
-                        "Version": "2012-10-17",
-                        "Statement": [
-                            {
-                                "Effect": "Allow",
-                                "Action": [
-                                    "sqs:SendMessage"
-                                ],
-                                "Resource": "\(queue.queue.arn)"
-                            }
-                        ]
-                    }
-                    """
-                ),
-            ],
-            options: function.options
-        )
+extension aws.Function: RoleProvider {}
 
-        return self
+extension aws.Function: Linkable {
+    public var actions: [String] {
+        ["lambda:InvokeFunction"]
+    }
+
+    public var resources: [String] {
+        [function.arn]
     }
 }
