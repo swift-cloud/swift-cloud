@@ -33,6 +33,9 @@ extension aws {
 
             let dockerFilePath = Docker.Dockerfile.filePath(name)
 
+            var mergedEnvironment = environment
+            mergedEnvironment["PORT"] = "\(instancePort)"
+
             cluster = aws.Cluster(
                 "\(name)-cluster",
                 options: options
@@ -113,7 +116,7 @@ extension aws {
                                     "targetGroup": applicationLoadBalancer.keyPath("defaultTargetGroup"),
                                 ]
                             ],
-                            "environment": environment.map { key, value in
+                            "environment": mergedEnvironment.map { key, value in
                                 ["name": key, "value": value]
                             },
                         ],
