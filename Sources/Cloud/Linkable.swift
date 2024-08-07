@@ -50,4 +50,12 @@ extension RoleProvider {
 
         return self
     }
+
+    @discardableResult
+    public func link(_ linkables: [Linkable]) -> Self {
+        for linkable in linkables {
+            link(linkable)
+        }
+        return self
+    }
 }
