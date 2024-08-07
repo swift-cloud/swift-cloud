@@ -3,6 +3,7 @@ public enum azure {}
 public enum cloudflare {}
 public enum digitalocean {}
 public enum fastly {}
+public enum fly {}
 public enum gcp {}
 public enum heroku {}
 public enum planetscale {}
