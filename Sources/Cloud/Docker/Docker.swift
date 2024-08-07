@@ -29,7 +29,7 @@ extension Docker.Dockerfile {
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
 
-        CMD [ "\(targetName)" ]
+        CMD [ "./\(targetName)" ]
         """
     }
 }
