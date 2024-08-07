@@ -70,8 +70,9 @@ extension aws {
                 type: "awsx:lb:ApplicationLoadBalancer",
                 properties: [
                     "listeners": [
-                        ["port": 80, "protocol": "HTTP"],
-                        ["port": 443, "protocol": "HTTPS"],
+                        ["port": 80, "protocol": "HTTP"]
+                        // TODO: support HTTPS
+                        // ["port": 443, "protocol": "HTTPS"],
                     ],
                     "defaultTargetGroup": [
                         "port": instancePort,
