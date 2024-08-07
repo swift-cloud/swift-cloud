@@ -16,22 +16,23 @@ extension Linkable {
 
 extension Linkable {
     public var policy: AnyEncodable {
-        let statement: [String: Sendable] = [
-            "Effect": effect,
-            "Action": actions,
-            "Resource": resources,
-        ]
-        return Resource.JSON([
+        Resource.JSON([
             "Version": "2012-10-17",
-            "Statement": .init(statement),
+            "Statement": [
+                "Effect": effect,
+                "Action": actions,
+                "Resource": resources,
+            ],
         ])
     }
 }
 
 public protocol RoleProvider {
+    associatedtype RoleType: ResourceProvider
+
     var name: String { get }
 
-    var role: Resource { get }
+    var role: RoleType { get }
 }
 
 extension RoleProvider {
@@ -41,10 +42,10 @@ extension RoleProvider {
             name: "\(name)-\(linkable.name)-role-policy",
             type: "aws:iam:RolePolicy",
             properties: [
-                "role": .init(role.id),
+                "role": role.id,
                 "policy": linkable.policy,
             ],
-            options: role.options
+            options: role.resource.options
         )
 
         return self

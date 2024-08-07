@@ -25,18 +25,18 @@
 ///
 ///     let decoder = JSONDecoder()
 ///     let dictionary = try! decoder.decode([String: AnyDecodable].self, from: json)
-@frozen public struct AnyDecodable: Decodable, Sendable {
-    public let value: Sendable
+@frozen public struct AnyDecodable: Decodable {
+    public let value: Any
 
-    public init<T: Sendable>(_ value: T?) {
+    public init(_ value: Any?) {
         self.value = value ?? ()
     }
 }
 
 @usableFromInline
-protocol _AnyDecodable: Sendable {
-    var value: Sendable { get }
-    init<T: Sendable>(_ value: T?)
+protocol _AnyDecodable {
+    var value: Any { get }
+    init(_ value: Any?)
 }
 
 extension AnyDecodable: _AnyDecodable {}

@@ -23,18 +23,18 @@
 ///
 ///     let encoder = JSONEncoder()
 ///     let json = try! encoder.encode(dictionary)
-@frozen public struct AnyEncodable: Encodable, Sendable {
-    public let value: Sendable
+@frozen public struct AnyEncodable: Encodable {
+    public let value: Any
 
-    public init<T: Sendable>(_ value: T?) {
+    public init(_ value: Any?) {
         self.value = value ?? ()
     }
 }
 
 @usableFromInline
-protocol _AnyEncodable: Sendable {
-    var value: Sendable { get }
-    init<T: Sendable>(_ value: T?)
+protocol _AnyEncodable {
+    var value: Any { get }
+    init(_ value: Any?)
 }
 
 extension AnyEncodable: _AnyEncodable {}
@@ -191,12 +191,12 @@ extension _AnyEncodable {
         self.init(value)
     }
 
-    public init(arrayLiteral elements: Sendable...) {
+    public init(arrayLiteral elements: Any...) {
         self.init(elements)
     }
 
-    public init(dictionaryLiteral elements: (String, Sendable)...) {
-        self.init([String: Sendable](elements, uniquingKeysWith: { first, _ in first }))
+    public init(dictionaryLiteral elements: (String, Any?)...) {
+        self.init([String: Any?](elements, uniquingKeysWith: { first, _ in first }))
     }
 }
 

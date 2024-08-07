@@ -32,6 +32,15 @@ extension Architecture {
         }
     }
 
+    public var ecsArchitecture: String {
+        switch self {
+        case .arm64:
+            return "ARM64"
+        case .x86:
+            return "X86_64"
+        }
+    }
+
     public var swiftBuildLinuxDirectory: String {
         switch self {
         case .arm64:

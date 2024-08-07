@@ -7,7 +7,7 @@ public protocol ResourceProvider: Sendable {
 public struct Resource: Sendable {
     public let chosenName: String
     public let type: String
-    public let properties: [String: AnyEncodable?]?
+    public let properties: AnyEncodable?
     public let options: Options?
 
     internal var internalName: String {
@@ -17,7 +17,7 @@ public struct Resource: Sendable {
     public init(
         name: String,
         type: String,
-        properties: [String: AnyEncodable?]? = nil,
+        properties: AnyEncodable? = nil,
         options: Options? = nil
     ) {
         self.chosenName = name
@@ -134,7 +134,7 @@ extension Resource {
         }
     }
 
-    public static func JSON(_ input: [String: AnyEncodable]) -> AnyEncodable {
+    public static func JSON(_ input: AnyEncodable) -> AnyEncodable {
         return ["fn::toJSON": input]
     }
 

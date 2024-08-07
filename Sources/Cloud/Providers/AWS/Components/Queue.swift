@@ -25,8 +25,8 @@ extension aws {
                 name: "\(name)-dlq",
                 type: "aws:sqs:Queue",
                 properties: [
-                    "fifoQueue": .init(fifo),
-                    "visibilityTimeoutSeconds": .init(visibilityTimeout),
+                    "fifoQueue": fifo,
+                    "visibilityTimeoutSeconds": visibilityTimeout,
                     "messageRetentionSeconds": 1_209_600,
                 ],
                 options: options
@@ -36,12 +36,12 @@ extension aws {
                 name: name,
                 type: "aws:sqs:Queue",
                 properties: [
-                    "fifoQueue": .init(fifo),
-                    "visibilityTimeoutSeconds": .init(visibilityTimeout),
-                    "messageRetentionSeconds": .init(messageRetentionInterval),
+                    "fifoQueue": fifo,
+                    "visibilityTimeoutSeconds": visibilityTimeout,
+                    "messageRetentionSeconds": messageRetentionInterval,
                     "redrivePolicy": Resource.JSON([
-                        "deadLetterTargetArn": .init(deadLetterQueue.arn),
-                        "maxReceiveCount": .init(maxRetries + 1),
+                        "deadLetterTargetArn": deadLetterQueue.arn,
+                        "maxReceiveCount": maxRetries + 1,
                     ]),
                 ],
                 options: options
@@ -63,9 +63,9 @@ extension aws.Queue {
             name: "\(queue.internalName)-subscription",
             type: "aws:lambda:EventSourceMapping",
             properties: [
-                "eventSourceArn": .init(queue.arn),
-                "functionName": .init(function.function.arn),
-                "batchSize": .init(batchSize),
+                "eventSourceArn": queue.arn,
+                "functionName": function.function.arn,
+                "batchSize": batchSize,
                 "scalingConfig": maximumConcurrency.map {
                     ["maximumConcurrency": $0]
                 },

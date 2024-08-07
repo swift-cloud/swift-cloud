@@ -22,7 +22,7 @@ extension aws {
                 name: "\(name)-cron-rule",
                 type: "aws:cloudwatch:EventRule",
                 properties: [
-                    "scheduleExpression": .init(expression.value),
+                    "scheduleExpression": expression.value,
                     "state": enabled ? "ENABLED" : "DISABLED",
                 ]
             )
@@ -31,8 +31,8 @@ extension aws {
                 name: "\(name)-cron-target",
                 type: "aws:cloudwatch:EventTarget",
                 properties: [
-                    "rule": .init(eventRule.name),
-                    "arn": .init(function.function.arn),
+                    "rule": eventRule.name,
+                    "arn": function.function.arn,
                     "targetId": "\(tokenize(name))-\(function.function.internalName)-target-id",
                 ]
             )

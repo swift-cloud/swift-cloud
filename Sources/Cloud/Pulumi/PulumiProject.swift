@@ -54,7 +54,7 @@ extension Pulumi {
                 public var provider: String?
             }
             public var type: String
-            public var properties: [String: AnyEncodable?]?
+            public var properties: AnyEncodable?
             public var options: Options?
         }
 

@@ -36,11 +36,11 @@ extension aws {
                 name: name,
                 type: "pulumi:providers:aws",
                 properties: [
-                    "accessKey": .init(accessKey),
-                    "secretKey": .init(secretKey),
-                    "token": .init(token),
-                    "profile": .init(profile),
-                    "region": .init(region),
+                    "accessKey": accessKey,
+                    "secretKey": secretKey,
+                    "token": token,
+                    "profile": profile,
+                    "region": region,
                 ]
             )
         }

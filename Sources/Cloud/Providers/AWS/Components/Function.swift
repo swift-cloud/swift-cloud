@@ -3,7 +3,7 @@ import Foundation
 extension aws {
     public struct Function: Component {
         public let dockerImage: DockerImage
-        public let role: Resource
+        public let role: Role
         public let rolePolicyAttachment: Resource
         public let function: Resource
         public let functionUrl: Resource
@@ -35,26 +35,9 @@ extension aws {
                 options: options
             )
 
-            role = Resource(
-                name: "\(name)-role",
-                type: "aws:iam:Role",
-                properties: [
-                    "assumeRolePolicy": Resource.JSON(
-                        """
-                        {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Principal": {
-                                        "Service": "lambda.amazonaws.com"
-                                    },
-                                    "Action": "sts:AssumeRole"
-                                }
-                            ]
-                        }
-                        """)
-                ],
+            role = aws.Role(
+                "\(name)-role",
+                service: "lambda.amazonaws.com",
                 options: options
             )
 
@@ -76,10 +59,10 @@ extension aws {
                     "packageType": "Image",
                     "imageUri": "\(dockerImage.uri)",
                     "architectures": [Architecture.current.lambdaArchitecture],
-                    "memorySize": .init(memory),
-                    "timeout": timeout.map { .init(Int($0)) },
+                    "memorySize": memory,
+                    "timeout": timeout.map { Int($0) },
                     "environment": environment.map { ["variables": $0] },
-                    "reservedConcurrentExecutions": .init(reservedConcurrency),
+                    "reservedConcurrentExecutions": reservedConcurrency,
                 ],
                 options: options
             )

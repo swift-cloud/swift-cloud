@@ -10,6 +10,11 @@ struct Demo: Project {
             targetName: "Demo"
         )
 
+        let web = aws.WebServer(
+            "My Web Server",
+            targetName: "Demo"
+        )
+
         let queue = aws.Queue("My Queue").subscribe(function)
 
         function.link(queue)
@@ -24,6 +29,7 @@ struct Demo: Project {
         return Outputs([
             "bucketName": bucket.name,
             "bucketUrl": "https://\(bucket.hostname)",
+            "webUrl": web.url,
             "functionUrl": function.url,
             "queueUrl": queue.url,
             "cron": cron.id,

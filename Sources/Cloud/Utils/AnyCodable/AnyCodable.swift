@@ -9,10 +9,10 @@
 ///
 /// - SeeAlso: `AnyEncodable`
 /// - SeeAlso: `AnyDecodable`
-@frozen public struct AnyCodable: Codable, Sendable {
-    public let value: Sendable
+@frozen public struct AnyCodable: Codable {
+    public let value: Any
 
-    public init<T: Sendable>(_ value: T?) {
+    public init(_ value: Any?) {
         self.value = value ?? ()
     }
 }
@@ -51,3 +51,7 @@ extension AnyCodable: ExpressibleByStringLiteral {}
 extension AnyCodable: ExpressibleByStringInterpolation {}
 extension AnyCodable: ExpressibleByArrayLiteral {}
 extension AnyCodable: ExpressibleByDictionaryLiteral {}
+
+extension AnyCodable: @unchecked Sendable {}
+extension AnyEncodable: @unchecked Sendable {}
+extension AnyDecodable: @unchecked Sendable {}

@@ -21,7 +21,7 @@ extension aws {
                 name: name,
                 type: "aws:s3:Bucket",
                 properties: [
-                    "forceDestroy": .init(forceDestroy)
+                    "forceDestroy": forceDestroy
                 ],
                 options: options
             )

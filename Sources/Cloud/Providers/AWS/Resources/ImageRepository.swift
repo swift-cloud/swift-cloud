@@ -15,7 +15,7 @@ extension aws {
                 name: name,
                 type: "aws:ecr:Repository",
                 properties: [
-                    "forceDelete": .init(forceDelete)
+                    "forceDelete": forceDelete
                 ],
                 options: options
             )
