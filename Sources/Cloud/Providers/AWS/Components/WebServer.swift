@@ -7,6 +7,7 @@ extension aws {
         public let instanceSecurityGroup: aws.SecurityGroup
         public let applicationLoadBalancer: Resource
         public let service: Resource
+        public let concurrency: Int
 
         public var name: String {
             service.name
@@ -22,11 +23,14 @@ extension aws {
             concurrency: Int = 1,
             cpu: Int = 1024,
             memory: Int = 2048,
+            autoScaling: AutoScalingConfiguration? = nil,
             instancePort: Int = 8080,
             vpc: aws.VPC = .default,
             environment: [String: String] = [:],
             options: Resource.Options? = nil
         ) {
+            self.concurrency = concurrency
+
             let dockerFilePath = Docker.Dockerfile.filePath(name)
 
             cluster = aws.Cluster(
@@ -120,6 +124,14 @@ extension aws {
                 options: options
             )
 
+            if let autoScaling {
+                enableAutoScaling(
+                    minimumConcurrency: autoScaling.minimumConcurrency,
+                    maximumConcurrency: autoScaling.maximumConcurrency,
+                    metrics: autoScaling.metrics
+                )
+            }
+
             Context.current.store.invoke { _ in
                 let dockerFile = Docker.Dockerfile.awsECS(targetName: targetName)
                 try createFile(atPath: dockerFilePath, contents: dockerFile)
@@ -133,3 +145,36 @@ extension aws {
 }
 
 extension aws.WebServer: RoleProvider {}
+
+extension aws.WebServer {
+    public struct AutoScalingConfiguration: Sendable {
+        public let minimumConcurrency: Int?
+        public let maximumConcurrency: Int
+        public let metrics: [aws.AutoScaling.Metric]
+
+        public init(
+            minimumConcurrency: Int? = nil,
+            maximumConcurrency: Int,
+            metrics: [aws.AutoScaling.Metric]
+        ) {
+            self.minimumConcurrency = minimumConcurrency
+            self.maximumConcurrency = maximumConcurrency
+            self.metrics = metrics
+        }
+    }
+
+    @discardableResult
+    public func enableAutoScaling(
+        minimumConcurrency: Int? = nil,
+        maximumConcurrency: Int,
+        metrics: [aws.AutoScaling.Metric]
+    ) -> aws.AutoScaling {
+        .init(
+            self,
+            minimumConcurrency: minimumConcurrency ?? self.concurrency,
+            maximumConcurrency: maximumConcurrency,
+            metrics: metrics,
+            options: self.service.options
+        )
+    }
+}

@@ -12,7 +12,12 @@ struct Demo: Project {
 
         let web = aws.WebServer(
             "My Web Server",
-            targetName: "Demo"
+            targetName: "Demo",
+            concurrency: 1,
+            autoScaling: .init(
+                maximumConcurrency: 10,
+                metrics: [.cpu(50), .memory(50)]
+            )
         )
 
         let queue = aws.Queue("My Queue").subscribe(function)
