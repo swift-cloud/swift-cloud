@@ -11,7 +11,7 @@ extension aws {
             options: Resource.Options? = nil
         ) {
             let resource = Resource(
-                name: "\(webServer.name)-auto-scaling",
+                name: "\(webServer.service.chosenName)-auto-scaling",
                 type: "aws:appautoscaling:Target",
                 properties: [
                     "resourceId": "service/\(webServer.cluster.name)/\(webServer.service.name)",
