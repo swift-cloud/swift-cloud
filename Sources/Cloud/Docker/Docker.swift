@@ -21,7 +21,7 @@ extension Docker.Dockerfile {
         """
     }
 
-    public static func awsECS(targetName: String, architecture: Architecture = .current) -> String {
+    public static func amazonLinux(targetName: String, architecture: Architecture = .current) -> String {
         """
         FROM amazonlinux:2023
 
