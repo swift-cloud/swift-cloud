@@ -74,6 +74,8 @@ extension ui {
 
         private let queue = DispatchQueue(label: "com.swift.cloud.ui.spinner")
 
+        private let frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+
         private var _labels: [String] = []
         private var labels: [String] {
             get { queue.sync { _labels } }
@@ -92,9 +94,7 @@ extension ui {
             spinner?.succeed()
             labels.append(label)
             spinner = cli.customActivity(
-                frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"].map { frame in
-                    "\(frame) \(label)"
-                },
+                frames: frames.map { "\($0) \(label)\n" },
                 success: "",
                 failure: ""
             )
@@ -108,18 +108,14 @@ extension ui {
         public func stop() {
             spinner?.succeed()
             labels.removeLast()
+            cli.clear(lines: 1)
             if let label = labels.last {
                 spinner = cli.customActivity(
-                    frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"].map { frame in
-                        "\(frame) \(label)"
-                    },
+                    frames: frames.map { "\($0) \(label)\n" },
                     success: "",
                     failure: ""
                 )
-                cli.clear(lines: 1)
                 spinner?.start()
-            } else {
-                cli.clear(lines: 1)
             }
         }
     }
