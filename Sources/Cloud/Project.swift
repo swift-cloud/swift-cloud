@@ -15,7 +15,7 @@ public protocol Project: Sendable {
 
 extension Project {
     public var name: String {
-        String(describing: type(of: self))
+        .init(describing: type(of: self))
     }
 }
 
@@ -40,7 +40,7 @@ extension Project {
             let builder = Builder()
             let store = Store()
             let context = try await Context(
-                stage: tokenize(command.options.stage),
+                stage: command.options.stage,
                 project: project,
                 package: .current(),
                 store: store,

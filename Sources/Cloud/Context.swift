@@ -10,12 +10,20 @@ public final class Context: Sendable {
     public let builder: Builder
     public let startDate = Date()
 
+    public var projectName: String {
+        tokenize(project.name)
+    }
+
+    public var packageName: String {
+        tokenize(package.name)
+    }
+
     public var qualifiedName: String {
         tokenize(package.name, project.name)
     }
 
     init(stage: String, project: Project, package: Package, store: Store, builder: Builder) {
-        self.stage = stage
+        self.stage = tokenize(stage)
         self.project = project
         self.package = package
         self.store = store
