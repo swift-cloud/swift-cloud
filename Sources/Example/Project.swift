@@ -3,12 +3,10 @@ import Cloud
 @main
 struct Example: Project {
     func build() async throws -> Outputs {
-        let function = aws.Function(
-            "My Function",
-            targetName: "Demo"
-        )
+        let function = aws.Function("My Function", targetName: "App")
+
         return Outputs([
-            "functionUrl": function.url
+            "url": function.url
         ])
     }
 }
