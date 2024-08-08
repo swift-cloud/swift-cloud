@@ -41,7 +41,7 @@ You can also use the AWS CLI to configure your credentials:
 aws configure
 ```
 
-### Add Swift Cloud to your project
+### Add to your project
 
 ```swift
 dependencies: [
