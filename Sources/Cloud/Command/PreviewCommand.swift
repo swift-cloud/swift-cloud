@@ -8,7 +8,7 @@ extension Command {
         @OptionGroup var options: Options
 
         func invoke(with context: Context) async throws {
-            let spinner = ui.spinner(label: "Generating preview...")
+            let spinner = ui.spinner(label: "Generating preview")
             do {
                 let prepared = try await prepare(with: context)
                 let output = try await prepared.client.invoke(command: "preview")
