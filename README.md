@@ -18,13 +18,13 @@ aws.WebServer(
 
 ### Prepare your environment
 
-#### Docker
+#### Setup Docker
 
 In order to use Swift Cloud you need to have Docker installed on your machine. This is a short term limitation until Swift 6 where we will be able to natively cross-compile to Linux and other SDKs.
 
 If you're on a Mac the easiest way to install Docker is [OrbStack](https://orbstack.dev). Simply download OrbStack and run the installer.
 
-#### AWS
+#### Setup AWS
 
 Today, Swift Cloud only supports AWS. You will need to have an AWS account and AWS credentials loaded on your machine or in the typical environment variables.
 
