@@ -1,7 +1,7 @@
 import Cloud
 
 @main
-struct Demo: Project {
+struct Example: Project {
     func build() async throws -> Outputs {
         let function = aws.Function(
             "My Function",
