@@ -33,19 +33,17 @@ extension Project {
 
 extension Project {
     public static func main() async throws {
-        let command = try Command.parseAsRoot()
+        let command = try? Command.parseAsRoot()
         switch command {
         case let command as Command.RunCommand:
             let project = Self()
-            let terminal = Terminal()
             let builder = Builder()
             let store = Store()
             let context = Context(
                 stage: command.options.stage,
                 project: project,
                 store: store,
-                builder: builder,
-                terminal: terminal
+                builder: builder
             )
             await Context.$current.withValue(context) {
                 ui.writeHeader()
@@ -57,8 +55,9 @@ extension Project {
                 ui.writeFooter()
             }
         default:
-            let error = ValidationError("Unknown command")
-            Command.exit(withError: error)
+            ui.newLine()
+            ui.error("➜  Invalid command:   ensure you pass a stage, ie: --stage prod")
+            ui.newLine()
         }
     }
 }

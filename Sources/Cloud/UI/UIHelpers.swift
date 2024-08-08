@@ -61,6 +61,10 @@ extension ui {
     public static func error(_ error: Error) {
         cli.error("\(error)")
     }
+
+    public static func error(_ error: String) {
+        cli.error("\(error)")
+    }
 }
 
 extension ui {
