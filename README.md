@@ -67,7 +67,9 @@ targets: [
 ]
 ```
 
-Then inside your `Sources` directory create a new folder called `Infra` and add a new Swift file called `Project.swift`:
+Next, inside your `Sources` directory create a new folder called `Infra`.
+
+Finally, add a new Swift file called `Project.swift`:
 
 ```swift
 import Cloud
