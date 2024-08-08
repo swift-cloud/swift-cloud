@@ -97,3 +97,71 @@ struct SwiftCloudDemo: Project {
 ```bash
 swift run Infra deploy --stage production
 ```
+
+## Components
+
+### AWS
+
+#### WebServer
+
+```swift
+let server = aws.WebServer(
+    "my-vapor-web-server",
+    targetName: "App",
+    concurrency: 1,
+    autoScaling: .init(
+        maximumConcurrency: 10,
+        metrics: [.cpu(50), .memory(50)]
+    )
+)
+```
+
+#### Lambda
+
+```swift
+let lambda = aws.Lambda(
+    "my-lambda-function",
+    targetName: "App",
+    memory: 512,
+    timeout: .seconds(10)
+)
+```
+
+#### Bucket
+
+```swift
+let bucket = aws.Bucket("my-s3-bucket")
+```
+
+#### Queue
+
+```swift
+let queue = aws.Queue("my-sqs-queue")
+
+// Subscribe a lambda function to the queue to process messages
+queue.subscribe(
+    aws.Lambda("my-lambda-function", targetName: "App")
+)
+```
+
+#### Cron
+
+```swift
+let cron = aws.Cron(
+    "my-cron-job",
+    schedule: .rate("5 minutes"),
+    function: aws.Lambda("my-lambda-function", targetName: "App")
+)
+```
+
+### Linking
+
+You can link resources together to provide the necessary permissions to access each other. This is more secure than sharing access key ids and secrets in environment variables.
+
+For example you can link an S3 bucket to a Lambda function:
+
+```swift
+myFunction.link(bucket)
+```
+
+This allows the lambda function to access the bucket without needing to share access keys.

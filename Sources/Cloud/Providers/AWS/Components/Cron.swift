@@ -13,7 +13,7 @@ extension aws {
 
         public init(
             _ name: String,
-            expression: Expression,
+            schedule: Expression,
             function: aws.Function,
             enabled: Bool = true,
             options: Resource.Options? = nil
@@ -22,7 +22,7 @@ extension aws {
                 name: "\(name)-cron-rule",
                 type: "aws:cloudwatch:EventRule",
                 properties: [
-                    "scheduleExpression": expression.value,
+                    "scheduleExpression": schedule.value,
                     "state": enabled ? "ENABLED" : "DISABLED",
                 ]
             )
