@@ -3,7 +3,7 @@ import Foundation
 import ShellOut
 import Yams
 
-public let PulumiClientVersion = "v3.127.0"
+public let PulumiClientVersion = "v3.128.0"
 
 extension Pulumi {
     public struct Client: Sendable {
