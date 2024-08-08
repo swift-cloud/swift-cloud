@@ -11,22 +11,21 @@ extension aws {
             options: Resource.Options? = nil
         ) {
             let resource = Resource(
-                name: "\(webServer.service.chosenName)-auto-scaling-target",
+                name: "\(webServer.chosenName)-auto-scaling-target",
                 type: "aws:appautoscaling:Target",
                 properties: [
-                    "resourceId": "service/\(webServer.cluster.name)/\(webServer.service.name)",
+                    "resourceId": "service/\(webServer.clusterName)/\(webServer.serviceName)",
                     "minCapacity": minimumConcurrency,
                     "maxCapacity": maximumConcurrency,
                     "scalableDimension": "ecs:service:DesiredCount",
                     "serviceNamespace": "ecs",
                 ],
-                dependsOn: [webServer.cluster, webServer.service],
                 options: options
             )
 
             let policies = metrics.map { metric in
                 Resource(
-                    name: "\(webServer.service.chosenName)-auto-scaling-rule-\(metric)",
+                    name: "\(webServer.chosenName)-auto-scaling-rule-\(metric)",
                     type: "aws:appautoscaling:Policy",
                     properties: [
                         "policyType": "TargetTrackingScaling",
@@ -40,7 +39,6 @@ extension aws {
                             "targetValue": metric.targetValue,
                         ],
                     ],
-                    dependsOn: [resource, webServer.cluster, webServer.service],
                     options: options
                 )
             }

@@ -10,7 +10,19 @@ extension aws {
         public let concurrency: Int
 
         public var name: String {
-            service.name
+            serviceName
+        }
+
+        public var chosenName: String {
+            service.chosenName
+        }
+
+        public var serviceName: String {
+            service.keyPath("service", "name")
+        }
+
+        public var clusterName: String {
+            cluster.name
         }
 
         public var url: String {
