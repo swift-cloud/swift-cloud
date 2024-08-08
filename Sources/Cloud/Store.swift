@@ -1,6 +1,8 @@
 import Foundation
 
 public final class Store: @unchecked Sendable {
+    public typealias Operation = (Context) async throws -> Void
+
     private let queue = DispatchQueue(label: "com.swift.cloud.store")
 
     private var _resources: [Resource] = []
@@ -15,14 +17,14 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _variables = newValue } }
     }
 
-    private var _operations: [(Context) async throws -> Void] = []
-    var operations: [(Context) async throws -> Void] {
+    private var _operations: [Operation] = []
+    var operations: [Operation] {
         get { queue.sync { _operations } }
         set { queue.sync { _operations = newValue } }
     }
 
-    private var _builds: [(Context) async throws -> Void] = []
-    var builds: [(Context) async throws -> Void] {
+    private var _builds: [Operation] = []
+    var builds: [Operation] {
         get { queue.sync { _builds } }
         set { queue.sync { _builds = newValue } }
     }
@@ -37,11 +39,11 @@ extension Store {
         variables.append(variable)
     }
 
-    public func invoke(_ operation: @escaping (Context) async throws -> Void) {
+    public func invoke(_ operation: @escaping Operation) {
         operations.append(operation)
     }
 
-    public func build(_ operation: @escaping (Context) async throws -> Void) {
+    public func build(_ operation: @escaping Operation) {
         builds.append(operation)
     }
 }
