@@ -32,7 +32,7 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "Demo",
+            name: "Example",
             dependencies: ["Cloud"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
