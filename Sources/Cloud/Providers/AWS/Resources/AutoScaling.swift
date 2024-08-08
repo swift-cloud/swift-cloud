@@ -20,6 +20,7 @@ extension aws {
                     "scalableDimension": "ecs:service:DesiredCount",
                     "serviceNamespace": "ecs",
                 ],
+                dependsOn: [webServer.cluster, webServer.service],
                 options: options
             )
 
@@ -39,6 +40,7 @@ extension aws {
                             "targetValue": metric.targetValue,
                         ],
                     ],
+                    dependsOn: [resource, webServer.cluster, webServer.service],
                     options: options
                 )
             }

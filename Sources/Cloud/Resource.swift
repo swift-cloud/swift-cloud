@@ -8,6 +8,7 @@ public struct Resource: Sendable {
     public let chosenName: String
     public let type: String
     public let properties: AnyEncodable?
+    public let dependsOn: [any ResourceProvider]?
     public let options: Options?
 
     internal var internalName: String {
@@ -18,11 +19,13 @@ public struct Resource: Sendable {
         name: String,
         type: String,
         properties: AnyEncodable? = nil,
+        dependsOn: [any ResourceProvider]? = nil,
         options: Options? = nil
     ) {
         self.chosenName = name
         self.type = type
         self.properties = properties
+        self.dependsOn = dependsOn
         self.options = options
         Context.current.store.track(self)
     }
@@ -32,13 +35,11 @@ public struct Resource: Sendable {
             internalName: .init(
                 type: type,
                 properties: properties,
-                options: options.map {
-                    .init(
-                        dependsOn: $0.dependsOn?.map { $0.ref },
-                        protect: $0.protect,
-                        provider: $0.provider?.ref
-                    )
-                }
+                options: .init(
+                    dependsOn: (dependsOn ?? options?.dependsOn)?.map { $0.ref },
+                    protect: options?.protect,
+                    provider: options?.provider?.ref
+                )
             )
         ]
     }

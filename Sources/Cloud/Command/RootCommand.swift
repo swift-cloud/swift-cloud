@@ -33,6 +33,8 @@ extension Command {
 
 extension Command.RunCommand {
     func prepare(with context: Context, buildTargets: Bool = false) async throws -> Command.Prepared {
+        context.terminal.clear(.screen)
+
         // Bootstrap the home
         try await context.project.home.bootstrap(with: context)
 
