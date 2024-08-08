@@ -123,6 +123,7 @@ extension aws {
                         "taskRole": [
                             "roleArn": role.arn
                         ],
+                        "trackLatest": true,
                     ],
                 ],
                 options: options
