@@ -20,8 +20,7 @@ public struct LocalHome: Home {
     }
 
     private func dataFilePath(_ fileName: String, with context: Context) -> String {
-        let stage = context.stage
-        return "\(Context.userCloudDirectory)/projects/\(context.qualifiedName)/\(stage)/\(tokenize(fileName)).json"
+        "\(Context.userCloudDirectory)/projects/\(contextualFileName(fileName, with: context))"
     }
 }
 

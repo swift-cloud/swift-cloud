@@ -22,6 +22,12 @@ extension Home {
 }
 
 extension Home {
+    public func contextualFileName(_ fileName: String, with context: Context) -> String {
+        "\(context.qualifiedName)/\(context.stage)/\(tokenize(fileName)).json"
+    }
+}
+
+extension Home {
     private func localStatePath(context: Context) -> String {
         "\(Context.cloudDirectory)/.pulumi/stacks/\(context.qualifiedName)/\(context.stage).json"
     }
