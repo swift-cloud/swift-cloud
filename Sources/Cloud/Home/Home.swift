@@ -23,7 +23,7 @@ extension Home {
 
 extension Home {
     private func localStatePath(context: Context) -> String {
-        "\(Context.cloudDirectory)/.pulumi/stacks/\(tokenize(context.project.name))/\(context.stage).json"
+        "\(Context.cloudDirectory)/.pulumi/stacks/\(context.qualifiedName)/\(context.stage).json"
     }
 
     internal func hasLocalState(context: Context) -> Bool {

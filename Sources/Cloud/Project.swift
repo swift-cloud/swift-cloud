@@ -39,9 +39,10 @@ extension Project {
             let project = Self()
             let builder = Builder()
             let store = Store()
-            let context = Context(
+            let context = try await Context(
                 stage: tokenize(command.options.stage),
                 project: project,
+                package: .current(),
                 store: store,
                 builder: builder
             )

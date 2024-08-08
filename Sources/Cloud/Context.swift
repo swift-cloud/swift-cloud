@@ -1,16 +1,23 @@
 import ConsoleKitTerminal
 import Foundation
+import ShellOut
 
 public final class Context: Sendable {
     public let stage: String
     public let project: Project
+    public let package: Package
     public let store: Store
     public let builder: Builder
     public let startDate = Date()
 
-    init(stage: String, project: Project, store: Store, builder: Builder) {
+    public var qualifiedName: String {
+        tokenize(package.name, project.name)
+    }
+
+    init(stage: String, project: Project, package: Package, store: Store, builder: Builder) {
         self.stage = stage
         self.project = project
+        self.package = package
         self.store = store
         self.builder = builder
     }
@@ -28,4 +35,18 @@ extension Context {
     public static let cloudBinDirectory = "\(cloudDirectory)/bin"
 
     public static let userCloudDirectory = "\(userHomeDirectoryPath())/.cloud"
+}
+
+extension Context {
+    public struct Package: Sendable, Codable {
+        public let name: String
+    }
+}
+
+extension Context.Package {
+    public static func current() async throws -> Self {
+        let (output, _) = try await shellOut(to: "swift", arguments: ["package", "dump-package"])
+        let data = Data(output.utf8)
+        return try JSONDecoder().decode(Self.self, from: data)
+    }
 }
