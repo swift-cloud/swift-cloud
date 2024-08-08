@@ -106,6 +106,7 @@ extension aws {
                 properties: [
                     "cluster": cluster.arn,
                     "desiredCount": concurrency,
+                    "continueBeforeSteadyState": true,
                     "networkConfiguration": [
                         "assignPublicIp": true,
                         "securityGroups": [instanceSecurityGroup.id],
