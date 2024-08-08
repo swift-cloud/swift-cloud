@@ -100,6 +100,42 @@ struct SwiftCloudDemo: Project {
 swift run Infra deploy --stage production
 ```
 
+## Commands
+
+Swift Cloud is invoked directly from your Swift package. You can run the following commands:
+
+### Deploy
+
+Deploy your infrastructure:
+
+```bash
+swift run Infra deploy --stage production
+```
+
+### Remove
+
+Remove all resources:
+
+```bash
+swift run Infra remove --stage development
+```
+
+### Preview
+
+Preview changes before deploying:
+
+```bash
+swift run Infra preview --stage development
+```
+
+### Cancel
+
+Cancel a deployment:
+
+```bash
+swift run Infra cancel --stage development
+```
+
 ## Components
 
 ### AWS
