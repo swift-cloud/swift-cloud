@@ -25,7 +25,7 @@ extension aws {
 
             let policies = metrics.map { metric in
                 Resource(
-                    name: "\(webServer.name)-auto-scaling-\(metric)",
+                    name: "\(webServer.service.chosenName)-auto-scaling-\(metric)",
                     type: "aws:appautoscaling:Policy",
                     properties: [
                         "policyType": "TargetTrackingScaling",
