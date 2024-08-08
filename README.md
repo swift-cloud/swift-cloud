@@ -154,10 +154,10 @@ let server = aws.WebServer(
 )
 ```
 
-#### Lambda
+#### Function
 
 ```swift
-let lambda = aws.Lambda(
+let lambda = aws.Function(
     "my-lambda-function",
     targetName: "App",
     memory: 512,
