@@ -180,7 +180,7 @@ let queue = aws.Queue("my-sqs-queue")
 
 // Subscribe a lambda function to the queue to process messages
 queue.subscribe(
-    aws.Lambda("my-lambda-function", targetName: "App")
+    aws.Function("my-lambda-function", targetName: "App")
 )
 ```
 
@@ -190,7 +190,7 @@ queue.subscribe(
 let cron = aws.Cron(
     "my-cron-job",
     schedule: .rate("5 minutes"),
-    function: aws.Lambda("my-lambda-function", targetName: "App")
+    function: aws.Function("my-lambda-function", targetName: "App")
 )
 ```
 
