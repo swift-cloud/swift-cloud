@@ -1,6 +1,7 @@
 extension ui {
     public static func writeHeader() {
-        ui.clearScreen()
+        cli.clear(lines: 3)
+        ui.newLine()
 
         ui.write("Swift Cloud", color: .cyan, bold: true)
         ui.newLine()
