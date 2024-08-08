@@ -1,6 +1,6 @@
 # Swift Cloud
 
-Deploy server-side Swift applications to the cloud with ease.
+The fastest way to build and deploy server side Swift applications.
 
 ```swift
 aws.WebServer(
