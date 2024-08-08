@@ -142,6 +142,8 @@ swift run Infra cancel --stage development
 
 #### WebServer
 
+This component creates a high performance web server using an application load balancer, auto-scaling group, and Fargate. Everything is fully managed and scales automatically based on your configuration.
+
 ```swift
 let server = aws.WebServer(
     "my-vapor-web-server",
