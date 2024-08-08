@@ -40,7 +40,7 @@ extension Project {
             let builder = Builder()
             let store = Store()
             let context = Context(
-                stage: command.options.stage,
+                stage: tokenize(command.options.stage),
                 project: project,
                 store: store,
                 builder: builder
@@ -49,6 +49,7 @@ extension Project {
                 ui.writeHeader()
                 do {
                     try await command.invoke(with: context)
+                    try await command.complete(with: context)
                 } catch {
                     ui.error(error)
                 }

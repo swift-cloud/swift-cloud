@@ -4,6 +4,10 @@ func currentDirectoryPath() -> String {
     FileManager.default.currentDirectoryPath
 }
 
+func userHomeDirectoryPath() -> String {
+    FileManager.default.homeDirectoryForCurrentUser.path
+}
+
 func createDirectory(atPath path: String, withIntermediateDirectories: Bool = true) throws {
     try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: withIntermediateDirectories)
 }

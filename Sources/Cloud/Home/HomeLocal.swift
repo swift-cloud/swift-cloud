@@ -7,18 +7,22 @@ public struct LocalHome: Home {
         return "passphrase"
     }
 
-    public func putData(_ data: Data, fileName: String, with context: Context) async throws {
+    public func putItem<T: Codable>(_ data: T, fileName: String, with context: Context) async throws {
         let path = dataFilePath(fileName, with: context)
+        let data = try JSONEncoder().encode(data)
         try createFile(atPath: path, contents: data)
     }
 
-    public func getData(fileName: String, with context: Context) async throws -> Data {
+    public func getItem<T: Codable>(fileName: String, with context: Context) async throws -> T {
         let path = dataFilePath(fileName, with: context)
-        return try readFile(atPath: path)
+        let data = try readFile(atPath: path)
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     private func dataFilePath(_ fileName: String, with context: Context) -> String {
-        return "\(Context.cloudDirectory)/data/\(tokenize(context.project.name))/\(tokenize(fileName)).json"
+        let project = tokenize(context.project.name)
+        let stage = context.stage
+        return "\(Context.userCloudDirectory)/projects/\(project)/\(stage)/\(tokenize(fileName)).json"
     }
 }
 
