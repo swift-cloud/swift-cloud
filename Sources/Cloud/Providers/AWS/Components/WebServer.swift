@@ -25,7 +25,7 @@ extension aws {
             cluster.name
         }
 
-        public var url: String {
+        public var hostname: String {
             applicationLoadBalancer.keyPath("loadBalancer", "dnsName")
         }
 
