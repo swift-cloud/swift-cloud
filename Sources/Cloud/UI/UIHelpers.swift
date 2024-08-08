@@ -98,7 +98,9 @@ extension ui {
                 success: "",
                 failure: ""
             )
-            cli.clear(lines: 1)
+            if labels.count > 1 {
+                cli.clear(lines: 1)
+            }
             spinner?.start()
             return self
         }
