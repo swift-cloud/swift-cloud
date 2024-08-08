@@ -1,4 +1,5 @@
 import ConsoleKitTerminal
+import Foundation
 
 extension ui {
     public static func newLine() {
@@ -68,15 +69,60 @@ extension ui {
 }
 
 extension ui {
-    public static func spinner(label: String? = nil) -> ActivityIndicator<CustomActivity> {
-        let activity = cli.customActivity(
-            frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"].map { frame in
-                "\(frame) \(label ?? "")\n"
-            },
-            success: "",
-            failure: ""
-        )
-        activity.start()
-        return activity
+    public final class Spinner: @unchecked Sendable {
+        fileprivate static let shared = Spinner()
+
+        private let queue = DispatchQueue(label: "com.swift.cloud.ui.spinner")
+
+        private var _labels: [String] = []
+        private var labels: [String] {
+            get { queue.sync { _labels } }
+            set { queue.sync { _labels = newValue } }
+        }
+
+        private var _spinner: ActivityIndicator<CustomActivity>?
+        private var spinner: ActivityIndicator<CustomActivity>? {
+            get { queue.sync { _spinner } }
+            set { queue.sync { _spinner = newValue } }
+        }
+
+        private init() {}
+
+        fileprivate func start(_ label: String) -> Self {
+            spinner?.succeed()
+            labels.append(label)
+            spinner = cli.customActivity(
+                frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"].map { frame in
+                    "\(frame) \(label)"
+                },
+                success: "",
+                failure: ""
+            )
+            cli.clear(lines: 1)
+            spinner?.start()
+            return self
+        }
+
+        public func stop() {
+            spinner?.succeed()
+            labels.removeLast()
+            if let label = labels.last {
+                spinner = cli.customActivity(
+                    frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"].map { frame in
+                        "\(frame) \(label)"
+                    },
+                    success: "",
+                    failure: ""
+                )
+                cli.clear(lines: 1)
+                spinner?.start()
+            } else {
+                cli.clear(lines: 1)
+            }
+        }
+    }
+
+    public static func spinner(label: String) -> Spinner {
+        return Spinner.shared.start(label)
     }
 }

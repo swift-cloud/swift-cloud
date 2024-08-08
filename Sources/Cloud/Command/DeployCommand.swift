@@ -12,10 +12,10 @@ extension Command {
             do {
                 let prepared = try await prepare(with: context, buildTargets: true)
                 let output = try await prepared.client.invoke(command: "up", arguments: ["--skip-preview", "--yes"])
-                spinner.succeed()
+                spinner.stop()
                 ui.writeBlock(output)
             } catch {
-                spinner.fail()
+                spinner.stop()
                 throw error
             }
         }

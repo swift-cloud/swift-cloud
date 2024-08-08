@@ -12,10 +12,10 @@ extension Command {
             do {
                 let prepared = try await prepare(with: context)
                 let output = try await prepared.client.invoke(command: "cancel")
-                spinner.succeed()
+                spinner.stop()
                 ui.writeBlock(output)
             } catch {
-                spinner.fail()
+                spinner.stop()
                 throw error
             }
         }

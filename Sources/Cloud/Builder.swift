@@ -58,7 +58,7 @@ extension Builder {
 extension Builder {
     private func buildNative(targetName: String, flags: String) async throws {
         let spinner = ui.spinner(label: "Building target \(targetName)...")
-        defer { spinner.succeed() }
+        defer { spinner.stop() }
 
         try await shellOut(
             to: "swift",
@@ -76,7 +76,7 @@ extension Builder {
         flags: String
     ) async throws {
         let spinner = ui.spinner(label: "Building target \(targetName)...")
-        defer { spinner.succeed() }
+        defer { spinner.stop() }
 
         try await shellOut(
             to: "docker",
