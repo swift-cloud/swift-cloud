@@ -47,8 +47,14 @@ extension Project {
                 builder: builder,
                 terminal: terminal
             )
-            try await Context.$current.withValue(context) {
-                try await command.invoke(with: context)
+            await Context.$current.withValue(context) {
+                ui.writeHeader()
+                do {
+                    try await command.invoke(with: context)
+                } catch {
+                    ui.error(error)
+                }
+                ui.writeFooter()
             }
         default:
             let error = ValidationError("Unknown command")

@@ -57,6 +57,9 @@ extension Builder {
 
 extension Builder {
     private func buildNative(targetName: String, flags: String) async throws {
+        let spinner = ui.spinner(label: "Building target \(targetName)...")
+        defer { spinner.succeed() }
+
         try await shellOut(
             to: "swift",
             arguments: [
@@ -72,6 +75,9 @@ extension Builder {
         imageName: String,
         flags: String
     ) async throws {
+        let spinner = ui.spinner(label: "Building target \(targetName)...")
+        defer { spinner.succeed() }
+
         try await shellOut(
             to: "docker",
             arguments: [

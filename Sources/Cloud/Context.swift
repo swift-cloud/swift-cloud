@@ -7,6 +7,7 @@ public final class Context: Sendable {
     public let store: Store
     public let builder: Builder
     public let terminal: Terminal
+    public let startDate = Date()
 
     init(stage: String, project: Project, store: Store, builder: Builder, terminal: Terminal) {
         self.stage = stage

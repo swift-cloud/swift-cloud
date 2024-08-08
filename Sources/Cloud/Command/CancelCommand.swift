@@ -8,9 +8,16 @@ extension Command {
         @OptionGroup var options: Options
 
         func invoke(with context: Context) async throws {
-            let prepared = try await prepare(with: context)
-            let output = try await prepared.client.invoke(command: "cancel")
-            print(output)
+            let spinner = ui.spinner(label: "Cancelling changes...")
+            do {
+                let prepared = try await prepare(with: context)
+                let output = try await prepared.client.invoke(command: "cancel")
+                spinner.succeed()
+                ui.writeBlock(output)
+            } catch {
+                spinner.fail()
+                throw error
+            }
         }
     }
 }

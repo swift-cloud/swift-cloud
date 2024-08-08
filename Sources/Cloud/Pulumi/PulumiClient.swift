@@ -47,6 +47,9 @@ extension Pulumi.Client {
 
 extension Pulumi.Client {
     public func setup() async throws {
+        let spinner = ui.spinner(label: "Installing swift cloud...")
+        defer { spinner.succeed() }
+
         let arch = Architecture.current.pulumiArchitecture
         let platform = Platform.current.pulumiPlatform
         let url = "https://get.pulumi.com/releases/sdk/pulumi-\(version)-\(platform)-\(arch).tar.gz"
@@ -58,8 +61,6 @@ extension Pulumi.Client {
         let downloadPath = "\(Context.cloudAssetsDirectory)/pulumi-\(version)-\(platform).tar.gz"
 
         let httpClient = HTTPClient.shared
-
-        print("Downloading Pulumi CLI...")
 
         let request = HTTPClientRequest(url: url)
         let response = try await httpClient.execute(request, timeout: .seconds(120))
@@ -76,8 +77,6 @@ extension Pulumi.Client {
         let data = Data(body.readableBytesView)
 
         try createFile(atPath: downloadPath, contents: data)
-
-        print("Pulumi CLI downloaded successfully")
 
         // Extract the archive
         if platform == "windows" {
@@ -103,8 +102,6 @@ extension Pulumi.Client {
         guard fileExists(atPath: executablePath) else {
             throw SetupError.extractionFailed
         }
-
-        print("Pulumi CLI setup completed successfully")
     }
 }
 
