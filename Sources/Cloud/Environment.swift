@@ -6,8 +6,8 @@ public protocol EnvironmentProvider {
 
 public final class Environment: Encodable, @unchecked Sendable {
     public enum EncodingShape: String, Codable {
-        case dictionary
-        case keyValueArray
+        case keyValue
+        case keyValuePairs
     }
 
     private struct KeyValuePair: Codable {
@@ -25,7 +25,7 @@ public final class Environment: Encodable, @unchecked Sendable {
         set { queue.sync { _store = newValue } }
     }
 
-    public init(_ initial: [String: String]? = nil, shape: EncodingShape = .dictionary) {
+    public init(_ initial: [String: String]? = nil, shape: EncodingShape) {
         self._store = initial ?? [:]
         self.shape = shape
         Context.current.store.track(self)
@@ -34,11 +34,11 @@ public final class Environment: Encodable, @unchecked Sendable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch shape {
-        case .dictionary:
+        case .keyValue:
             try container.encode(store)
-        case .keyValueArray:
-            let keyValuePairs = store.map { KeyValuePair(name: $0.key, value: $0.value) }
-            try container.encode(keyValuePairs)
+        case .keyValuePairs:
+            let pairs = store.map { KeyValuePair(name: $0.key, value: $0.value) }
+            try container.encode(pairs)
         }
     }
 
@@ -51,11 +51,5 @@ public final class Environment: Encodable, @unchecked Sendable {
         for (key, value) in other {
             store[key] = value
         }
-    }
-}
-
-extension Environment: ExpressibleByDictionaryLiteral {
-    convenience public init(dictionaryLiteral elements: (String, String)...) {
-        self.init(elements.reduce(into: [:]) { $0[$1.0] = $1.1 })
     }
 }

@@ -29,7 +29,7 @@ extension AWS {
         ) {
             let dockerFilePath = Docker.Dockerfile.filePath(name)
 
-            self.environment = Environment(environment, shape: .dictionary)
+            self.environment = Environment(environment, shape: .keyValue)
 
             dockerImage = DockerImage(
                 "\(name)-image",

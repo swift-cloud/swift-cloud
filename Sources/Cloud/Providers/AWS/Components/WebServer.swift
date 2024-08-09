@@ -46,7 +46,7 @@ extension AWS {
 
             let dockerFilePath = Docker.Dockerfile.filePath(name)
 
-            self.environment = Environment(environment, shape: .keyValueArray)
+            self.environment = Environment(environment, shape: .keyValuePairs)
             self.environment["PORT"] = "\(instancePort)"
 
             cluster = AWS.Cluster(
