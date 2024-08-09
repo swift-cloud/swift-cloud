@@ -205,3 +205,23 @@ myFunction.link(bucket)
 ```
 
 This allows the lambda function to access the bucket without needing to share access keys.
+
+#### Using linked resources
+
+You can use linked resources in your server or function via environment variables in your application:
+
+```swift
+let bucketUrl = ProcessInfo.processInfo.environment["bucket:my-bucket:url"]
+```
+
+Here is a list of all the linked resources:
+
+| Resource | Environment Variable |
+| --- | --- |
+| AWS S3 Bucket | `bucket:<bucket-name>:url` |
+| AWS S3 Bucket | `bucket:<bucket-name>:hostname` |
+| AWS S3 Bucket | `bucket:<bucket-name>:name` |
+| AWS SQS Queue | `queue:<queue-name>:url` |
+| AWS SQS Queue | `queue:<queue-name>:name` |
+| AWS Lambda Function | `function:<function-name>:url` |
+| AWS Lambda Function | `function:<function-name>:name` |
