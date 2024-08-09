@@ -1,4 +1,4 @@
-extension aws {
+extension AWS {
     public struct ImageRepository: ResourceProvider {
         public let resource: Resource
 
@@ -23,9 +23,9 @@ extension aws {
     }
 }
 
-extension aws.ImageRepository {
+extension AWS.ImageRepository {
     public static func shared(options: Resource.Options? = nil) -> Self {
-        return aws.ImageRepository(
+        return AWS.ImageRepository(
             "shared-image-repository",
             options: .provider(options?.provider)
         )

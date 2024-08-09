@@ -1,4 +1,4 @@
-extension aws {
+extension AWS {
     public struct Cluster: ResourceProvider {
         public let resource: Resource
         private let capacityProviders: Resource

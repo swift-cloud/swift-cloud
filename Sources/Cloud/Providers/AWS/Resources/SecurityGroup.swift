@@ -1,4 +1,4 @@
-extension aws {
+extension AWS {
     public struct SecurityGroup: ResourceProvider {
         public let resource: Resource
         private let ingressRules: [Resource]
@@ -49,11 +49,11 @@ extension aws {
     }
 }
 
-extension aws.SecurityGroup {
+extension AWS.SecurityGroup {
     public enum Rule {
         case ipv4(String)
         case ipv6(String)
-        case securityGroup(aws.SecurityGroup)
+        case securityGroup(AWS.SecurityGroup)
 
         fileprivate var propertyKey: String {
             switch self {
@@ -79,8 +79,8 @@ extension aws.SecurityGroup {
     }
 }
 
-extension [aws.SecurityGroup.Rule] {
-    public static var all: [aws.SecurityGroup.Rule] {
+extension [AWS.SecurityGroup.Rule] {
+    public static var all: [AWS.SecurityGroup.Rule] {
         [.ipv4("0.0.0.0/0"), .ipv6("::/0")]
     }
 }

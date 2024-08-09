@@ -1,13 +1,13 @@
-public enum aws {}
-public enum azure {}
-public enum cloudflare {}
-public enum digitalocean {}
-public enum fastly {}
-public enum fly {}
-public enum gcp {}
-public enum heroku {}
-public enum planetscale {}
-public enum vercel {}
+public enum AWS {}
+public enum Azure {}
+public enum Cloudflare {}
+public enum DigitalOcean {}
+public enum Fastly {}
+public enum Fly {}
+public enum GCP {}
+public enum Heroku {}
+public enum PlanetScale {}
+public enum Vercel {}
 
 public struct Provider: Sendable {
     let plugin: Pulumi.Plugin

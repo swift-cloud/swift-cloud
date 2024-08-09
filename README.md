@@ -3,7 +3,7 @@
 The fastest way to build and deploy server side Swift applications.
 
 ```swift
-aws.WebServer(
+AWS.WebServer(
     "my-vapor-app",
     targetName: "App",
     concurrency: 1,
@@ -77,7 +77,7 @@ import Cloud
 @main
 struct SwiftCloudDemo: Project {
     func build() async throws -> Outputs {
-        let server = aws.WebServer(
+        let server = AWS.WebServer(
             "my-vapor-web-server",
             targetName: "App",
             concurrency: 1,
@@ -145,7 +145,7 @@ swift run Infra cancel --stage development
 This component creates a high performance web server using an application load balancer, auto-scaling group, and Fargate. Everything is fully managed and scales automatically based on your configuration.
 
 ```swift
-let server = aws.WebServer(
+let server = AWS.WebServer(
     "my-vapor-web-server",
     targetName: "App",
     concurrency: 1,
@@ -159,7 +159,7 @@ let server = aws.WebServer(
 #### Function
 
 ```swift
-let lambda = aws.Function(
+let lambda = AWS.Function(
     "my-lambda-function",
     targetName: "App",
     memory: 512,
@@ -170,27 +170,27 @@ let lambda = aws.Function(
 #### Bucket
 
 ```swift
-let bucket = aws.Bucket("my-s3-bucket")
+let bucket = AWS.Bucket("my-s3-bucket")
 ```
 
 #### Queue
 
 ```swift
-let queue = aws.Queue("my-sqs-queue")
+let queue = AWS.Queue("my-sqs-queue")
 
 // Subscribe a lambda function to the queue to process messages
 queue.subscribe(
-    aws.Function("my-lambda-function", targetName: "App")
+    AWS.Function("my-lambda-function", targetName: "App")
 )
 ```
 
 #### Cron
 
 ```swift
-let cron = aws.Cron(
+let cron = AWS.Cron(
     "my-cron-job",
     schedule: .rate("5 minutes"),
-    function: aws.Function("my-lambda-function", targetName: "App")
+    function: AWS.Function("my-lambda-function", targetName: "App")
 )
 ```
 

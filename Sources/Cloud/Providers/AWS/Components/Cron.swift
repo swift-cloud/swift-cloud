@@ -1,4 +1,4 @@
-extension aws {
+extension AWS {
     public struct Cron: Component {
         public let eventRule: Resource
         public let eventTarget: Resource
@@ -14,7 +14,7 @@ extension aws {
         public init(
             _ name: String,
             schedule: Expression,
-            function: aws.Function,
+            function: AWS.Function,
             enabled: Bool = true,
             options: Resource.Options? = nil
         ) {
@@ -40,7 +40,7 @@ extension aws {
     }
 }
 
-extension aws.Cron {
+extension AWS.Cron {
     public enum Expression: Sendable {
         case cron(_ value: String)
         case rate(_ value: String)

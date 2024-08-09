@@ -1,6 +1,6 @@
 import Foundation
 
-extension aws {
+extension AWS {
     public struct Role: ResourceProvider {
         public let resource: Resource
 

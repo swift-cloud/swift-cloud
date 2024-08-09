@@ -1,6 +1,6 @@
 import Foundation
 
-extension aws {
+extension AWS {
     public struct Queue: Component {
         public let queue: Resource
         public let deadLetterQueue: Resource
@@ -50,13 +50,13 @@ extension aws {
     }
 }
 
-extension aws.Queue {
+extension AWS.Queue {
     @discardableResult
     public func subscribe(
-        _ function: aws.Function,
+        _ function: AWS.Function,
         batchSize: Int = 1,
         maximumConcurrency: Int? = nil
-    ) -> aws.Queue {
+    ) -> AWS.Queue {
         function.link(self)
 
         let _ = Resource(
@@ -77,7 +77,7 @@ extension aws.Queue {
     }
 }
 
-extension aws.Queue: Linkable {
+extension AWS.Queue: Linkable {
     public var actions: [String] {
         [
             "sqs:SendMessage",

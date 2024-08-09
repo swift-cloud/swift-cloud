@@ -1,10 +1,10 @@
-extension aws {
+extension AWS {
     public struct WebServer: Component {
-        public let cluster: aws.Cluster
+        public let cluster: AWS.Cluster
         public let dockerImage: DockerImage
         public let role: Role
-        public let loadBalancerSecurityGroup: aws.SecurityGroup
-        public let instanceSecurityGroup: aws.SecurityGroup
+        public let loadBalancerSecurityGroup: AWS.SecurityGroup
+        public let instanceSecurityGroup: AWS.SecurityGroup
         public let applicationLoadBalancer: Resource
         public let service: Resource
         public let concurrency: Int
@@ -37,7 +37,7 @@ extension aws {
             memory: Int = 2048,
             autoScaling: AutoScalingConfiguration? = nil,
             instancePort: Int = 8080,
-            vpc: aws.VPC = .default,
+            vpc: AWS.VPC = .default,
             environment: [String: String] = [:],
             options: Resource.Options? = nil
         ) {
@@ -48,7 +48,7 @@ extension aws {
             var mergedEnvironment = environment
             mergedEnvironment["PORT"] = "\(instancePort)"
 
-            cluster = aws.Cluster(
+            cluster = AWS.Cluster(
                 "\(name)-cluster",
                 options: options
             )
@@ -60,20 +60,20 @@ extension aws {
                 options: options
             )
 
-            role = aws.Role(
+            role = AWS.Role(
                 "\(name)-role",
-                service: "ecs-tasks.amazonaws.com",
+                service: "ecs-tasks.amazonAWS.com",
                 options: options
             )
 
-            loadBalancerSecurityGroup = aws.SecurityGroup(
+            loadBalancerSecurityGroup = AWS.SecurityGroup(
                 "\(name)-load-balancer-security-group",
                 ingress: .all,
                 egress: .all,
                 options: options
             )
 
-            instanceSecurityGroup = aws.SecurityGroup(
+            instanceSecurityGroup = AWS.SecurityGroup(
                 "\(name)-task-security-group",
                 ingress: [.securityGroup(loadBalancerSecurityGroup)],
                 egress: .all,
@@ -162,18 +162,18 @@ extension aws {
     }
 }
 
-extension aws.WebServer: RoleProvider {}
+extension AWS.WebServer: RoleProvider {}
 
-extension aws.WebServer {
+extension AWS.WebServer {
     public struct AutoScalingConfiguration: Sendable {
         public let minimumConcurrency: Int?
         public let maximumConcurrency: Int
-        public let metrics: [aws.AutoScaling.Metric]
+        public let metrics: [AWS.AutoScaling.Metric]
 
         public init(
             minimumConcurrency: Int? = nil,
             maximumConcurrency: Int,
-            metrics: [aws.AutoScaling.Metric]
+            metrics: [AWS.AutoScaling.Metric]
         ) {
             self.minimumConcurrency = minimumConcurrency
             self.maximumConcurrency = maximumConcurrency
@@ -185,8 +185,8 @@ extension aws.WebServer {
     public func enableAutoScaling(
         minimumConcurrency: Int? = nil,
         maximumConcurrency: Int,
-        metrics: [aws.AutoScaling.Metric]
-    ) -> aws.AutoScaling {
+        metrics: [AWS.AutoScaling.Metric]
+    ) -> AWS.AutoScaling {
         .init(
             self,
             minimumConcurrency: minimumConcurrency ?? self.concurrency,

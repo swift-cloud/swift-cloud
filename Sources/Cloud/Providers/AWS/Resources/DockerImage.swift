@@ -1,6 +1,6 @@
 import Foundation
 
-extension aws {
+extension AWS {
     public struct DockerImage: ResourceProvider {
         public let resource: Resource
 

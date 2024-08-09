@@ -1,4 +1,4 @@
-extension aws {
+extension AWS {
     public struct VPC: ResourceProvider {
         public let resource: Resource
 
@@ -16,8 +16,8 @@ extension aws {
     }
 }
 
-extension aws.VPC {
-    public static let `default` = aws.VPC(
+extension AWS.VPC {
+    public static let `default` = AWS.VPC(
         resource: Resource(
             name: "default-vpc",
             type: "awsx:ec2:DefaultVpc"

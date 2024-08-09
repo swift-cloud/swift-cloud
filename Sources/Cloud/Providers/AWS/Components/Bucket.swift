@@ -1,4 +1,4 @@
-extension aws {
+extension AWS {
     public struct Bucket: Component {
         internal let bucket: Resource
         internal let ownershipControls: Resource
@@ -51,7 +51,7 @@ extension aws {
     }
 }
 
-extension aws.Bucket: Linkable {
+extension AWS.Bucket: Linkable {
     public var actions: [String] {
         [
             "s3:PutObject",

@@ -1,10 +1,10 @@
-extension aws {
+extension AWS {
     public struct AutoScaling: ResourceProvider {
         public let resource: Resource
         private let policies: [Resource]
 
         public init(
-            _ webServer: aws.WebServer,
+            _ webServer: AWS.WebServer,
             minimumConcurrency: Int,
             maximumConcurrency: Int,
             metrics: [Metric],
@@ -49,7 +49,7 @@ extension aws {
     }
 }
 
-extension aws.AutoScaling {
+extension AWS.AutoScaling {
     public enum Metric: Sendable {
         case cpu(Int)
         case memory(Int)

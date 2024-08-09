@@ -1,6 +1,6 @@
 import Foundation
 
-extension aws {
+extension AWS {
     public struct Function: Component {
         public let dockerImage: DockerImage
         public let role: Role
@@ -35,9 +35,9 @@ extension aws {
                 options: options
             )
 
-            role = aws.Role(
+            role = AWS.Role(
                 "\(name)-role",
-                service: "lambda.amazonaws.com",
+                service: "lambda.amazonAWS.com",
                 options: options
             )
 
@@ -98,9 +98,9 @@ extension aws {
     }
 }
 
-extension aws.Function: RoleProvider {}
+extension AWS.Function: RoleProvider {}
 
-extension aws.Function: Linkable {
+extension AWS.Function: Linkable {
     public var actions: [String] {
         ["lambda:InvokeFunction"]
     }

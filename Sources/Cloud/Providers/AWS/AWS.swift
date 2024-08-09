@@ -20,7 +20,7 @@ extension Provider {
     }
 }
 
-extension aws {
+extension AWS {
     public struct Provider: ResourceProvider {
         public let resource: Resource
 
