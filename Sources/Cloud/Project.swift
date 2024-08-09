@@ -2,11 +2,13 @@ import ArgumentParser
 import ConsoleKitTerminal
 
 public protocol Project: Sendable {
+    associatedtype ProjectHomeProvider: HomeProvider
+
     init()
 
     var name: String { get }
 
-    var home: Home { get }
+    var home: ProjectHomeProvider { get }
 
     var providers: [Provider] { get }
 
@@ -20,8 +22,8 @@ extension Project {
 }
 
 extension Project {
-    public var home: Home {
-        .local()
+    public var home: Home.AWS {
+        Home.AWS()
     }
 }
 

@@ -1,0 +1,29 @@
+import Foundation
+
+extension Home {
+    public struct Local: HomeProvider {
+        public init() {}
+
+        public func bootstrap(with context: Context) async throws {}
+
+        public func passphrase(with context: Context) async throws -> String {
+            return "passphrase"
+        }
+
+        public func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws {
+            let path = dataFilePath(fileName, with: context)
+            let data = try JSONEncoder().encode(item)
+            try createFile(atPath: path, contents: data)
+        }
+
+        public func getItem<T: HomeProviderItem>(fileName: String, with context: Context) async throws -> T {
+            let path = dataFilePath(fileName, with: context)
+            let data = try readFile(atPath: path)
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+
+        private func dataFilePath(_ fileName: String, with context: Context) -> String {
+            "\(Context.userCloudDirectory)/projects/\(contextualFileName(fileName, with: context))"
+        }
+    }
+}

@@ -36,16 +36,16 @@ extension Command {
 extension Command.RunCommand {
     func prepare(with context: Context, buildTargets: Bool = false) async throws -> Command.Prepared {
         // Bootstrap the home
-        try await context.project.home.bootstrap(with: context)
+        try await context.home.bootstrap(with: context)
 
         // Restore external state if needed
-        if !context.project.home.hasLocalState(context: context) {
-            try? await context.project.home.restoreLocalState(context: context)
+        if !context.home.hasLocalState(context: context) {
+            try? await context.home.restoreLocalState(context: context)
         }
 
         // Create pulumi client with passphrase
         let client = Pulumi.Client(
-            passphrase: try await context.project.home.passphrase(with: context)
+            passphrase: try await context.home.passphrase(with: context)
         )
 
         // Generate the project resources and collect outputs
@@ -102,7 +102,10 @@ extension Command.RunCommand {
 
 extension Command.RunCommand {
     func complete(with context: Context) async throws {
-        // Persist external state
-        try? await context.project.home.saveLocalState(context: context)
+        do {
+            try await context.home.saveLocalState(context: context)
+        } catch {
+            ui.error(error)
+        }
     }
 }

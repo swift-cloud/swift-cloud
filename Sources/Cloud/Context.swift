@@ -4,10 +4,11 @@ import ShellOut
 
 public final class Context: Sendable {
     public let stage: String
-    public let project: Project
+    public let project: any Project
     public let package: Package
     public let store: Store
     public let builder: Builder
+    public let home: HomeProvider
     public let startDate = Date()
 
     public var projectName: String {
@@ -22,12 +23,13 @@ public final class Context: Sendable {
         tokenize(package.name, project.name)
     }
 
-    init(stage: String, project: Project, package: Package, store: Store, builder: Builder) {
+    init(stage: String, project: any Project, package: Package, store: Store, builder: Builder) {
         self.stage = tokenize(stage)
         self.project = project
         self.package = package
         self.store = store
         self.builder = builder
+        self.home = project.home
     }
 }
 

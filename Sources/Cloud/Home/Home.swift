@@ -1,33 +1,26 @@
 import Foundation
 
-public protocol Home: Sendable {
+public enum Home {}
+
+public protocol HomeProviderItem: Codable, Sendable {}
+
+public protocol HomeProvider: Sendable {
     func bootstrap(with context: Context) async throws
 
     func passphrase(with context: Context) async throws -> String
 
-    func putItem<T: Codable>(_ data: T, fileName: String, with context: Context) async throws
+    func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws
 
-    func getItem<T: Codable>(fileName: String, with context: Context) async throws -> T
+    func getItem<T: HomeProviderItem>(fileName: String, with context: Context) async throws -> T
 }
 
-extension Home {
-    public func hasItem(fileName: String, with context: Context) async -> Bool {
-        do {
-            let _: AnyCodable = try await getItem(fileName: fileName, with: context)
-            return true
-        } catch {
-            return false
-        }
-    }
-}
-
-extension Home {
+extension HomeProvider {
     public func contextualFileName(_ fileName: String, with context: Context) -> String {
         "\(context.qualifiedName)/\(context.stage)/\(tokenize(fileName)).json"
     }
 }
 
-extension Home {
+extension HomeProvider {
     private func localStatePath(context: Context) -> String {
         "\(Context.cloudDirectory)/.pulumi/stacks/\(context.qualifiedName)/\(context.stage).json"
     }
@@ -50,3 +43,5 @@ extension Home {
         try await putItem(state, fileName: "state", with: context)
     }
 }
+
+extension AnyCodable: HomeProviderItem {}
