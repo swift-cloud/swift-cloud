@@ -67,4 +67,12 @@ extension AWS.Bucket: Linkable {
             "\(bucket.arn)/*",
         ]
     }
+
+    public var environmentVariables: [String: String] {
+        [
+            "bucket:\(bucket.internalName):name": name,
+            "bucket:\(bucket.internalName):hostname": hostname,
+            "bucket:\(bucket.internalName):url": "https://\(hostname)",
+        ]
+    }
 }

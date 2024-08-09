@@ -1,5 +1,5 @@
 extension AWS {
-    public struct WebServer: Component {
+    public struct WebServer: Component, EnvironmentProvider {
         public let cluster: AWS.Cluster
         public let dockerImage: DockerImage
         public let role: Role
@@ -8,6 +8,7 @@ extension AWS {
         public let applicationLoadBalancer: Resource
         public let service: Resource
         public let concurrency: Int
+        public let environment: Environment
 
         public var name: String {
             serviceName
@@ -45,8 +46,8 @@ extension AWS {
 
             let dockerFilePath = Docker.Dockerfile.filePath(name)
 
-            var mergedEnvironment = environment
-            mergedEnvironment["PORT"] = "\(instancePort)"
+            self.environment = Environment(environment, shape: .keyValueArray)
+            self.environment["PORT"] = "\(instancePort)"
 
             cluster = AWS.Cluster(
                 "\(name)-cluster",
@@ -129,9 +130,7 @@ extension AWS {
                                     "targetGroup": applicationLoadBalancer.keyPath("defaultTargetGroup"),
                                 ]
                             ],
-                            "environment": mergedEnvironment.map { key, value in
-                                ["name": key, "value": value]
-                            },
+                            "environment": self.environment,
                         ],
                         "taskRole": [
                             "roleArn": role.arn

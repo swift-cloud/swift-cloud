@@ -6,6 +6,8 @@ public protocol Linkable {
     var actions: [String] { get }
 
     var resources: [String] { get }
+
+    var environmentVariables: [String: String] { get }
 }
 
 extension Linkable {
@@ -47,6 +49,10 @@ extension RoleProvider {
             ],
             options: role.resource.options
         )
+
+        if let self = self as? EnvironmentProvider {
+            self.environment.merge(linkable.environmentVariables)
+        }
 
         return self
     }

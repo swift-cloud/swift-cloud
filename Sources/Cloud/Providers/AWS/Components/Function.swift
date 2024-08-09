@@ -1,12 +1,13 @@
 import Foundation
 
 extension AWS {
-    public struct Function: Component {
+    public struct Function: Component, EnvironmentProvider {
         public let dockerImage: DockerImage
         public let role: Role
         public let rolePolicyAttachment: Resource
         public let function: Resource
         public let functionUrl: Resource
+        public let environment: Environment
 
         public var name: String {
             function.name
@@ -27,6 +28,8 @@ extension AWS {
             options: Resource.Options? = nil
         ) {
             let dockerFilePath = Docker.Dockerfile.filePath(name)
+
+            self.environment = Environment(environment, shape: .dictionary)
 
             dockerImage = DockerImage(
                 "\(name)-image",
@@ -61,7 +64,9 @@ extension AWS {
                     "architectures": [Architecture.current.lambdaArchitecture],
                     "memorySize": memory,
                     "timeout": timeout.map { Int($0) },
-                    "environment": environment.map { ["variables": $0] },
+                    "environment": [
+                        "variables": self.environment
+                    ],
                     "reservedConcurrentExecutions": reservedConcurrency,
                 ],
                 options: options
@@ -107,5 +112,12 @@ extension AWS.Function: Linkable {
 
     public var resources: [String] {
         [function.arn]
+    }
+
+    public var environmentVariables: [String: String] {
+        [
+            "function:\(function.internalName):name": name,
+            "function:\(function.internalName):url": url,
+        ]
     }
 }

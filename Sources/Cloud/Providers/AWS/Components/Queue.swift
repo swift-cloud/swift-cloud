@@ -91,4 +91,11 @@ extension AWS.Queue: Linkable {
     public var resources: [String] {
         [queue.arn]
     }
+
+    public var environmentVariables: [String: String] {
+        [
+            "queue:\(queue.internalName):name": name,
+            "queue:\(queue.internalName):url": url,
+        ]
+    }
 }
