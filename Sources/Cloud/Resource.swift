@@ -12,7 +12,7 @@ public struct Resource: Sendable {
     public let options: Options?
 
     internal var internalName: String {
-        tokenize(Context.current.stage, Context.current.packageName, chosenName)
+        tokenize(Context.current.stage, chosenName)
     }
 
     public init(
