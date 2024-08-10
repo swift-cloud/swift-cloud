@@ -68,14 +68,14 @@ extension AWS {
             )
 
             loadBalancerSecurityGroup = AWS.SecurityGroup(
-                "\(name)-load-balancer-security-group",
+                "\(name)-lbsg",
                 ingress: .all,
                 egress: .all,
                 options: options
             )
 
             instanceSecurityGroup = AWS.SecurityGroup(
-                "\(name)-task-security-group",
+                "\(name)-tsg",
                 ingress: [.securityGroup(loadBalancerSecurityGroup)],
                 egress: .all,
                 options: options

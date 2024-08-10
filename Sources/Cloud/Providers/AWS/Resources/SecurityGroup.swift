@@ -18,7 +18,7 @@ extension AWS {
 
             let ingressRules = ingress.enumerated().map { index, rule in
                 Resource(
-                    name: "\(name)-ingress-rule-\(index)",
+                    name: "\(name)-ir-\(index)",
                     type: "aws:vpc:SecurityGroupIngressRule",
                     properties: [
                         "securityGroupId": resource.id,
@@ -31,7 +31,7 @@ extension AWS {
 
             let egressRules = egress.enumerated().map { index, rule in
                 Resource(
-                    name: "\(name)-egress-rule-\(index)",
+                    name: "\(name)-er-\(index)",
                     type: "aws:vpc:SecurityGroupEgressRule",
                     properties: [
                         "securityGroupId": resource.id,

@@ -11,7 +11,7 @@ extension AWS {
             options: Resource.Options? = nil
         ) {
             let resource = Resource(
-                name: "\(webServer.chosenName)-auto-scaling-target",
+                name: "\(webServer.chosenName)-ast",
                 type: "aws:appautoscaling:Target",
                 properties: [
                     "resourceId": "service/\(webServer.clusterName)/\(webServer.serviceName)",
@@ -25,7 +25,7 @@ extension AWS {
 
             let policies = metrics.map { metric in
                 Resource(
-                    name: "\(webServer.chosenName)-auto-scaling-rule-\(metric)",
+                    name: "\(webServer.chosenName)-asr-\(metric)",
                     type: "aws:appautoscaling:Policy",
                     properties: [
                         "policyType": "TargetTrackingScaling",

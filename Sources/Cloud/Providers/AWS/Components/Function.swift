@@ -45,7 +45,7 @@ extension AWS {
             )
 
             rolePolicyAttachment = Resource(
-                name: "\(name)-role-policy-attachment",
+                name: "\(name)-rpa",
                 type: "aws:iam:RolePolicyAttachment",
                 properties: [
                     "role": "\(role.name)",
@@ -55,7 +55,7 @@ extension AWS {
             )
 
             function = Resource(
-                name: "\(name)",
+                name: name,
                 type: "aws:lambda:Function",
                 properties: [
                     "role": "\(role.arn)",

@@ -27,7 +27,7 @@ extension AWS {
             )
 
             ownershipControls = Resource(
-                name: "\(name)-ownershipControls",
+                name: "\(name)-oc",
                 type: "aws:s3:BucketOwnershipControls",
                 properties: [
                     "bucket": "\(bucket.ref)",
@@ -39,7 +39,7 @@ extension AWS {
             )
 
             publicAccessBlock = Resource(
-                name: "\(name)-publicAccessBlock",
+                name: "\(name)-pab",
                 type: "aws:s3:BucketPublicAccessBlock",
                 properties: [
                     "bucket": "\(bucket.ref)",

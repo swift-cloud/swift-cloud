@@ -11,7 +11,7 @@ extension AWS {
             )
 
             capacityProviders = Resource(
-                name: "\(name)-cluster-capacity-provider",
+                name: "\(name)-ccp",
                 type: "aws:ecs:ClusterCapacityProviders",
                 properties: [
                     "clusterName": resource.name,

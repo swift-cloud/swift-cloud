@@ -19,7 +19,7 @@ extension AWS {
             options: Resource.Options? = nil
         ) {
             eventRule = Resource(
-                name: "\(name)-cron-rule",
+                name: name,
                 type: "aws:cloudwatch:EventRule",
                 properties: [
                     "scheduleExpression": schedule.value,
@@ -28,7 +28,7 @@ extension AWS {
             )
 
             eventTarget = Resource(
-                name: "\(name)-cron-target",
+                name: "\(name)-et",
                 type: "aws:cloudwatch:EventTarget",
                 properties: [
                     "rule": eventRule.name,
