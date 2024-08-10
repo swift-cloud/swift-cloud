@@ -1,6 +1,5 @@
 import Foundation
 import RegexBuilder
-import ShellOut
 
 public struct Builder: Sendable {
     public enum BuildError: Error {

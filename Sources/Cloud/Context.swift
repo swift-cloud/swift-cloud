@@ -1,6 +1,5 @@
 import ConsoleKitTerminal
 import Foundation
-import ShellOut
 
 public final class Context: Sendable {
     public let stage: String

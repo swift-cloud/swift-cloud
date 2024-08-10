@@ -15,7 +15,7 @@ let package = Package(
         .package(url: "https://github.com/jpsim/Yams", from: "5.1.3"),
         .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.21.2"),
-        .package(url: "https://github.com/SwiftPackageIndex/ShellOut", from: "3.1.4"),
+        .package(url: "https://github.com/AndrewBarba/Command", from: "0.5.7"),
         .package(url: "https://github.com/vapor/console-kit", from: "4.14.3"),
     ],
     targets: [
@@ -24,8 +24,8 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "Command", package: "Command"),
                 .product(name: "ConsoleKitTerminal", package: "console-kit"),
-                .product(name: "ShellOut", package: "ShellOut"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Yams", package: "Yams"),
             ],

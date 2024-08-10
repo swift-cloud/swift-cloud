@@ -1,6 +1,5 @@
 import AsyncHTTPClient
 import Foundation
-import ShellOut
 import Yams
 
 public let PulumiClientVersion = "v3.128.0"
