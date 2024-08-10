@@ -29,7 +29,7 @@ extension HomeProvider {
         FileManager.default.fileExists(atPath: localStatePath(context: context))
     }
 
-    internal func restoreLocalState(context: Context) async throws {
+    internal func pullState(context: Context) async throws {
         let state: AnyCodable = try await getItem(fileName: "state", with: context)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -37,7 +37,7 @@ extension HomeProvider {
         try createFile(atPath: localStatePath(context: context), contents: data)
     }
 
-    internal func saveLocalState(context: Context) async throws {
+    internal func pushState(context: Context) async throws {
         let data = try readFile(atPath: localStatePath(context: context))
         let state = try JSONDecoder().decode(AnyCodable.self, from: data)
         try await putItem(state, fileName: "state", with: context)

@@ -38,10 +38,8 @@ extension Command.RunCommand {
         // Bootstrap the home
         try await context.home.bootstrap(with: context)
 
-        // Restore external state if needed
-        if !context.home.hasLocalState(context: context) {
-            try? await context.home.restoreLocalState(context: context)
-        }
+        // Restore external state if available
+        try? await context.home.pullState(context: context)
 
         // Create pulumi client with passphrase
         let client = Pulumi.Client(
@@ -103,7 +101,7 @@ extension Command.RunCommand {
 extension Command.RunCommand {
     func complete(with context: Context) async throws {
         do {
-            try await context.home.saveLocalState(context: context)
+            try await context.home.pushState(context: context)
         } catch {
             ui.error(error)
         }
