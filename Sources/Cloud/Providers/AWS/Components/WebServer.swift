@@ -63,7 +63,7 @@ extension AWS {
 
             role = AWS.Role(
                 "\(name)-role",
-                service: "ecs-tasks.amazonAWS.com",
+                service: "ecs-tasks.amazonaws.com",
                 options: options
             )
 
