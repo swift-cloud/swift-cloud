@@ -91,32 +91,32 @@ extension ui {
         private init() {}
 
         fileprivate func start(_ label: String) -> Self {
-            // spinner?.succeed()
-            // labels.append(label)
-            // spinner = cli.customActivity(
-            //     frames: frames.map { "\($0) \(label)\n" },
-            //     success: "",
-            //     failure: ""
-            // )
-            // if labels.count > 1 {
-            //     cli.clear(lines: 1)
-            // }
-            // spinner?.start()
+            spinner?.succeed()
+            labels.append(label)
+            spinner = cli.customActivity(
+                frames: frames.map { "\($0) \(label)\n" },
+                success: "",
+                failure: ""
+            )
+            if labels.count > 1 {
+                cli.clear(lines: 1)
+            }
+            spinner?.start()
             return self
         }
 
         public func stop() {
-            // spinner?.succeed()
-            // labels.removeLast()
-            // cli.clear(lines: 1)
-            // if let label = labels.last {
-            //     spinner = cli.customActivity(
-            //         frames: frames.map { "\($0) \(label)\n" },
-            //         success: "",
-            //         failure: ""
-            //     )
-            //     spinner?.start()
-            // }
+            spinner?.succeed()
+            labels.removeLast()
+            cli.clear(lines: 1)
+            if let label = labels.last {
+                spinner = cli.customActivity(
+                    frames: frames.map { "\($0) \(label)\n" },
+                    success: "",
+                    failure: ""
+                )
+                spinner?.start()
+            }
         }
     }
 
