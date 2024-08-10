@@ -24,9 +24,6 @@ extension AWS {
                     "context": "\(context ?? currentDirectoryPath())",
                     "dockerfile": "\(dockerFilePath)",
                     "platform": "\(platform ?? Architecture.current.dockerPlatform)",
-                    "args": [
-                        "DOCKER_BUILDKIT": "1"
-                    ],
                 ],
                 options: options
             )
