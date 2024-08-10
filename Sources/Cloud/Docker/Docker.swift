@@ -23,11 +23,15 @@ extension Docker.Dockerfile {
 
     public static func amazonLinux(targetName: String, architecture: Architecture = .current, port: Int) -> String {
         """
-        FROM amazonlinux:2023
+        FROM amazonlinux:2023 as context
 
         WORKDIR /app/
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
+
+        FROM amazonlinux:2023
+
+        COPY --from=context /app/\(targetName) .
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
