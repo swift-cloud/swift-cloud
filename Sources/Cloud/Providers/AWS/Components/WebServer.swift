@@ -151,7 +151,7 @@ extension AWS {
 
             Context.current.store.invoke { _ in
                 let dockerFile = Docker.Dockerfile.amazonLinux(targetName: targetName, port: instancePort)
-                try createFile(atPath: dockerFilePath, contents: dockerFile)
+                try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
             }
 
             Context.current.store.build {

@@ -5,6 +5,11 @@ extension Docker {
 }
 
 extension Docker.Dockerfile {
+    public static func write(_ contents: String, to path: String) throws {
+        try createFile(atPath: path, contents: contents)
+        try createFile(atPath: "\(path).dockerignore", contents: "\n")
+    }
+
     public static func filePath(_ name: String) -> String {
         "\(Context.cloudAssetsDirectory)/Dockerfile.\(tokenize(name))"
     }

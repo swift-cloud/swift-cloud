@@ -93,7 +93,7 @@ extension AWS {
 
             Context.current.store.invoke { _ in
                 let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
-                try createFile(atPath: dockerFilePath, contents: dockerFile)
+                try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
             }
 
             Context.current.store.build {
