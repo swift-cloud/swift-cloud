@@ -6,19 +6,11 @@ public protocol Project: Sendable {
 
     init()
 
-    var name: String { get }
-
     var home: ProjectHomeProvider { get }
 
     var providers: [Provider] { get }
 
     func build() async throws -> Outputs
-}
-
-extension Project {
-    public var name: String {
-        .init(describing: type(of: self))
-    }
 }
 
 extension Project {

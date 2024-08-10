@@ -16,13 +16,13 @@ public protocol HomeProvider: Sendable {
 
 extension HomeProvider {
     public func contextualFileName(_ fileName: String, with context: Context) -> String {
-        "\(context.qualifiedName)/\(context.stage)/\(tokenize(fileName)).json"
+        "\(context.packageName)/\(context.stage)/\(tokenize(fileName)).json"
     }
 }
 
 extension HomeProvider {
     private func localStatePath(context: Context) -> String {
-        "\(Context.cloudDirectory)/.pulumi/stacks/\(context.qualifiedName)/\(context.stage).json"
+        "\(Context.cloudDirectory)/.pulumi/stacks/\(context.packageName)/\(context.stage).json"
     }
 
     internal func hasLocalState(context: Context) -> Bool {

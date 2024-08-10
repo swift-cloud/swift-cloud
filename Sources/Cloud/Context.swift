@@ -11,16 +11,8 @@ public final class Context: Sendable {
     public let home: HomeProvider
     public let startDate = Date()
 
-    public var projectName: String {
-        tokenize(project.name)
-    }
-
     public var packageName: String {
         tokenize(package.name)
-    }
-
-    public var qualifiedName: String {
-        tokenize(package.name, project.name)
     }
 
     init(stage: String, project: any Project, package: Package, store: Store, builder: Builder) {
