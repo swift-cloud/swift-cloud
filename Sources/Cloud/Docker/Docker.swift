@@ -21,7 +21,7 @@ extension Docker.Dockerfile {
         """
     }
 
-    public static func amazonLinux(targetName: String, architecture: Architecture = .current) -> String {
+    public static func amazonLinux(targetName: String, architecture: Architecture = .current, port: Int) -> String {
         """
         FROM amazonlinux:2023
 
@@ -29,7 +29,10 @@ extension Docker.Dockerfile {
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
 
-        CMD [ "./\(targetName)" ]
+        ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
+
+        ENTRYPOINT [ "./\(targetName)" ]
+        CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "\(port)"]
         """
     }
 }
