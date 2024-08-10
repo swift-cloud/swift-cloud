@@ -35,9 +35,18 @@ extension Builder {
             )
         } else {
             let swiftVersion = try await currentSwiftVersion()
+            let imageName: String
+            switch swiftVersion {
+            case "5.10":
+                imageName = "swift:5.10-amazonlinux2"
+            case "6.0":
+                imageName = "swiftlang/swift:nightly-6.0-amazonlinux2"
+            default:
+                fatalError("Unsupported Swift version: \(swiftVersion)")
+            }
             try await buildDocker(
                 targetName: targetName,
-                imageName: "swift:\(swiftVersion)-amazonlinux2",
+                imageName: imageName,
                 flags: "--static-swift-stdlib"
             )
         }
