@@ -31,6 +31,8 @@ extension Docker.Dockerfile {
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
+        EXPOSE \(port)
+
         ENTRYPOINT [ "./\(targetName)" ]
         CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "\(port)"]
         """
