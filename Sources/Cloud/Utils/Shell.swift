@@ -9,7 +9,7 @@ func shellOut(
     arguments: [String],
     at path: String? = nil,
     environment: [String: String] = ProcessInfo.processInfo.environment
-) async throws -> (String, String) {
+) async throws -> (stdout: String, stderr: String) {
     var stdout = ""
     var stderr = ""
     let stream = shell.run(
