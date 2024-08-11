@@ -52,7 +52,6 @@ extension Project {
                 } catch {
                     UI.error(error)
                 }
-
                 UI.writeFooter()
             }
         default:

@@ -2,10 +2,12 @@ import Foundation
 import SotoCore
 
 extension Home {
-    public actor AWS: HomeProvider {
+    public final class AWS: HomeProvider {
         public enum Error: Swift.Error {
             case invalidAccount
         }
+
+        public let region: Region
 
         private let client: AWSClient
 
@@ -13,10 +15,11 @@ extension Home {
 
         private let s3: S3
 
-        public init(region: String = "us-east-1") {
+        public init(region regionValue: String = "us-east-1") {
+            region = .init(rawValue: regionValue)
             client = AWSClient()
-            sts = STS(client: client, region: .init(rawValue: region))
-            s3 = S3(client: client, region: .init(rawValue: region))
+            sts = STS(client: client, region: region)
+            s3 = S3(client: client, region: region)
         }
 
         deinit {
