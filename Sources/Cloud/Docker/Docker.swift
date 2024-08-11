@@ -39,7 +39,7 @@ extension Docker.Dockerfile {
         EXPOSE \(port)
 
         ENTRYPOINT [ "./\(targetName)" ]
-        CMD ["serve", "--hostname", "0.0.0.0", "--port", "\(port)"]
+        CMD ["--hostname", "0.0.0.0", "--port", "\(port)"]
         """
     }
 }
