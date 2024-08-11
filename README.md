@@ -136,6 +136,26 @@ Cancel a deployment:
 swift run Infra cancel --stage development
 ```
 
+## Home
+
+Swift Cloud allows you to deploy infrastructure across multiple cloud providers. In order to handle incremental changes to your infrastructure, Swift Cloud must store your underlying configuration in a durable location so it can be referenced anytime you run a deploy, whether from your local machine or a CI/CD pipeline.
+
+We abstracted this concept into a `HomeProvider` protocol, and allow you to decide where your configuration is stored. By default, Swift Cloud uses the AWS S3 service to store your configuration, but you can easily swap this out for any other provider that supports the `HomeProvider` protocol.
+
+For quick prototyping, you can use the `Home.Local` provider, which stores your configuration in a local file. This is great for testing and development, but it's not recommended for production use.
+
+```swift
+import Cloud
+
+@main
+struct SwiftCloudDemo: Project {
+    // Override the default home provider with a local provider
+    let home = Home.Local()
+
+    func build() async throws -> Outputs {...}
+}
+```
+
 ## Components
 
 ### AWS
