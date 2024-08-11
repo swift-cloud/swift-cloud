@@ -4,7 +4,7 @@ extension Provider {
         secretKey: String = "",
         token: String = "",
         profile: String = "",
-        region: String = ""
+        region: String = "us-east-1"
     ) -> Self {
         .init(
             plugin: .aws,
@@ -30,7 +30,7 @@ extension AWS {
             secretKey: String? = nil,
             token: String? = nil,
             profile: String? = nil,
-            region: String? = nil
+            region: String = "us-east-1"
         ) {
             resource = Resource(
                 name: name,

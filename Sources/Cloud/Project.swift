@@ -22,7 +22,7 @@ extension Project {
 
 extension Project {
     public var providers: [Provider] {
-        [.aws(region: "us-east-1")]
+        [.aws()]
     }
 }
 
