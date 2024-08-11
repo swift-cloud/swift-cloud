@@ -7,7 +7,7 @@ private let shell = CommandRunner()
 func shellOut(
     to command: String,
     arguments: [String],
-    at path: String? = nil,
+    workingDirectory: String? = nil,
     environment: [String: String] = ProcessInfo.processInfo.environment
 ) async throws -> (stdout: String, stderr: String) {
     var stdout = ""
@@ -15,7 +15,7 @@ func shellOut(
     let stream = shell.run(
         arguments: [command] + arguments,
         environment: environment,
-        workingDirectory: try path.map { try .init(validating: $0) }
+        workingDirectory: try workingDirectory.map { try .init(validating: $0) }
     )
     for try await line in stream {
         switch line {

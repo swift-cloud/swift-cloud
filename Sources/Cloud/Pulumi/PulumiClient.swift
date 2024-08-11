@@ -124,7 +124,7 @@ extension Pulumi.Client {
         let (stdout, _) = try await shellOut(
             to: executablePath,
             arguments: [command] + arguments + ["--non-interactive"],
-            at: Context.cloudDirectory,
+            workingDirectory: Context.cloudDirectory,
             environment: environment
         )
 
