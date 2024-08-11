@@ -20,9 +20,9 @@ func shellOut(
     for try await line in stream {
         switch line {
         case .standardOutput:
-            stdout += line.utf8String
+            stdout += line.string() ?? ""
         case .standardError:
-            stderr += line.utf8String
+            stderr += line.string() ?? ""
         }
     }
     return (stdout, stderr)
