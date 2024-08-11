@@ -41,19 +41,20 @@ extension Project {
                 builder: builder
             )
             await Context.$current.withValue(context) {
-                ui.writeHeader()
+                UI.writeHeader()
                 do {
                     try await command.invoke(with: context)
                     try await command.complete(with: context)
                 } catch {
-                    ui.error(error)
+                    UI.error(error)
                 }
-                ui.writeFooter()
+
+                UI.writeFooter()
             }
         default:
-            ui.newLine()
-            ui.error("➜  Invalid command:   ensure you pass a stage, ie: --stage prod")
-            ui.newLine()
+            UI.newLine()
+            UI.error("➜  Invalid command:   ensure you pass a stage, ie: --stage prod")
+            UI.newLine()
         }
     }
 }
