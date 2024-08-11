@@ -8,12 +8,12 @@ extension Command {
         @OptionGroup var options: Options
 
         func invoke(with context: Context) async throws {
-            let spinner = ui.spinner(label: "Deploying changes")
+            let spinner = UI.spinner(label: "Deploying changes")
             do {
                 let prepared = try await prepare(with: context, buildTargets: true)
                 let output = try await prepared.client.invoke(command: "up", arguments: ["--skip-preview", "--yes"])
                 spinner.stop()
-                ui.writeBlock(output)
+                UI.writeBlock(output)
             } catch {
                 spinner.stop()
                 throw error

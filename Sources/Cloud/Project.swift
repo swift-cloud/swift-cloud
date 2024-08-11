@@ -1,4 +1,5 @@
 import ArgumentParser
+import Command
 import ConsoleKitTerminal
 
 public protocol Project: Sendable {
@@ -41,19 +42,23 @@ extension Project {
                 builder: builder
             )
             await Context.$current.withValue(context) {
-                ui.writeHeader()
+                UI.writeHeader()
                 do {
                     try await command.invoke(with: context)
                     try await command.complete(with: context)
+                } catch let CommandError.terminated(errorCode, message) {
+                    UI.error("Command terminated with error \(errorCode):")
+                    UI.error(message)
                 } catch {
-                    ui.error(error)
+                    UI.error(error)
                 }
-                ui.writeFooter()
+
+                UI.writeFooter()
             }
         default:
-            ui.newLine()
-            ui.error("➜  Invalid command:   ensure you pass a stage, ie: --stage prod")
-            ui.newLine()
+            UI.newLine()
+            UI.error("➜  Invalid command:   ensure you pass a stage, ie: --stage prod")
+            UI.newLine()
         }
     }
 }

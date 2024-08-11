@@ -8,12 +8,12 @@ extension Command {
         @OptionGroup var options: Options
 
         func invoke(with context: Context) async throws {
-            let spinner = ui.spinner(label: "Cancelling changes")
+            let spinner = UI.spinner(label: "Cancelling changes")
             do {
                 let prepared = try await prepare(with: context)
                 let output = try await prepared.client.invoke(command: "cancel")
                 spinner.stop()
-                ui.writeBlock(output)
+                UI.writeBlock(output)
             } catch {
                 spinner.stop()
                 throw error

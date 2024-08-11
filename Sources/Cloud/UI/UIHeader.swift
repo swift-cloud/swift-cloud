@@ -1,19 +1,19 @@
-extension ui {
+extension UI {
     public static func writeHeader() {
         cli.clear(lines: 3)
-        ui.newLine()
+        UI.newLine()
 
-        ui.write("Swift Cloud", color: .cyan, bold: true, newLine: true)
-        ui.newLine()
+        UI.write("Swift Cloud", color: .cyan, bold: true, newLine: true)
+        UI.newLine()
 
-        ui.write("➜", width: .small, color: .cyan, bold: true)
-        ui.write("Package", width: .medium, bold: true)
-        ui.write(Context.current.packageName, newLine: true)
+        UI.write("➜", width: .small, color: .cyan, bold: true)
+        UI.write("Package", width: .medium, bold: true)
+        UI.write(Context.current.packageName, newLine: true)
 
-        ui.write("", width: .small)
-        ui.write("Stage", width: .medium, bold: true)
-        ui.write(Context.current.stage, newLine: true)
+        UI.write("", width: .small)
+        UI.write("Stage", width: .medium, bold: true)
+        UI.write(Context.current.stage, newLine: true)
 
-        ui.newLine()
+        UI.newLine()
     }
 }

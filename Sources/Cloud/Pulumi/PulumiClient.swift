@@ -46,7 +46,7 @@ extension Pulumi.Client {
 
 extension Pulumi.Client {
     public func setup() async throws {
-        let spinner = ui.spinner(label: "Installing Swift Cloud")
+        let spinner = UI.spinner(label: "Installing Swift Cloud")
         defer { spinner.stop() }
 
         let arch = Architecture.current.pulumiArchitecture

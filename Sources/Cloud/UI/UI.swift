@@ -1,7 +1,7 @@
 import ConsoleKitTerminal
 
-public enum ui {}
+public enum UI {}
 
-extension ui {
+extension UI {
     public static let cli = Terminal()
 }

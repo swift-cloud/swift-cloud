@@ -1,13 +1,13 @@
 import ConsoleKitTerminal
 import Foundation
 
-extension ui {
+extension UI {
     public static func newLine() {
         cli.output("", newLine: true)
     }
 }
 
-extension ui {
+extension UI {
     public static func clear(_ type: ConsoleClear) {
         cli.clear(type)
     }
@@ -21,7 +21,7 @@ extension ui {
     }
 }
 
-extension ui {
+extension UI {
     public enum ColumnSize: Int {
         case small = 3
         case medium = 12
@@ -47,18 +47,18 @@ extension ui {
     }
 }
 
-extension ui {
+extension UI {
     public static func writeBlock(_ text: String) {
         let lines = text.split(separator: .newlineSequence)
         for line in lines {
-            ui.write("|", width: .small, color: .yellow, bold: true)
-            ui.write("\(line)")
-            ui.newLine()
+            UI.write("|", width: .small, color: .yellow, bold: true)
+            UI.write("\(line)")
+            UI.newLine()
         }
     }
 }
 
-extension ui {
+extension UI {
     public static func error(_ error: Error) {
         cli.error("\(error)")
     }
@@ -68,7 +68,7 @@ extension ui {
     }
 }
 
-extension ui {
+extension UI {
     public final class Spinner: @unchecked Sendable {
         fileprivate static let shared = Spinner()
 

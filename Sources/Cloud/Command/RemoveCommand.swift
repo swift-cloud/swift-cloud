@@ -8,13 +8,13 @@ extension Command {
         @OptionGroup var options: Options
 
         func invoke(with context: Context) async throws {
-            let spinner = ui.spinner(label: "Removing application")
+            let spinner = UI.spinner(label: "Removing application")
             do {
                 let prepared = try await prepare(with: context)
                 let output = try await prepared.client.invoke(
                     command: "destroy", arguments: ["--continue-on-error", "--skip-preview", "--yes"])
                 spinner.stop()
-                ui.writeBlock(output)
+                UI.writeBlock(output)
             } catch {
                 spinner.stop()
                 throw error

@@ -103,7 +103,7 @@ extension Command.RunCommand {
         do {
             try await context.home.pushState(context: context)
         } catch {
-            ui.error(error)
+            UI.error(error)
         }
     }
 }
