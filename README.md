@@ -149,6 +149,7 @@ import Cloud
 
 @main
 struct SwiftCloudDemo: Project {
+
     // Override the default home provider with a local provider
     let home = Home.Local()
 
