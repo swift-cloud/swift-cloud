@@ -210,7 +210,7 @@ queue.subscribe(
 ```swift
 let cron = AWS.Cron(
     "my-cron-job",
-    schedule: .rate("5 minutes"),
+    schedule: .rate(.minutes(5)),
     function: AWS.Function("my-lambda-function", targetName: "App")
 )
 ```

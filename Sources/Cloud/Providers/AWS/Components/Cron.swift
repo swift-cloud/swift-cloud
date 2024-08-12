@@ -43,14 +43,16 @@ extension AWS {
 extension AWS.Cron {
     public enum Expression: Sendable {
         case cron(_ value: String)
-        case rate(_ value: String)
+        case rate(_ value: Duration)
 
         var value: String {
             switch self {
             case .cron(let value):
                 return "cron(\(value))"
             case .rate(let value):
-                return "rate(\(value))"
+                let minutes = Int(value.components.seconds / 60)
+                let unit = minutes == 1 ? "minute" : "minutes"
+                return "rate(\(minutes) \(unit))"
             }
         }
     }
