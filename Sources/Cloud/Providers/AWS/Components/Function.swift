@@ -6,7 +6,7 @@ extension AWS {
         public let role: Role
         public let rolePolicyAttachment: Resource
         public let function: Resource
-        public let functionUrl: Resource
+        public let functionUrl: Resource?
         public let environment: Environment
 
         public var name: String {
@@ -14,16 +14,19 @@ extension AWS {
         }
 
         public var url: String {
-            functionUrl.keyPath("functionUrl")
+            guard let functionUrl else {
+                fatalError("Function created without a url. Please pass `url: .enabled()` to the function constructor.")
+            }
+            return functionUrl.keyPath("functionUrl")
         }
 
         public init(
             _ name: String,
             targetName: String,
+            url: FunctionURL = .disabled,
             memory: Int? = nil,
             timeout: Duration? = nil,
             reservedConcurrency: Int? = nil,
-            cors: Bool? = nil,
             environment: [String: String]? = nil,
             options: Resource.Options? = nil
         ) {
@@ -72,24 +75,30 @@ extension AWS {
                 options: options
             )
 
-            functionUrl = Resource(
-                name: "\(name)-url",
-                type: "aws:lambda:FunctionUrl",
-                properties: [
-                    "functionName": "\(function.name)",
-                    "authorizationType": "NONE",
-                    "cors": cors == true
-                        ? [
-                            "allowCredentials": true,
-                            "allowOrigins": ["*"],
-                            "allowMethods": ["*"],
-                            "allowHeaders": ["*"],
-                            "maxAge": 86400,
-                        ]
-                        : nil,
-                ],
-                options: options
-            )
+            functionUrl =
+                switch url {
+                case .disabled:
+                    nil
+                case .enabled(let cors):
+                    Resource(
+                        name: "\(name)-url",
+                        type: "aws:lambda:FunctionUrl",
+                        properties: [
+                            "functionName": "\(function.name)",
+                            "authorizationType": "NONE",
+                            "cors": cors
+                                ? [
+                                    "allowCredentials": true,
+                                    "allowOrigins": ["*"],
+                                    "allowMethods": ["*"],
+                                    "allowHeaders": ["*"],
+                                    "maxAge": 86400,
+                                ]
+                                : nil,
+                        ],
+                        options: options
+                    )
+                }
 
             Context.current.store.invoke { _ in
                 let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
@@ -100,6 +109,13 @@ extension AWS {
                 try await $0.builder.buildAmazonLinux(targetName: targetName)
             }
         }
+    }
+}
+
+extension AWS.Function {
+    public enum FunctionURL {
+        case enabled(cors: Bool = true)
+        case disabled
     }
 }
 
