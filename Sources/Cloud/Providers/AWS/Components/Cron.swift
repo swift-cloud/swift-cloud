@@ -1,7 +1,6 @@
 extension AWS {
     public struct Cron: Component {
         public let eventRule: Resource
-        public let eventTarget: Resource
 
         public var name: String {
             eventRule.name
@@ -14,7 +13,6 @@ extension AWS {
         public init(
             _ name: String,
             schedule: Expression,
-            function: AWS.Function,
             enabled: Bool = true,
             options: Resource.Options? = nil
         ) {
@@ -26,17 +24,23 @@ extension AWS {
                     "state": enabled ? "ENABLED" : "DISABLED",
                 ]
             )
-
-            eventTarget = Resource(
-                name: "\(name)-et",
-                type: "aws:cloudwatch:EventTarget",
-                properties: [
-                    "rule": eventRule.name,
-                    "arn": function.function.arn,
-                    "targetId": "\(tokenize(name))-\(function.function.internalName)-target-id",
-                ]
-            )
         }
+    }
+}
+
+extension AWS.Cron {
+    @discardableResult
+    public func invoke(_ function: AWS.Function) async throws -> AWS.Cron {
+        _ = Resource(
+            name: "\(name)-et",
+            type: "aws:cloudwatch:EventTarget",
+            properties: [
+                "rule": eventRule.name,
+                "arn": function.function.arn,
+                "targetId": "\(tokenize(name))-\(function.function.internalName)-target-id",
+            ]
+        )
+        return self
     }
 }
 

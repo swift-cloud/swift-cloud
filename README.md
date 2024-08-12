@@ -211,8 +211,12 @@ queue.subscribe(
 ```swift
 let cron = AWS.Cron(
     "my-cron-job",
-    schedule: .rate(.minutes(5)),
-    function: AWS.Function("my-lambda-function", targetName: "App")
+    schedule: .rate(.minutes(5))
+)
+
+// Invoke the function when the cron job runs
+cron.invoke(
+    AWS.Function("my-lambda-function", targetName: "App")
 )
 ```
 
