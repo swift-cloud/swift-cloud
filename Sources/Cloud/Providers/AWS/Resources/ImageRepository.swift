@@ -25,8 +25,9 @@ extension AWS {
 
 extension AWS.ImageRepository {
     public static func shared(options: Resource.Options? = nil) -> Self {
+        let suffix = options?.provider.map { $0.resource.chosenName } ?? ""
         return AWS.ImageRepository(
-            "shared-image-repository",
+            "shared-image-repository-\(suffix)",
             options: .provider(options?.provider)
         )
     }

@@ -3,6 +3,10 @@ import Foundation
 
 private let shell = CommandRunner()
 
+enum ShellError: Error {
+    case terminated(errorCode: Int32, stderr: String)
+}
+
 @discardableResult
 func shellOut(
     to command: String,
@@ -17,13 +21,19 @@ func shellOut(
         environment: environment,
         workingDirectory: try workingDirectory.map { try .init(validating: $0) }
     )
-    for try await line in stream {
-        switch line {
-        case .standardOutput:
-            stdout += line.string() ?? ""
-        case .standardError:
-            stderr += line.string() ?? ""
+    do {
+        for try await line in stream {
+            switch line {
+            case .standardOutput:
+                stdout += line.string() ?? ""
+            case .standardError:
+                stderr += line.string() ?? ""
+            }
         }
+        return (stdout, stderr)
+    } catch let CommandError.terminated(errorCode, _) {
+        throw ShellError.terminated(errorCode: errorCode, stderr: stderr.count > 0 ? stderr : stdout)
+    } catch {
+        throw ShellError.terminated(errorCode: 255, stderr: stderr.count > 0 ? stderr : stdout)
     }
-    return (stdout, stderr)
 }
