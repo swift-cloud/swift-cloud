@@ -183,7 +183,7 @@ let server = AWS.WebServer(
 let lambda = AWS.Function(
     "my-lambda-function",
     targetName: "App",
-    url: enabled(cors: true),
+    url: .enabled(cors: true),
     memory: 512,
     timeout: .seconds(10)
 )
