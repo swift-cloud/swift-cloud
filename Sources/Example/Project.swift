@@ -9,7 +9,11 @@ struct Example: Project {
     ]
 
     func build() async throws -> Outputs {
-        let function = AWS.Function("My Function", targetName: "Example")
+        let function = AWS.Function(
+            "My Function",
+            targetName: "Example",
+            url: .enabled(cors: true)
+        )
 
         let bucket = AWS.Bucket("My Bucket")
 
