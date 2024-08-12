@@ -30,7 +30,7 @@ extension AWS {
 
 extension AWS.Cron {
     @discardableResult
-    public func invoke(_ function: AWS.Function) async throws -> AWS.Cron {
+    public func invoke(_ function: AWS.Function) -> AWS.Cron {
         _ = Resource(
             name: "\(name)-et",
             type: "aws:cloudwatch:EventTarget",
