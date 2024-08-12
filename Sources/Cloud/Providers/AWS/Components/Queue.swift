@@ -16,8 +16,8 @@ extension AWS {
         public init(
             _ name: String,
             fifo: Bool = false,
-            visibilityTimeout: TimeInterval = 30,
-            messageRetentionInterval: TimeInterval = 345600,
+            visibilityTimeout: Duration = .seconds(30),
+            messageRetentionInterval: Duration = .seconds(345600),
             maxRetries: Int = 3,
             options: Resource.Options? = nil
         ) {
@@ -26,7 +26,7 @@ extension AWS {
                 type: "aws:sqs:Queue",
                 properties: [
                     "fifoQueue": fifo,
-                    "visibilityTimeoutSeconds": visibilityTimeout,
+                    "visibilityTimeoutSeconds": visibilityTimeout.components.seconds,
                     "messageRetentionSeconds": 1_209_600,
                 ],
                 options: options
@@ -38,7 +38,7 @@ extension AWS {
                 properties: [
                     "fifoQueue": fifo,
                     "visibilityTimeoutSeconds": visibilityTimeout,
-                    "messageRetentionSeconds": messageRetentionInterval,
+                    "messageRetentionSeconds": messageRetentionInterval.components.seconds,
                     "redrivePolicy": Resource.JSON([
                         "deadLetterTargetArn": deadLetterQueue.arn,
                         "maxReceiveCount": maxRetries + 1,

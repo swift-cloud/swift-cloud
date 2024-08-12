@@ -21,7 +21,7 @@ extension AWS {
             _ name: String,
             targetName: String,
             memory: Int? = nil,
-            timeout: TimeInterval? = nil,
+            timeout: Duration? = nil,
             reservedConcurrency: Int? = nil,
             cors: Bool? = nil,
             environment: [String: String]? = nil,
@@ -63,7 +63,7 @@ extension AWS {
                     "imageUri": "\(dockerImage.uri)",
                     "architectures": [Architecture.current.lambdaArchitecture],
                     "memorySize": memory,
-                    "timeout": timeout.map { Int($0) },
+                    "timeout": timeout?.components.seconds,
                     "environment": [
                         "variables": self.environment
                     ],
