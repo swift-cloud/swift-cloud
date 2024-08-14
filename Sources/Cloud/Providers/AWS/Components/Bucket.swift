@@ -70,9 +70,9 @@ extension AWS.Bucket: Linkable {
 
     public var environmentVariables: [String: String] {
         [
-            "bucket_\(tokenize(bucket.chosenName))_name": name,
-            "bucket_\(tokenize(bucket.chosenName))_hostname": hostname,
-            "bucket_\(tokenize(bucket.chosenName))_url": "https://\(hostname)",
+            "bucket \(bucket.chosenName) name": name,
+            "bucket \(bucket.chosenName) hostname": hostname,
+            "bucket \(bucket.chosenName) url": "https://\(hostname)",
         ]
     }
 }

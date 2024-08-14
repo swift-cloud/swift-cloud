@@ -94,8 +94,8 @@ extension AWS.Queue: Linkable {
 
     public var environmentVariables: [String: String] {
         [
-            "queue_\(tokenize(queue.internalName))_name": name,
-            "queue_\(tokenize(queue.internalName))_url": url,
+            "queue \(queue.chosenName) name": name,
+            "queue \(queue.chosenName) url": url,
         ]
     }
 }
