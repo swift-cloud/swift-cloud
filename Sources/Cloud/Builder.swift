@@ -96,7 +96,8 @@ extension Builder {
                 "-w", "/workspace",
                 imageName,
                 "bash", "-cl", "swift build -c release --product \(targetName) \(flags)",
-            ]
+            ],
+            onEvent: { spinner.push($0.string()) }
         )
     }
 }

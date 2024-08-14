@@ -90,7 +90,7 @@ extension UI {
 
         private init() {}
 
-        fileprivate func start(_ label: String) -> Self {
+        fileprivate func start(_ label: String) {
             spinner?.succeed()
             labels.append(label)
             spinner = cli.customActivity(
@@ -102,7 +102,25 @@ extension UI {
                 cli.clear(lines: 1)
             }
             spinner?.start()
-            return self
+        }
+
+        public func push(_ line: String?) {
+            guard
+                let label = labels.last,
+                let lines = line?.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n"),
+                let trimmedLine = lines.last?.trimmingCharacters(in: .whitespacesAndNewlines),
+                !trimmedLine.isEmpty,
+                trimmedLine != ".",
+                trimmedLine != "@ updating...."
+            else { return }
+            spinner?.succeed()
+            spinner = cli.customActivity(
+                frames: frames.map { "\($0) \(label)\n  > \(trimmedLine)" },
+                success: "",
+                failure: ""
+            )
+            cli.clear(lines: 1)
+            spinner?.start()
         }
 
         public func stop() {
@@ -121,6 +139,8 @@ extension UI {
     }
 
     public static func spinner(label: String) -> Spinner {
-        return Spinner.shared.start(label)
+        let spinner = Spinner.shared
+        spinner.start(label)
+        return spinner
     }
 }

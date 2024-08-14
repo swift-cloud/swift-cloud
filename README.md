@@ -244,10 +244,10 @@ Here is a list of all the linked resources:
 
 | Resource | Environment Variable |
 | --- | --- |
-| AWS S3 Bucket | `bucket:<bucket-name>:url` |
-| AWS S3 Bucket | `bucket:<bucket-name>:hostname` |
-| AWS S3 Bucket | `bucket:<bucket-name>:name` |
-| AWS SQS Queue | `queue:<queue-name>:url` |
-| AWS SQS Queue | `queue:<queue-name>:name` |
-| AWS Lambda Function | `function:<function-name>:url` |
-| AWS Lambda Function | `function:<function-name>:name` |
+| AWS S3 Bucket | `BUCKET_<NAME>_URL` |
+| AWS S3 Bucket | `BUCKET_<NAME>_HOSTNAME` |
+| AWS S3 Bucket | `BUCKET_<NAME>_NAME` |
+| AWS SQS Queue | `QUEUE_<NAME>_URL` |
+| AWS SQS Queue | `QUEUE_<NAME>_NAME` |
+| AWS Lambda Function | `FUNCTION_<NAME>_URL` |
+| AWS Lambda Function | `FUNCTION_<NAME>_NAME` |

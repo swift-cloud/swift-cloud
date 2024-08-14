@@ -132,8 +132,8 @@ extension AWS.Function: Linkable {
 
     public var environmentVariables: [String: String] {
         [
-            "function:\(function.internalName):name": name,
-            "function:\(function.internalName):url": url,
+            "function_\(tokenize(function.chosenName))_name": name,
+            "function_\(tokenize(function.chosenName))_url": url,
         ]
     }
 }

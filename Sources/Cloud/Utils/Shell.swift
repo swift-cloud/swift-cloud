@@ -7,19 +7,23 @@ enum ShellError: Error {
     case terminated(errorCode: Int32, stderr: String)
 }
 
+public typealias ShellEventHandler = (CommandEvent) -> Void
+
 @discardableResult
 func shellOut(
     to command: String,
     arguments: [String],
     workingDirectory: String? = nil,
-    environment: [String: String] = ProcessInfo.processInfo.environment
+    environment: [String: String] = ProcessInfo.processInfo.environment,
+    onEvent: ShellEventHandler? = nil
 ) async throws -> (stdout: String, stderr: String) {
     var stdout = ""
     var stderr = ""
-    let stream = shell.run(
-        arguments: [command] + arguments,
-        environment: environment,
-        workingDirectory: try workingDirectory.map { try .init(validating: $0) }
+    let stream = try shellStream(
+        to: command,
+        arguments: arguments,
+        workingDirectory: workingDirectory,
+        environment: environment
     )
     do {
         for try await line in stream {
@@ -29,6 +33,7 @@ func shellOut(
             case .standardError:
                 stderr += line.string() ?? ""
             }
+            onEvent?(line)
         }
         return (stdout, stderr)
     } catch let CommandError.terminated(errorCode, _) {
@@ -36,4 +41,17 @@ func shellOut(
     } catch {
         throw ShellError.terminated(errorCode: 255, stderr: stderr.count > 0 ? stderr : stdout)
     }
+}
+
+func shellStream(
+    to command: String,
+    arguments: [String],
+    workingDirectory: String? = nil,
+    environment: [String: String] = ProcessInfo.processInfo.environment
+) throws -> AsyncThrowingStream<CommandEvent, any Error> {
+    return shell.run(
+        arguments: [command] + arguments,
+        environment: environment,
+        workingDirectory: try workingDirectory.map { try .init(validating: $0) }
+    )
 }

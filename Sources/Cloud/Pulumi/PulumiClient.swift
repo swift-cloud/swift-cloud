@@ -108,7 +108,8 @@ extension Pulumi.Client {
     @discardableResult
     public func invoke(
         command: String,
-        arguments: [String] = []
+        arguments: [String] = [],
+        onEvent: ShellEventHandler? = nil
     ) async throws -> String {
         if !isSetup {
             try await setup()
@@ -125,7 +126,8 @@ extension Pulumi.Client {
             to: executablePath,
             arguments: [command] + arguments + ["--non-interactive"],
             workingDirectory: Context.cloudDirectory,
-            environment: environment
+            environment: environment,
+            onEvent: onEvent
         )
 
         return stdout

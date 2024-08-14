@@ -26,9 +26,12 @@ public final class Environment: Encodable, @unchecked Sendable {
     }
 
     public init(_ initial: [String: String]? = nil, shape: EncodingShape) {
-        self._store = initial ?? [:]
+        self._store = [:]
         self.shape = shape
         Context.current.store.track(self)
+        if let initial {
+            self.merge(initial)
+        }
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -43,13 +46,17 @@ public final class Environment: Encodable, @unchecked Sendable {
     }
 
     public subscript(key: String) -> String? {
-        get { store[key] }
-        set { store[key] = newValue }
+        get { store[toKey(key)] }
+        set { store[toKey(key)] = newValue }
     }
 
     public func merge(_ other: [String: String]) {
         for (key, value) in other {
-            store[key] = value
+            store[toKey(key)] = value
         }
+    }
+
+    private func toKey(_ key: String) -> String {
+        tokenize(key, separator: "_").uppercased()
     }
 }
