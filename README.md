@@ -243,6 +243,11 @@ let server = AWS.WebServer(
     targetName: "App",
     domainName: domainName
 )
+
+return Outputs([
+    // Now server url will be `https://www.example.com`
+    "url": server.url
+])
 ```
 
 ### Linking
