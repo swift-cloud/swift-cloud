@@ -7,6 +7,7 @@ public enum Fly {}
 public enum GCP {}
 public enum Heroku {}
 public enum PlanetScale {}
+public enum Random {}
 public enum Vercel {}
 
 public struct Provider: Sendable {

@@ -71,6 +71,12 @@ extension Pulumi.Plugin {
         repo: "sst/pulumi-planetscale"
     )
 
+    public static let random = Pulumi.Plugin(
+        name: "random",
+        version: "4.16.3",
+        repo: "pulumi/pulumi-random"
+    )
+
     public static let vercel = Pulumi.Plugin(
         name: "vercel",
         version: "1.11.0",
