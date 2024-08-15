@@ -2,22 +2,21 @@ import ArgumentParser
 import Foundation
 
 extension Command {
-    struct RemoveCommand: RunCommand {
+    struct OutputsCommand: RunCommand {
         static let configuration = CommandConfiguration(
-            commandName: "remove",
-            abstract: "Remove your application"
+            commandName: "outputs",
+            abstract: "Show project outputs"
         )
 
         @OptionGroup var options: Options
 
         func invoke(with context: Context) async throws {
-            let spinner = UI.spinner(label: "Removing application")
+            let spinner = UI.spinner(label: "Exporting outputs")
             do {
                 let prepared = try await prepare(with: context)
-                let output = try await prepared.client.invoke(
-                    command: "destroy", arguments: ["--continue-on-error", "--skip-preview", "--yes"])
+                let outputs = try await prepared.client.stackOutputs()
                 spinner.stop()
-                UI.writeBlock(output)
+                UI.writeOutputs(outputs)
             } catch {
                 spinner.stop()
                 throw error

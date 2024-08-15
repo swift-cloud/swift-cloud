@@ -1,15 +1,26 @@
 public struct Outputs: Sendable {
 
-    internal let pulumiProjectOutputs: Pulumi.Project.Outputs
+    var pulumiProjectOutputs: Pulumi.Project.Outputs
 
     public init(_ outputs: [String: String] = [:]) {
         self.pulumiProjectOutputs = outputs
+    }
+
+    mutating func merge(_ outputs: Pulumi.Project.Outputs) {
+        pulumiProjectOutputs.merge(outputs) { $1 }
     }
 }
 
 extension Outputs {
 
     public static let noOutputs = Self()
+}
+
+extension Outputs {
+
+    public static func isInternal(_ output: String) -> Bool {
+        output.hasPrefix("_sc:")
+    }
 }
 
 extension Outputs: ExpressibleByDictionaryLiteral {

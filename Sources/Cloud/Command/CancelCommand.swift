@@ -2,8 +2,11 @@ import ArgumentParser
 import Foundation
 
 extension Command {
-    struct Cancel: RunCommand {
-        static let configuration = CommandConfiguration(abstract: "Cancel changes to your application")
+    struct CancelCommand: RunCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "cancel",
+            abstract: "Cancel changes to your application"
+        )
 
         @OptionGroup var options: Options
 

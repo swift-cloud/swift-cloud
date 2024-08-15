@@ -2,8 +2,11 @@ import ArgumentParser
 import Foundation
 
 extension Command {
-    struct Preview: RunCommand {
-        static let configuration = CommandConfiguration(abstract: "Preview changes to your application")
+    struct PreviewCommand: RunCommand {
+        static let configuration = CommandConfiguration(
+            commandName: "preview",
+            abstract: "Preview changes to your application"
+        )
 
         @OptionGroup var options: Options
 

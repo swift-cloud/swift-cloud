@@ -5,6 +5,7 @@ extension AWS {
         public let role: Role
         public let loadBalancerSecurityGroup: AWS.SecurityGroup
         public let instanceSecurityGroup: AWS.SecurityGroup
+        public let tlsCertificate: AWS.TLSCertificate?
         public let applicationLoadBalancer: Resource
         public let service: Resource
         public let concurrency: Int
@@ -33,6 +34,7 @@ extension AWS {
         public init(
             _ name: String,
             targetName: String,
+            domainName: String? = nil,
             concurrency: Int = 1,
             cpu: Int = 1024,
             memory: Int = 2048,
@@ -81,15 +83,20 @@ extension AWS {
                 options: options
             )
 
+            tlsCertificate = domainName.map {
+                AWS.TLSCertificate(domainName: $0, options: options)
+            }
+
             applicationLoadBalancer = Resource(
                 name: "\(name)-alb",
                 type: "awsx:lb:ApplicationLoadBalancer",
                 properties: [
                     "listeners": [
-                        ["port": 80, "protocol": "HTTP"]
-                        // TODO: support HTTPS
-                        // ["port": 443, "protocol": "HTTPS"],
-                    ],
+                        ["port": 80, "protocol": "HTTP"],
+                        tlsCertificate.map { certificate in
+                            ["port": 443, "protocol": "HTTPS", "certificateArn": certificate.arn]
+                        },
+                    ].compacted(),
                     "defaultTargetGroup": [
                         "port": instancePort,
                         "protocol": "HTTP",

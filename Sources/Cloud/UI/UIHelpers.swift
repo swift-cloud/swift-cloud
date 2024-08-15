@@ -48,12 +48,34 @@ extension UI {
 }
 
 extension UI {
-    public static func writeBlock(_ text: String) {
+    public static func writeBlock(_ text: String, bold: Bool = false) {
         let lines = text.split(separator: .newlineSequence)
         for line in lines {
             UI.write("|", width: .small, color: .yellow, bold: true)
-            UI.write("\(line)")
+            UI.write("\(line)", bold: bold)
             UI.newLine()
+        }
+    }
+
+    public static func writeBlock(key: String, value: String) {
+        UI.write("|", width: .small, color: .yellow, bold: true)
+        UI.write("\(key)", width: .medium, bold: true)
+        UI.write("\(value)")
+        UI.newLine()
+    }
+}
+
+extension UI {
+    public static func writeOutputs(_ outputs: [String: AnyCodable]) {
+        guard !outputs.isEmpty else {
+            UI.writeBlock("No outputs")
+            return
+        }
+        for (key, value) in outputs {
+            guard !Outputs.isInternal(key) else {
+                continue
+            }
+            UI.writeBlock(key: key, value: "\(value)")
         }
     }
 }
@@ -115,7 +137,7 @@ extension UI {
             else { return }
             spinner?.succeed()
             spinner = cli.customActivity(
-                frames: frames.map { "\($0) \(label)\n  > \(trimmedLine)" },
+                frames: frames.map { "\($0) \(label)\n  └─ \(trimmedLine)" },
                 success: "",
                 failure: ""
             )

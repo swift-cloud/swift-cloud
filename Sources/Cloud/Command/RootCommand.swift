@@ -5,7 +5,13 @@ import Foundation
 struct Command: ParsableCommand {
     static let configuration = CommandConfiguration(
         abstract: "A utility to deploy Swift applications to the cloud.",
-        subcommands: [Deploy.self, Preview.self, Cancel.self, Remove.self]
+        subcommands: [
+            DeployCommand.self,
+            PreviewCommand.self,
+            CancelCommand.self,
+            RemoveCommand.self,
+            OutputsCommand.self,
+        ]
     )
 }
 
@@ -47,7 +53,10 @@ extension Command.RunCommand {
         )
 
         // Generate the project resources and collect outputs
-        let outputs = try await context.project.build()
+        var outputs = try await context.project.build()
+
+        // Merge outputs
+        outputs.merge(context.store.outputs)
 
         // Build the pulumi project
         let pulumiProject = Pulumi.Project(

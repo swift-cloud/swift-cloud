@@ -78,7 +78,7 @@ extension Pulumi.Client {
         try createFile(atPath: downloadPath, contents: data)
 
         // Extract the archive
-        if platform == "windows" {
+        if Platform.current == .windows {
             // Unzip for Windows
             try await shellOut(
                 to: "powershell",
@@ -131,6 +131,19 @@ extension Pulumi.Client {
         )
 
         return stdout
+    }
+}
+
+extension Pulumi.Client {
+    public func stack() async throws -> Pulumi.Stack {
+        let output = try await invoke(command: "stack", arguments: ["export"])
+        let decoder = JSONDecoder()
+        decoder.configureISO8601DateDecoding()
+        return try decoder.decode(Pulumi.Stack.self, from: .init(output.utf8))
+    }
+
+    public func stackOutputs() async throws -> [String: AnyCodable] {
+        return try await stack().stackResource()?.outputs ?? [:]
     }
 }
 

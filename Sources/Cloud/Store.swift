@@ -34,6 +34,12 @@ public final class Store: @unchecked Sendable {
         get { queue.sync { _environments } }
         set { queue.sync { _environments = newValue } }
     }
+
+    private var _outputs: [String: String] = [:]
+    var outputs: [String: String] {
+        get { queue.sync { _outputs } }
+        set { queue.sync { _outputs = newValue } }
+    }
 }
 
 extension Store {
@@ -47,6 +53,10 @@ extension Store {
 
     public func track(_ environment: Environment) {
         environments.append(environment)
+    }
+
+    public func setOutput(_ output: String, value: String) {
+        outputs[output] = value
     }
 
     public func invoke(_ operation: @escaping Operation) {
