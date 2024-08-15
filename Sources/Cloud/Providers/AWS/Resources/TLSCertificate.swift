@@ -3,9 +3,9 @@ extension AWS {
         public let resource: Resource
 
         public var domainValidationOptions: (recordName: String, recordType: String, recordValue: String) {
-            let recordName = resource.keyPath("domainValidationOptions", "resourceRecordName")
-            let recordType = resource.keyPath("domainValidationOptions", "resourceRecordType")
-            let recordValue = resource.keyPath("domainValidationOptions", "resourceRecordValue")
+            let recordName = resource.keyPath("domainValidationOptions[0]", "resourceRecordName")
+            let recordType = resource.keyPath("domainValidationOptions[0]", "resourceRecordType")
+            let recordValue = resource.keyPath("domainValidationOptions[0]", "resourceRecordValue")
             return (recordName, recordType, recordValue)
         }
 
@@ -19,7 +19,7 @@ extension AWS {
             options: Resource.Options? = nil
         ) {
             resource = Resource(
-                name: domainName,
+                name: "\(domainName)-cert",
                 type: "aws:acm:Certificate",
                 properties: [
                     "domainName": domainName,
@@ -43,12 +43,15 @@ extension AWS.TLSCertificate {
     public struct Validation: ResourceProvider {
         public let resource: Resource
 
-        public init(certificate: AWS.TLSCertificate) {
+        public init(certificate: AWS.TLSCertificate, validationRecord: Resource) {
             resource = Resource(
-                name: "\(certificate.resource.chosenName)-v",
+                name: "\(certificate.resource.chosenName)-validation",
                 type: "aws:acm:CertificateValidation",
                 properties: [
-                    "certificateArn": certificate.arn
+                    "certificateArn": certificate.arn,
+                    "validationRecordFqdns": [
+                        validationRecord.keyPath("fqdn")
+                    ],
                 ],
                 options: certificate.resource.options
             )

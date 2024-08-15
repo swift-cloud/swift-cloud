@@ -5,8 +5,7 @@ extension AWS {
         public let role: Role
         public let loadBalancerSecurityGroup: AWS.SecurityGroup
         public let instanceSecurityGroup: AWS.SecurityGroup
-        public let tlsCertificate: AWS.TLSCertificate?
-        public let tlsCertificateValidation: AWS.TLSCertificate.Validation?
+        public let domainName: AWS.DomainName?
         public let applicationLoadBalancer: Resource
         public let service: Resource
         public let concurrency: Int
@@ -33,17 +32,17 @@ extension AWS {
         }
 
         public var url: String {
-            if tlsCertificate == nil {
-                return "http://\(hostname)"
+            if let domainName {
+                return "https://\(domainName.domainName)"
             } else {
-                return "https://\(hostname)"
+                return "http://\(hostname)"
             }
         }
 
         public init(
             _ name: String,
             targetName: String,
-            domainName: String? = nil,
+            domainName: AWS.DomainName? = nil,
             concurrency: Int = 1,
             cpu: Int = 1024,
             memory: Int = 2048,
@@ -92,21 +91,15 @@ extension AWS {
                 options: options
             )
 
-            tlsCertificate = domainName.map {
-                AWS.TLSCertificate(domainName: $0, options: options)
-            }
-
-            tlsCertificateValidation = tlsCertificate.map {
-                AWS.TLSCertificate.Validation(certificate: $0)
-            }
+            self.domainName = domainName
 
             applicationLoadBalancer = Resource(
                 name: "\(name)-alb",
                 type: "awsx:lb:ApplicationLoadBalancer",
                 properties: [
                     "listeners": [
-                        tlsCertificate
-                            .map { ["port": 443, "protocol": "HTTPS", "certificateArn": $0.arn] }
+                        domainName
+                            .map { ["port": 443, "protocol": "HTTPS", "certificateArn": $0.certificate.arn] }
                             ?? ["port": 80, "protocol": "HTTP"]
                     ],
                     "defaultTargetGroup": [
@@ -117,7 +110,7 @@ extension AWS {
                         "securityGroupId": loadBalancerSecurityGroup.id
                     ],
                 ],
-                dependsOn: tlsCertificateValidation.map { [$0] },
+                dependsOn: domainName.map { [$0.validation] },
                 options: options
             )
 
@@ -168,6 +161,8 @@ extension AWS {
                     metrics: autoScaling.metrics
                 )
             }
+
+            domainName?.aliasTo(hostname: hostname)
 
             Context.current.store.invoke { _ in
                 let dockerFile = Docker.Dockerfile.amazonLinux(targetName: targetName, port: instancePort)

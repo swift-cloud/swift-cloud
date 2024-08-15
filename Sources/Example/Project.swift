@@ -6,7 +6,10 @@ struct Example: Project {
         let server = AWS.WebServer(
             "My Server",
             targetName: "Example",
-            domainName: "hello.swift-cloud.dev"
+            domainName: .init(
+                domainName: "demo.aws.swift.cloud",
+                zoneName: "aws.swift.cloud"
+            )
         )
 
         return Outputs([
