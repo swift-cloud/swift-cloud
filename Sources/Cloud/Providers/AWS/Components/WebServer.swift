@@ -117,6 +117,7 @@ extension AWS {
                         "securityGroupId": loadBalancerSecurityGroup.id
                     ],
                 ],
+                dependsOn: tlsCertificateValidation.map { [$0] },
                 options: options
             )
 
