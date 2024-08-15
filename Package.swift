@@ -15,7 +15,7 @@ let package = Package(
         .package(url: "https://github.com/jpsim/Yams", from: "5.1.3"),
         .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.21.2"),
-        .package(url: "https://github.com/tuist/Command", from: "0.6.0"),
+        .package(url: "https://github.com/tuist/Command", from: "0.7.3"),
         .package(url: "https://github.com/vapor/console-kit", from: "4.14.3"),
     ],
     targets: [
