@@ -12,7 +12,7 @@ extension AWS {
 
         public init(
             domainName: String,
-            zoneName: String,
+            zoneName: String? = nil,
             options: Resource.Options? = nil
         ) {
             self.domainName = domainName
@@ -23,7 +23,7 @@ extension AWS {
                     "fn::invoke": [
                         "function": "aws:route53:getZone",
                         "arguments": [
-                            "name": zoneName
+                            "name": zoneName ?? Self.inferredZoneName(domainName: domainName)
                         ],
                     ]
                 ]
@@ -76,5 +76,16 @@ extension AWS.DomainName {
             ],
             options: certificate.resource.options
         )
+    }
+}
+
+extension AWS.DomainName {
+    fileprivate static func inferredZoneName(domainName: String) -> String {
+        let parts = domainName.split(separator: ".")
+        if parts.count > 2 {
+            return parts.dropFirst().joined(separator: ".")
+        } else {
+            return domainName
+        }
     }
 }

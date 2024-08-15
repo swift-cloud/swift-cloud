@@ -228,6 +228,23 @@ cron.invoke(
 )
 ```
 
+#### Domain Name
+
+The `DomainName` construct manages a TLS certificate and the necessary validation, and can be linked to a `WebServer` to provide a fully managed domain name.
+
+> Important: You must host your domain in a Route53 hosted zone in your AWS account to use this construct. In the future we will add support for domains hosted on other providers.
+
+```swift
+// Optionally pass a `zoneName` if the domain is not simply inferred from the `domainName`
+let domainName = AWS.DomainName(domainName: "www.example.com")
+
+let server = AWS.WebServer(
+    "my-vapor-web-server",
+    targetName: "App",
+    domainName: domainName
+)
+```
+
 ### Linking
 
 You can link resources together to provide the necessary permissions to access each other. This is more secure than sharing access key ids and secrets in environment variables.
