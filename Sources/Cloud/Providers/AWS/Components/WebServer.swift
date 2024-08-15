@@ -31,6 +31,10 @@ extension AWS {
             applicationLoadBalancer.keyPath("loadBalancer", "dnsName")
         }
 
+        public var zoneId: String {
+            applicationLoadBalancer.keyPath("loadBalancer", "zoneId")
+        }
+
         public var url: String {
             if let domainName {
                 return "https://\(domainName.domainName)"
@@ -162,7 +166,10 @@ extension AWS {
                 )
             }
 
-            domainName?.aliasTo(hostname: hostname)
+            domainName?.aliasTo(
+                hostname: hostname,
+                zoneId: zoneId
+            )
 
             Context.current.store.invoke { _ in
                 let dockerFile = Docker.Dockerfile.amazonLinux(targetName: targetName, port: instancePort)

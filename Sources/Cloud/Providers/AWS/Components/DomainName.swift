@@ -58,7 +58,7 @@ extension AWS {
 }
 
 extension AWS.DomainName {
-    public func aliasTo(hostname: String) {
+    public func aliasTo(hostname: String, zoneId: String) {
         _ = Resource(
             name: "\(domainName)-alias",
             type: "aws:route53:Record",
@@ -70,7 +70,7 @@ extension AWS.DomainName {
                     [
                         "name": hostname,
                         "evaluateTargetHealth": false,
-                        "zoneId": hostedZone.keyPath("id"),
+                        "zoneId": zoneId,
                     ]
                 ],
             ],
