@@ -128,6 +128,14 @@ Preview changes before deploying:
 swift run Infra preview --stage development
 ```
 
+### Outputs
+
+Show the outputs of your deployment:
+
+```bash
+swift run Infra outputs --stage development
+```
+
 ### Cancel
 
 Cancel a deployment:
