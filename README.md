@@ -88,7 +88,7 @@ struct SwiftCloudDemo: Project {
         )
 
         return Outputs([
-            "url": "http://\(server.hostname)",
+            "url": server.url,
         ])
     }
 }

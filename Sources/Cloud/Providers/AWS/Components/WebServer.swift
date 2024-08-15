@@ -31,6 +31,14 @@ extension AWS {
             applicationLoadBalancer.keyPath("loadBalancer", "dnsName")
         }
 
+        public var url: String {
+            if tlsCertificate == nil {
+                return "http://\(hostname)"
+            } else {
+                return "https://\(hostname)"
+            }
+        }
+
         public init(
             _ name: String,
             targetName: String,
@@ -92,11 +100,10 @@ extension AWS {
                 type: "awsx:lb:ApplicationLoadBalancer",
                 properties: [
                     "listeners": [
-                        ["port": 80, "protocol": "HTTP"],
-                        tlsCertificate.map { certificate in
-                            ["port": 443, "protocol": "HTTPS", "certificateArn": certificate.arn]
-                        },
-                    ].compacted(),
+                        tlsCertificate
+                            .map { ["port": 443, "protocol": "HTTPS", "certificateArn": $0.arn] }
+                            ?? ["port": 80, "protocol": "HTTP"]
+                    ],
                     "defaultTargetGroup": [
                         "port": instancePort,
                         "protocol": "HTTP",

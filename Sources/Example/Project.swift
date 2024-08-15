@@ -3,18 +3,14 @@ import Cloud
 @main
 struct Example: Project {
     func build() async throws -> Outputs {
-        let function = AWS.Function(
-            "My Function",
+        let server = AWS.WebServer(
+            "My Server",
             targetName: "Example",
-            url: .enabled(cors: true)
+            domainName: "hello.swift-cloud.dev"
         )
 
-        let bucket = AWS.Bucket("My Bucket")
-
-        function.link(bucket)
-
         return Outputs([
-            "url": function.url
+            "url": server.url
         ])
     }
 }
