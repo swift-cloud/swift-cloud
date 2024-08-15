@@ -19,7 +19,7 @@ extension Command {
                 UI.writeOutputs(outputs)
             } catch {
                 spinner.stop()
-                throw error
+                UI.error("➜  No deployments found for this stage")
             }
         }
     }

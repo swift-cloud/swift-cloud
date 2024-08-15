@@ -36,7 +36,7 @@ extension UI {
         newLine: Bool = false
     ) {
         var text = text
-        if let width {
+        if let width, text.count < width.rawValue {
             text = text.padding(toLength: width.rawValue, withPad: " ", startingAt: 0)
         }
         cli.output(
