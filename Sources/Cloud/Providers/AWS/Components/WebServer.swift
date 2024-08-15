@@ -6,6 +6,7 @@ extension AWS {
         public let loadBalancerSecurityGroup: AWS.SecurityGroup
         public let instanceSecurityGroup: AWS.SecurityGroup
         public let tlsCertificate: AWS.TLSCertificate?
+        public let tlsCertificateValidation: AWS.TLSCertificate.Validation?
         public let applicationLoadBalancer: Resource
         public let service: Resource
         public let concurrency: Int
@@ -93,6 +94,10 @@ extension AWS {
 
             tlsCertificate = domainName.map {
                 AWS.TLSCertificate(domainName: $0, options: options)
+            }
+
+            tlsCertificateValidation = tlsCertificate.map {
+                AWS.TLSCertificate.Validation(certificate: $0)
             }
 
             applicationLoadBalancer = Resource(

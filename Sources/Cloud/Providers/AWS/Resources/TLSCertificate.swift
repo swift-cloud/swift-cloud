@@ -38,3 +38,20 @@ extension AWS.TLSCertificate {
         case ecdsa = "EC_prime256v1"
     }
 }
+
+extension AWS.TLSCertificate {
+    public struct Validation: ResourceProvider {
+        public let resource: Resource
+
+        public init(certificate: AWS.TLSCertificate) {
+            resource = Resource(
+                name: "\(certificate.resource.chosenName)-v",
+                type: "aws:acm:CertificateValidation",
+                properties: [
+                    "certificateArn": certificate.arn
+                ],
+                options: certificate.resource.options
+            )
+        }
+    }
+}
