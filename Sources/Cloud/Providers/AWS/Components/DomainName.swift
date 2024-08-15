@@ -11,7 +11,7 @@ extension AWS {
         }
 
         public init(
-            domainName: String,
+            _ domainName: String,
             zoneName: String? = nil,
             options: Resource.Options? = nil
         ) {

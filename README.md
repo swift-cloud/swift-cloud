@@ -236,7 +236,7 @@ The `DomainName` construct manages a TLS certificate and the necessary validatio
 
 ```swift
 // Optionally pass a `zoneName` if the domain is not simply inferred from the `domainName`
-let domainName = AWS.DomainName(domainName: "www.example.com")
+let domainName = AWS.DomainName("www.example.com")
 
 let server = AWS.WebServer(
     "my-vapor-web-server",
