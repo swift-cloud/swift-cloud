@@ -82,10 +82,7 @@ extension AWS {
                         "defaultTtl": 0,
                         "forwardedValues": [
                             "queryString": true,
-                            "cookies": [
-                                "forward": true,
-                                "whitelistedNames": "all",
-                            ],
+                            "cookies": ["forward": "all"],
                         ],
                     ] as AnyEncodable,
                     "orderedCacheBehaviors": origins.enumerated().map { index, origin in
@@ -111,10 +108,7 @@ extension AWS {
                             "defaultTtl": 0,
                             "forwardedValues": [
                                 "queryString": true,
-                                "cookies": [
-                                    "forward": true,
-                                    "whitelistedNames": "all",
-                                ],
+                                "cookies": ["forward": "all"],
                             ],
                         ] as AnyEncodable
                     },
