@@ -80,10 +80,21 @@ extension AWS.DomainName {
 extension AWS.DomainName {
     fileprivate static func inferredZoneName(domainName: String) -> String {
         let parts = domainName.split(separator: ".")
-        if parts.count > 2 {
+        let countThreshold =
+            switch domainName {
+            case _ where domainName.hasSuffix(".co.uk"): 3
+            case _ where domainName.hasSuffix(".com.au"): 3
+            case _ where domainName.hasSuffix(".co.jp"): 3
+            case _ where domainName.hasSuffix(".co.nz"): 3
+            case _ where domainName.hasSuffix(".co.za"): 3
+            case _ where domainName.hasSuffix(".com.br"): 3
+            case _ where domainName.hasSuffix(".com.mx"): 3
+            default: 2
+            }
+        if parts.count > countThreshold {
             return parts.dropFirst().joined(separator: ".")
         } else {
-            return domainName
+            return parts.joined(separator: ".")
         }
     }
 }
