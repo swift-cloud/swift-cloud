@@ -13,6 +13,20 @@ extension AWS {
             function.name
         }
 
+        public var hostname: String {
+            guard let functionUrl else {
+                fatalError("Function created without a url. Please pass `url: .enabled()` to the function constructor.")
+            }
+            let arnDetails = Variable.function(
+                name: "\(function.chosenName)-arn",
+                function: "aws:getArn",
+                arguments: ["arn": function.arn]
+            )
+            let region = arnDetails.keyPath("region")
+            let urlId = functionUrl.keyPath("urlId")
+            return "\(urlId).lambda-url.\(region).on.aws"
+        }
+
         public var url: String {
             guard let functionUrl else {
                 fatalError("Function created without a url. Please pass `url: .enabled()` to the function constructor.")

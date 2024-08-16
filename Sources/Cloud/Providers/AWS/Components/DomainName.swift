@@ -17,15 +17,11 @@ extension AWS {
         ) {
             self.domainName = domainName
 
-            hostedZone = Variable(
+            hostedZone = Variable.function(
                 name: "\(domainName)-zone",
-                definition: [
-                    "fn::invoke": [
-                        "function": "aws:route53:getZone",
-                        "arguments": [
-                            "name": zoneName ?? Self.inferredZoneName(domainName: domainName)
-                        ],
-                    ]
+                function: "aws:route53:getZone",
+                arguments: [
+                    "name": zoneName ?? Self.inferredZoneName(domainName: domainName)
                 ]
             )
 

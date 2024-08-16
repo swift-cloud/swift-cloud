@@ -7,7 +7,7 @@ public struct Variable: Sendable {
     public let definition: AnyEncodable
 
     internal var internalName: String {
-        tokenize(chosenName)
+        tokenize(Context.current.stage, chosenName)
     }
 
     public init(name: String, definition: AnyEncodable) {
@@ -36,5 +36,23 @@ extension VariableProvider {
 
     public var value: String {
         keyPath()
+    }
+}
+
+extension Variable {
+    public static func function(
+        name: String,
+        function: String,
+        arguments: [String: Any] = [:]
+    ) -> Variable {
+        .init(
+            name: name,
+            definition: [
+                "fn::invoke": [
+                    "function": function,
+                    "arguments": arguments,
+                ]
+            ]
+        )
     }
 }
