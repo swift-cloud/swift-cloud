@@ -39,12 +39,28 @@ extension AWS {
                 )
             }
 
-            let cachePolicy = Variable.function(
+            let cachePolicy = Resource(
                 name: "\(name)-cache-policy",
-                function: "aws:cloudfront:getCachePolicy",
-                arguments: [
-                    "name": "UseOriginCacheControlHeaders-QueryStrings"
-                ]
+                type: "aws:cloudfront:CachePolicy",
+                properties: [
+                    "defaultTtl": 0,
+                    "minTtl": 0,
+                    "maxTtl": 31_536_000,
+                    "parametersInCacheKeyAndForwardedToOrigin": [
+                        "cookiesConfig": [
+                            "cookieBehavior": "none"
+                        ],
+                        "headersConfig": [
+                            "headerBehavior": "none"
+                        ],
+                        "queryStringsConfig": [
+                            "queryStringBehavior": "all"
+                        ],
+                        "enableAcceptEncodingGzip": true,
+                        "enableAcceptEncodingBrotli": true,
+                    ],
+                ],
+                options: .provider(cfProvider)
             )
 
             let originRequestPolicy = Variable.function(
