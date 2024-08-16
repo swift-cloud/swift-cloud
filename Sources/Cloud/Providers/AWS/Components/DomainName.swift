@@ -1,6 +1,7 @@
 extension AWS {
     public struct DomainName: Component {
         public let domainName: String
+        public let zoneName: String?
         public let certificate: AWS.TLSCertificate
         public let validation: AWS.TLSCertificate.Validation
         public let hostedZone: Variable
@@ -16,6 +17,7 @@ extension AWS {
             options: Resource.Options? = nil
         ) {
             self.domainName = domainName
+            self.zoneName = zoneName
 
             hostedZone = Variable.function(
                 name: "\(domainName)-zone",

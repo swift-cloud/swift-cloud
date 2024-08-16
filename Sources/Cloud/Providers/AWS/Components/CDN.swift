@@ -25,11 +25,19 @@ extension AWS {
 
         public init(
             _ name: String,
-            origins: [(path: String, hostname: String)],
+            origins: [(path: String, url: String)],
             domainName: AWS.DomainName? = nil,
             options: Resource.Options? = nil
         ) {
-            self.domainName = domainName
+            let cfProvider = AWS.Provider("cf", region: "us-east-1")
+
+            self.domainName = domainName.map {
+                AWS.DomainName(
+                    $0.domainName,
+                    zoneName: $0.zoneName,
+                    options: .provider(cfProvider)
+                )
+            }
 
             distribution = Resource(
                 name: name,
@@ -51,12 +59,12 @@ extension AWS {
                     },
                     "origins": origins.enumerated().map { index, origin in
                         [
-                            "domainName": origin.hostname,
+                            "domainName": origin.url.split(separator: "://").last!,
                             "originId": "origin-\(index)",
                             "customOriginConfig": [
                                 "httpPort": 80,
                                 "httpsPort": 443,
-                                "originProtocolPolicy": "https-only",
+                                "originProtocolPolicy": origin.url.hasPrefix("https") ? "https-only" : "http-only",
                                 "originSslProtocols": ["TLSv1.2"],
                             ],
                         ] as AnyEncodable
@@ -119,7 +127,7 @@ extension AWS {
                         "minimumProtocolVersion": "TLSv1.2_2021",
                     ] as AnyEncodable,
                 ],
-                options: options
+                options: .provider(cfProvider)
             )
         }
     }

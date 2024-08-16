@@ -28,10 +28,7 @@ extension AWS {
         }
 
         public var url: String {
-            guard let functionUrl else {
-                fatalError("Function created without a url. Please pass `url: .enabled()` to the function constructor.")
-            }
-            return functionUrl.keyPath("functionUrl")
+            return "https://\(hostname)"
         }
 
         public init(
