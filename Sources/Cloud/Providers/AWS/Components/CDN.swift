@@ -39,6 +39,22 @@ extension AWS {
                 )
             }
 
+            let cachePolicy = Variable.function(
+                name: "\(name)-cache-policy",
+                function: "aws:cloudfront:getCachePolicy",
+                arguments: [
+                    "name": "UseOriginCacheControlHeaders-QueryStrings"
+                ]
+            )
+
+            let originRequestPolicy = Variable.function(
+                name: "\(name)-origin-request-policy",
+                function: "aws:cloudfront:getOriginRequestPolicy",
+                arguments: [
+                    "name": "Managed-AllViewerExceptHostHeader"
+                ]
+            )
+
             distribution = Resource(
                 name: name,
                 type: "aws:cloudfront:Distribution",
@@ -88,10 +104,8 @@ extension AWS {
                         ],
                         "compress": true,
                         "defaultTtl": 0,
-                        "forwardedValues": [
-                            "queryString": true,
-                            "cookies": ["forward": "all"],
-                        ],
+                        "cachePolicyId": cachePolicy.keyPath("id"),
+                        "originRequestPolicyId": originRequestPolicy.keyPath("id"),
                     ] as AnyEncodable,
                     "orderedCacheBehaviors": origins.enumerated().map { index, origin in
                         [
@@ -114,10 +128,8 @@ extension AWS {
                             ],
                             "compress": true,
                             "defaultTtl": 0,
-                            "forwardedValues": [
-                                "queryString": true,
-                                "cookies": ["forward": "all"],
-                            ],
+                            "cachePolicyId": cachePolicy.keyPath("id"),
+                            "originRequestPolicyId": originRequestPolicy.keyPath("id"),
                         ] as AnyEncodable
                     },
                     "viewerCertificate": [
