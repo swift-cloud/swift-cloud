@@ -103,6 +103,9 @@ extension AWS {
                                 "originProtocolPolicy": origin.isHTTPS ? "https-only" : "http-only",
                                 "originSslProtocols": ["TLSv1.2"],
                             ],
+                            "originShield": origin.shieldRegion.map {
+                                ["enabled": true, "originShieldRegion": $0] as Any
+                            },
                         ]
                     },
                     "defaultCacheBehavior": [
@@ -175,6 +178,7 @@ extension AWS.CDN {
     public struct Origin {
         public let url: String
         public let path: String
+        public let shieldRegion: String?
 
         public var id: String {
             tokenize("origin", isDefault ? "default" : isRoot ? "root" : path)
@@ -196,38 +200,39 @@ extension AWS.CDN {
             path == "/"
         }
 
-        public init(url: String, path: String) {
+        public init(url: String, path: String, shieldRegion: String? = nil) {
             self.url = url
             self.path = path
+            self.shieldRegion = shieldRegion
         }
     }
 }
 
 extension AWS.CDN.Origin {
-    public static func function(_ function: AWS.Function, path: String) -> Self {
-        .init(url: function.url, path: path)
+    public static func function(_ function: AWS.Function, path: String, shieldRegion: String? = nil) -> Self {
+        .init(url: function.url, path: path, shieldRegion: shieldRegion)
     }
 
-    public static func webServer(_ server: AWS.WebServer, path: String) -> Self {
-        .init(url: server.url, path: path)
+    public static func webServer(_ server: AWS.WebServer, path: String, shieldRegion: String? = nil) -> Self {
+        .init(url: server.url, path: path, shieldRegion: shieldRegion)
     }
 
-    public static func url(_ url: String, path: String) -> Self {
-        .init(url: url, path: path)
+    public static func url(_ url: String, path: String, shieldRegion: String? = nil) -> Self {
+        .init(url: url, path: path, shieldRegion: shieldRegion)
     }
 }
 
 extension [AWS.CDN.Origin] {
-    public static func function(_ function: AWS.Function) -> Self {
-        [.function(function, path: "*")]
+    public static func function(_ function: AWS.Function, shieldRegion: String? = nil) -> Self {
+        [.function(function, path: "*", shieldRegion: shieldRegion)]
     }
 
-    public static func webServer(_ server: AWS.WebServer) -> Self {
-        [.webServer(server, path: "*")]
+    public static func webServer(_ server: AWS.WebServer, shieldRegion: String? = nil) -> Self {
+        [.webServer(server, path: "*", shieldRegion: shieldRegion)]
     }
 
-    public static func url(_ url: String) -> Self {
-        [.url(url, path: "*")]
+    public static func url(_ url: String, shieldRegion: String? = nil) -> Self {
+        [.url(url, path: "*", shieldRegion: shieldRegion)]
     }
 
     fileprivate func defaultOrigin() -> AWS.CDN.Origin? {
