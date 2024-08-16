@@ -59,7 +59,7 @@ extension AWS {
                     },
                     "origins": origins.enumerated().map { index, origin in
                         [
-                            "domainName": origin.url.split(separator: "://").last!,
+                            "domainName": String(origin.url.split(separator: "://").last!),
                             "originId": "origin-\(index)",
                             "customOriginConfig": [
                                 "httpPort": 80,
