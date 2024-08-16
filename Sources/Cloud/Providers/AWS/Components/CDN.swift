@@ -55,6 +55,10 @@ extension AWS {
                 ]
             )
 
+            guard let defaultOrigin = origins.defaultOrigin() else {
+                fatalError("Missing a default origin. You must specify at least one origin with `path: *`.")
+            }
+
             distribution = Resource(
                 name: name,
                 type: "aws:cloudfront:Distribution",
@@ -86,7 +90,7 @@ extension AWS {
                         ]
                     },
                     "defaultCacheBehavior": [
-                        "targetOriginId": origins.defaultOrigin().id,
+                        "targetOriginId": defaultOrigin.id,
                         "viewerProtocolPolicy": "redirect-to-https",
                         "allowedMethods": [
                             "GET",
@@ -210,8 +214,8 @@ extension [AWS.CDN.Origin] {
         [.url(url, path: "*")]
     }
 
-    fileprivate func defaultOrigin() -> AWS.CDN.Origin {
-        self.first(where: { $0.isDefault }) ?? self.first!
+    fileprivate func defaultOrigin() -> AWS.CDN.Origin? {
+        self.first(where: { $0.isDefault })
     }
 
     fileprivate func withoutDefaultOrigin() -> [AWS.CDN.Origin] {
