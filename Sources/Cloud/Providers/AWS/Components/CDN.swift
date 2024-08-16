@@ -127,6 +127,7 @@ extension AWS {
                         "minimumProtocolVersion": "TLSv1.2_2021",
                     ] as AnyEncodable,
                 ],
+                dependsOn: domainName.map { [$0.validation] },
                 options: .provider(cfProvider)
             )
 
