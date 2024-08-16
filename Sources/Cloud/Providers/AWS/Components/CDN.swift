@@ -129,6 +129,11 @@ extension AWS {
                 ],
                 options: .provider(cfProvider)
             )
+
+            domainName?.aliasTo(
+                hostname: hostname,
+                zoneId: zoneId
+            )
         }
     }
 }
