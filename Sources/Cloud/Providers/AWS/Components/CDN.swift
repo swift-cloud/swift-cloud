@@ -56,7 +56,7 @@ extension AWS {
                             "customOriginConfig": [
                                 "httpPort": 80,
                                 "httpsPort": 443,
-                                "originProtocolPolicy": "http-only",
+                                "originProtocolPolicy": "https-only",
                                 "originSslProtocols": ["TLSv1.2"],
                             ],
                         ] as AnyEncodable
