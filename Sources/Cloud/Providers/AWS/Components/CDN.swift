@@ -40,7 +40,7 @@ extension AWS {
                     "isIpv6Enabled": true,
                     "retainOnDelete": false,
                     "waitForDeployment": false,
-                    "httpVersion": "http3",
+                    "httpVersion": "http2and3",
                     "restrictions": [
                         "geoRestriction": [
                             "restrictionType": "none"
