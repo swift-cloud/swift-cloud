@@ -1,6 +1,7 @@
 extension AWS {
     public struct DomainName: Component {
         public let domainName: String
+        public let zoneName: String?
         public let certificate: AWS.TLSCertificate
         public let validation: AWS.TLSCertificate.Validation
         public let hostedZone: Variable
@@ -16,16 +17,13 @@ extension AWS {
             options: Resource.Options? = nil
         ) {
             self.domainName = domainName
+            self.zoneName = zoneName
 
-            hostedZone = Variable(
+            hostedZone = Variable.function(
                 name: "\(domainName)-zone",
-                definition: [
-                    "fn::invoke": [
-                        "function": "aws:route53:getZone",
-                        "arguments": [
-                            "name": zoneName ?? Self.inferredZoneName(domainName: domainName)
-                        ],
-                    ]
+                function: "aws:route53:getZone",
+                arguments: [
+                    "name": zoneName ?? Self.inferredZoneName(domainName: domainName)
                 ]
             )
 
@@ -42,9 +40,8 @@ extension AWS {
                     "name": certificate.domainValidationOptions.recordName,
                     "type": certificate.domainValidationOptions.recordType,
                     "ttl": 60,
-                    "records": [
-                        certificate.domainValidationOptions.recordValue
-                    ],
+                    "allowOverwrite": true,
+                    "records": [certificate.domainValidationOptions.recordValue],
                 ],
                 options: options
             )
@@ -66,6 +63,7 @@ extension AWS.DomainName {
                 "name": domainName,
                 "type": "A",
                 "zoneId": hostedZone.keyPath("id"),
+                "allowOverwrite": true,
                 "aliases": [
                     [
                         "name": hostname,

@@ -197,6 +197,39 @@ let lambda = AWS.Function(
 )
 ```
 
+#### CDN
+
+This component creates a CDN that sits in front of your application. It can be used to cache your application assets, or to serve your application from a custom domain.
+
+```swift
+let cdn = AWS.CDN(
+    "my-cdn",
+    origins: .webServer(server)
+)
+```
+
+You can also route traffic on different paths to different resoruces:
+
+```swift
+let cdn = AWS.CDN(
+    "my-cdn",
+    origins: [
+        .function(function, path: "/api/*"),
+        .webServer(server, path: "*")
+    ]
+)
+```
+
+And of course you can use a custom domain:
+
+```swift
+let cdn = AWS.CDN(
+    "my-cdn",
+    origins: .function(function),
+    domainName: .init("www.example.com")
+)
+```
+
 #### Bucket
 
 ```swift
