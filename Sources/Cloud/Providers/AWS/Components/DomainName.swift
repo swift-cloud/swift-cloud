@@ -63,7 +63,7 @@ extension AWS.DomainName {
                 "name": domainName,
                 "type": "A",
                 "zoneId": hostedZone.keyPath("id"),
-                "allowOverwrite": true,
+                "allowOverwrite": !Context.current.isProduction,
                 "aliases": [
                     [
                         "name": hostname,

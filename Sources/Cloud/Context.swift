@@ -14,6 +14,10 @@ public final class Context: Sendable {
         tokenize(package.name)
     }
 
+    public var isProduction: Bool {
+        stage == "production" || stage == "prod"
+    }
+
     init(stage: String, project: any Project, package: Package, store: Store, builder: Builder) {
         self.stage = tokenize(stage)
         self.project = project
