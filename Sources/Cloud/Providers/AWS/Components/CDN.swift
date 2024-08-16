@@ -72,9 +72,27 @@ extension AWS {
                     "defaultCacheBehavior": [
                         "targetOriginId": "origin-0",
                         "viewerProtocolPolicy": "redirect-to-https",
-                        "allowedMethods": [],
-                        "cachedMethods": [],
-                    ],
+                        "allowedMethods": [
+                            "GET",
+                            "HEAD",
+                            "OPTIONS",
+                            "PUT",
+                            "POST",
+                            "PATCH",
+                            "DELETE",
+                        ],
+                        "cachedMethods": [
+                            "GET",
+                            "HEAD",
+                            "OPTIONS",
+                        ],
+                        "compress": true,
+                        "defaultTtl": 0,
+                        "forwardedValues": [
+                            "queryString": true,
+                            "cookies": ["forward": "all"],
+                        ],
+                    ] as AnyEncodable,
                     "orderedCacheBehaviors": origins.enumerated().map { index, origin in
                         [
                             "pathPattern": origin.path,
