@@ -9,6 +9,10 @@ extension AWS {
             queue.name
         }
 
+        public var region: String {
+            getARN(queue).region
+        }
+
         public var url: String {
             queue.keyPath("url")
         }

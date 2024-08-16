@@ -8,6 +8,10 @@ extension AWS {
             bucket.id
         }
 
+        public var region: String {
+            getARN(bucket).region
+        }
+
         public var hostname: String {
             bucket.keyPath("bucketRegionalDomainName")
         }

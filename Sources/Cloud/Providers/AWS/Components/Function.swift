@@ -13,16 +13,14 @@ extension AWS {
             function.name
         }
 
+        public var region: String {
+            getARN(function).region
+        }
+
         public var hostname: String {
             guard let functionUrl else {
                 fatalError("Function created without a url. Please pass `url: .enabled()` to the function constructor.")
             }
-            let arnDetails = Variable.function(
-                name: "\(function.chosenName)-arn",
-                function: "aws:getArn",
-                arguments: ["arn": function.arn]
-            )
-            let region = arnDetails.keyPath("region")
             let urlId = functionUrl.keyPath("urlId")
             return "\(urlId).lambda-url.\(region).on.aws"
         }

@@ -19,6 +19,10 @@ extension AWS {
             service.chosenName
         }
 
+        public var region: String {
+            getARN(cluster).region
+        }
+
         public var serviceName: String {
             service.keyPath("service", "name")
         }
