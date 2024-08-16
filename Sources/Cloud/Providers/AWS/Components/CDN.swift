@@ -25,7 +25,7 @@ extension AWS {
 
         public init(
             _ name: String,
-            origins: [(path: String, url: String)],
+            origins: [Origin],
             domainName: AWS.DomainName? = nil,
             options: Resource.Options? = nil
         ) {
@@ -59,12 +59,12 @@ extension AWS {
                     },
                     "origins": origins.enumerated().map { index, origin in
                         [
-                            "domainName": String(origin.url.split(separator: "://").last!),
+                            "domainName": origin.hostname,
                             "originId": "origin-\(index)",
                             "customOriginConfig": [
                                 "httpPort": 80,
                                 "httpsPort": 443,
-                                "originProtocolPolicy": origin.url.hasPrefix("https") ? "https-only" : "http-only",
+                                "originProtocolPolicy": origin.isHTTPS ? "https-only" : "http-only",
                                 "originSslProtocols": ["TLSv1.2"],
                             ],
                         ] as AnyEncodable
@@ -136,5 +136,53 @@ extension AWS {
                 zoneId: zoneId
             )
         }
+    }
+}
+
+extension AWS.CDN {
+    public struct Origin {
+        public let url: String
+        public let path: String
+
+        public var hostname: String {
+            .init(url.split(separator: "://").last!)
+        }
+
+        public var isHTTPS: Bool {
+            url.hasPrefix("https")
+        }
+
+        public init(url: String, path: String) {
+            self.url = url
+            self.path = path
+        }
+    }
+}
+
+extension AWS.CDN.Origin {
+    public static func function(_ function: AWS.Function, path: String = "*") -> Self {
+        .init(url: function.url, path: path)
+    }
+
+    public static func webServer(_ server: AWS.WebServer, path: String = "*") -> Self {
+        .init(url: server.url, path: path)
+    }
+
+    public static func url(_ url: String, path: String = "*") -> Self {
+        .init(url: url, path: path)
+    }
+}
+
+extension [AWS.CDN.Origin] {
+    public static func function(_ function: AWS.Function) -> Self {
+        [.function(function)]
+    }
+
+    public static func webServer(_ server: AWS.WebServer) -> Self {
+        [.webServer(server)]
+    }
+
+    public static func url(_ url: String) -> Self {
+        [.url(url)]
     }
 }
