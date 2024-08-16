@@ -184,30 +184,30 @@ extension AWS.CDN {
 }
 
 extension AWS.CDN.Origin {
-    public static func function(_ function: AWS.Function, path: String = "*") -> Self {
+    public static func function(_ function: AWS.Function, path: String) -> Self {
         .init(url: function.url, path: path)
     }
 
-    public static func webServer(_ server: AWS.WebServer, path: String = "*") -> Self {
+    public static func webServer(_ server: AWS.WebServer, path: String) -> Self {
         .init(url: server.url, path: path)
     }
 
-    public static func url(_ url: String, path: String = "*") -> Self {
+    public static func url(_ url: String, path: String) -> Self {
         .init(url: url, path: path)
     }
 }
 
 extension [AWS.CDN.Origin] {
     public static func function(_ function: AWS.Function) -> Self {
-        [.function(function)]
+        [.function(function, path: "*")]
     }
 
     public static func webServer(_ server: AWS.WebServer) -> Self {
-        [.webServer(server)]
+        [.webServer(server, path: "*")]
     }
 
     public static func url(_ url: String) -> Self {
-        [.url(url)]
+        [.url(url, path: "*")]
     }
 
     fileprivate func defaultOrigin() -> AWS.CDN.Origin {
