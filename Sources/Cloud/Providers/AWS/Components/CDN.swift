@@ -157,7 +157,7 @@ extension AWS.CDN {
         public let path: String
 
         public var id: String {
-            tokenize("origin", path)
+            tokenize("origin", isDefault ? "default" : isRoot ? "root" : path)
         }
 
         public var hostname: String {
@@ -170,6 +170,10 @@ extension AWS.CDN {
 
         public var isDefault: Bool {
             path == "*" || path == "/*"
+        }
+
+        public var isRoot: Bool {
+            path == "/"
         }
 
         public init(url: String, path: String) {
