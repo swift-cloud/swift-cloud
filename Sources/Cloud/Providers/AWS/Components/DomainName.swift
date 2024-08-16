@@ -40,9 +40,8 @@ extension AWS {
                     "name": certificate.domainValidationOptions.recordName,
                     "type": certificate.domainValidationOptions.recordType,
                     "ttl": 60,
-                    "records": [
-                        certificate.domainValidationOptions.recordValue
-                    ],
+                    "allowOverwrite": true,
+                    "records": [certificate.domainValidationOptions.recordValue],
                 ],
                 options: options
             )
@@ -64,6 +63,7 @@ extension AWS.DomainName {
                 "name": domainName,
                 "type": "A",
                 "zoneId": hostedZone.keyPath("id"),
+                "allowOverwrite": true,
                 "aliases": [
                     [
                         "name": hostname,
