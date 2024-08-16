@@ -2,6 +2,8 @@
 
 The fastest way to build and deploy server side Swift applications.
 
+Swift Cloud is based on the premise that infrastructure should be defined along side your application, in the same language as your application. In our case, Swift. Define a new target, describe your infrastructure, and deploy it with a single command. There's no Dockerfiles, no Terrafrom configurations, no Node.js packages. Everything is defined in Swift and the complex configuration is handled behind the scenes, using modern architecture best practices.
+
 ```swift
 AWS.WebServer(
     "my-vapor-app",
