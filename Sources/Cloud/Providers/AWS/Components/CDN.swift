@@ -83,7 +83,8 @@ extension AWS {
                         "forwardedValues": [
                             "queryString": true,
                             "cookies": [
-                                "forward": true
+                                "forward": true,
+                                "whitelistedNames": "all",
                             ],
                         ],
                     ] as AnyEncodable,
@@ -111,7 +112,8 @@ extension AWS {
                             "forwardedValues": [
                                 "queryString": true,
                                 "cookies": [
-                                    "forward": true
+                                    "forward": true,
+                                    "whitelistedNames": "all",
                                 ],
                             ],
                         ] as AnyEncodable
