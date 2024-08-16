@@ -69,6 +69,12 @@ extension AWS {
                             ],
                         ] as AnyEncodable
                     },
+                    "defaultCacheBehavior": [
+                        "targetOriginId": "origin-0",
+                        "viewerProtocolPolicy": "redirect-to-https",
+                        "allowedMethods": [],
+                        "cachedMethods": [],
+                    ],
                     "orderedCacheBehaviors": origins.enumerated().map { index, origin in
                         [
                             "pathPattern": origin.path,
