@@ -73,20 +73,20 @@ extension AWS {
                     "aliases": domainName.map {
                         [$0.domainName]
                     },
-                    "origins": origins.enumerated().map { index, origin in
+                    "origins": origins.map { origin in
                         [
                             "domainName": origin.hostname,
-                            "originId": "origin-\(index)",
+                            "originId": origin.id,
                             "customOriginConfig": [
                                 "httpPort": 80,
                                 "httpsPort": 443,
                                 "originProtocolPolicy": origin.isHTTPS ? "https-only" : "http-only",
                                 "originSslProtocols": ["TLSv1.2"],
                             ],
-                        ] as AnyEncodable
+                        ]
                     },
                     "defaultCacheBehavior": [
-                        "targetOriginId": "origin-0",
+                        "targetOriginId": origins.defaultOrigin().id,
                         "viewerProtocolPolicy": "redirect-to-https",
                         "allowedMethods": [
                             "GET",
@@ -106,11 +106,11 @@ extension AWS {
                         "defaultTtl": 0,
                         "cachePolicyId": cachePolicy.keyPath("id"),
                         "originRequestPolicyId": originRequestPolicy.keyPath("id"),
-                    ] as AnyEncodable,
-                    "orderedCacheBehaviors": origins.enumerated().map { index, origin in
+                    ],
+                    "orderedCacheBehaviors": origins.withoutDefaultOrigin().map { origin in
                         [
                             "pathPattern": origin.path,
-                            "targetOriginId": "origin-\(index)",
+                            "targetOriginId": origin.id,
                             "viewerProtocolPolicy": "redirect-to-https",
                             "allowedMethods": [
                                 "GET",
@@ -130,14 +130,14 @@ extension AWS {
                             "defaultTtl": 0,
                             "cachePolicyId": cachePolicy.keyPath("id"),
                             "originRequestPolicyId": originRequestPolicy.keyPath("id"),
-                        ] as AnyEncodable
+                        ]
                     },
                     "viewerCertificate": [
                         "cloudfrontDefaultCertificate": domainName == nil ? true : nil,
                         "acmCertificateArn": domainName.map { $0.certificate.arn },
                         "sslSupportMethod": domainName.map { _ in "sni-only" },
                         "minimumProtocolVersion": "TLSv1.2_2021",
-                    ] as AnyEncodable,
+                    ],
                 ],
                 dependsOn: domainName.map { [$0.validation] },
                 options: .provider(cfProvider)
@@ -156,12 +156,20 @@ extension AWS.CDN {
         public let url: String
         public let path: String
 
+        public var id: String {
+            tokenize("origin", path)
+        }
+
         public var hostname: String {
             .init(url.split(separator: "://").last!)
         }
 
         public var isHTTPS: Bool {
             url.hasPrefix("https")
+        }
+
+        public var isDefault: Bool {
+            path == "*" || path == "/*"
         }
 
         public init(url: String, path: String) {
@@ -196,5 +204,13 @@ extension [AWS.CDN.Origin] {
 
     public static func url(_ url: String) -> Self {
         [.url(url)]
+    }
+
+    fileprivate func defaultOrigin() -> AWS.CDN.Origin {
+        self.first(where: { $0.isDefault }) ?? self.first!
+    }
+
+    fileprivate func withoutDefaultOrigin() -> [AWS.CDN.Origin] {
+        self.filter { !$0.isDefault }
     }
 }
