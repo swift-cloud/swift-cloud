@@ -16,6 +16,10 @@ AWS.WebServer(
 )
 ```
 
+## How it works
+
+The Swift Cloud package is powered by [Pulumi](https://www.pulumi.com). Specifically, the SDK vends Swift components that are compiled into Pulumi YAML files, and then the Pulumi CLI is used to deploy your application. You do not need a Pulumi account to use Swift Cloud, nor do you need to install Pulumi CLI on your machine. Everything is managed by the SDK and written to a `.cloud` directory in your project.
+
 ## Get Started
 
 ### Prepare your environment
