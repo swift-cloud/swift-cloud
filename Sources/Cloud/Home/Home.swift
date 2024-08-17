@@ -4,6 +4,14 @@ public enum Home {}
 
 public protocol HomeProviderItem: Codable, Sendable {}
 
+public struct HomeProviderPassphrase: HomeProviderItem {
+    public let password: String
+
+    fileprivate init() throws {
+        self.password = try Data.random(length: 32).hexEncodedString()
+    }
+}
+
 public protocol HomeProvider: Sendable {
     func bootstrap(with context: Context) async throws
 
@@ -12,6 +20,20 @@ public protocol HomeProvider: Sendable {
     func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws
 
     func getItem<T: HomeProviderItem>(fileName: String, with context: Context) async throws -> T
+}
+
+extension HomeProvider {
+    public func passphrase(with context: Context) async throws -> String {
+        let fileName = "passphrase"
+        // First we'll look for a password in the home bucket
+        if let password: HomeProviderPassphrase = try? await getItem(fileName: fileName, with: context) {
+            return password.password
+        }
+        // If we don't have a password, we'll generate a new one
+        let passphrase = try HomeProviderPassphrase()
+        try await putItem(passphrase, fileName: fileName, with: context)
+        return passphrase.password
+    }
 }
 
 extension HomeProvider {

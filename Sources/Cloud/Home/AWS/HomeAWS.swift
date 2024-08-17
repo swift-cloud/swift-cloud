@@ -32,10 +32,6 @@ extension Home {
             _ = try? await s3.createBucket(request)
         }
 
-        public func passphrase(with context: Context) async throws -> String {
-            return try await awsAccountId()
-        }
-
         public func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws {
             let data = try JSONEncoder().encode(item)
             let bytes = ByteBuffer(data: data)

@@ -6,10 +6,6 @@ extension Home {
 
         public func bootstrap(with context: Context) async throws {}
 
-        public func passphrase(with context: Context) async throws -> String {
-            return "passphrase"
-        }
-
         public func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws {
             let path = dataFilePath(fileName, with: context)
             let data = try JSONEncoder().encode(item)
