@@ -36,9 +36,9 @@ public struct Resource: Sendable {
                 type: type,
                 properties: properties,
                 options: .init(
-                    dependsOn: (dependsOn ?? options?.dependsOn)?.map { $0.ref },
+                    dependsOn: (dependsOn ?? options?.dependsOn)?.map { $0.output },
                     protect: options?.protect,
-                    provider: options?.provider?.ref
+                    provider: options?.provider?.output
                 )
             )
         ]
@@ -100,25 +100,20 @@ extension Resource: ResourceProvider {
 }
 
 extension ResourceProvider {
-    public func keyPath(_ paths: String...) -> String {
-        let parts = [resource.internalName] + paths
-        return "${\(parts.joined(separator: "."))}"
+    public var output: Output<Any> {
+        .init(resource.internalName)
     }
 
-    public var ref: String {
-        keyPath()
+    public var id: Output<String> {
+        output.keyPath("id")
     }
 
-    public var id: String {
-        keyPath("id")
+    public var arn: Output<String> {
+        output.keyPath("arn")
     }
 
-    public var arn: String {
-        keyPath("arn")
-    }
-
-    public var name: String {
-        keyPath("name")
+    public var name: Output<String> {
+        output.keyPath("name")
     }
 }
 

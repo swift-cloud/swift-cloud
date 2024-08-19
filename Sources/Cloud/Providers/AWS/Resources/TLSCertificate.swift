@@ -2,15 +2,12 @@ extension AWS {
     public struct TLSCertificate: ResourceProvider {
         public let resource: Resource
 
-        public var domainValidationOptions: (recordName: String, recordType: String, recordValue: String) {
-            let recordName = resource.keyPath("domainValidationOptions[0]", "resourceRecordName")
-            let recordType = resource.keyPath("domainValidationOptions[0]", "resourceRecordType")
-            let recordValue = resource.keyPath("domainValidationOptions[0]", "resourceRecordValue")
-            return (recordName, recordType, recordValue)
+        public var domainValidationOptions: Output<[(recordName: String, recordType: String, recordValue: String)]> {
+            return resource.output.keyPath("domainValidationOptions")
         }
 
-        public var status: String {
-            resource.keyPath("status")
+        public var status: Output<String> {
+            resource.output.keyPath("status")
         }
 
         public init(
@@ -50,7 +47,7 @@ extension AWS.TLSCertificate {
                 properties: [
                     "certificateArn": certificate.arn,
                     "validationRecordFqdns": [
-                        validationRecord.keyPath("fqdn")
+                        validationRecord.output.keyPath("fqdn")
                     ],
                 ],
                 options: certificate.resource.options

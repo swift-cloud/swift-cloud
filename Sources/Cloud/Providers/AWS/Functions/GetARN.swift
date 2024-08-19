@@ -1,22 +1,13 @@
 extension AWS {
     public struct GetARNResult: VariableProvider {
+        public typealias Shape = (
+            account: String,
+            arn: String,
+            region: String,
+            id: String
+        )
+
         public let variable: Variable
-
-        public var account: String {
-            variable.keyPath("account")
-        }
-
-        public var arn: String {
-            variable.keyPath("arn")
-        }
-
-        public var region: String {
-            variable.keyPath("region")
-        }
-
-        public var id: String {
-            variable.keyPath("id")
-        }
 
         fileprivate init(_ resource: any ResourceProvider) {
             variable = Variable.function(
@@ -29,7 +20,7 @@ extension AWS {
 }
 
 extension AWS {
-    public static func getARN(_ resource: any ResourceProvider) -> GetARNResult {
-        .init(resource)
+    public static func getARN(_ resource: any ResourceProvider) -> Output<GetARNResult.Shape> {
+        GetARNResult(resource).output
     }
 }

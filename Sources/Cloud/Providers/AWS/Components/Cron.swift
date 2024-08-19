@@ -2,11 +2,11 @@ extension AWS {
     public struct Cron: Component {
         public let eventRule: Resource
 
-        public var name: String {
+        public var name: Output<String> {
             eventRule.name
         }
 
-        public var id: String {
+        public var id: Output<String> {
             eventRule.id
         }
 

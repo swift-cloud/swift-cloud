@@ -35,8 +35,8 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _environments = newValue } }
     }
 
-    private var _outputs: [String: String] = [:]
-    var outputs: [String: String] {
+    private var _outputs: [String: Output<String>] = [:]
+    var outputs: [String: Output<String>] {
         get { queue.sync { _outputs } }
         set { queue.sync { _outputs = newValue } }
     }
@@ -55,7 +55,7 @@ extension Store {
         environments.append(environment)
     }
 
-    public func setOutput(_ output: String, value: String) {
+    public func setOutput(_ output: String, value: Output<String>) {
         outputs[output] = value
     }
 

@@ -66,12 +66,12 @@ extension AWS.SecurityGroup {
             }
         }
 
-        fileprivate var propertyValue: String {
+        fileprivate var propertyValue: Output<String> {
             switch self {
             case .ipv4(let cidr):
-                return cidr
+                return "\(cidr)"
             case .ipv6(let cidr):
-                return cidr
+                return "\(cidr)"
             case .securityGroup(let securityGroup):
                 return securityGroup.resource.id
             }

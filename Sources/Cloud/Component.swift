@@ -1,3 +1,3 @@
 public protocol Component: Sendable {
-    var name: String { get }
+    var name: Output<String> { get }
 }

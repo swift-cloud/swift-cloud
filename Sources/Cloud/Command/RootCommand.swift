@@ -69,7 +69,7 @@ extension Command.RunCommand {
             variables: context.store.variables.reduce(into: [:]) {
                 $0.merge($1.pulumiProjectVariables()) { $1 }
             },
-            outputs: outputs.pulumiProjectOutputs
+            outputs: outputs.pulumiProjectOutputs()
         )
 
         // Write pulumi configuration files

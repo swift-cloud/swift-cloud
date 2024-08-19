@@ -49,9 +49,9 @@ extension Pulumi {
 
         public struct Resource: Encodable {
             public struct Options: Encodable {
-                public var dependsOn: [String]?
+                public var dependsOn: [Output<Any>]?
                 public var protect: Bool?
-                public var provider: String?
+                public var provider: Output<Any>?
             }
             public var type: String
             public var properties: AnyEncodable?
@@ -69,7 +69,7 @@ extension Pulumi {
 
         public typealias Config = [String: ConfigValue]
 
-        public typealias Outputs = [String: String]
+        public typealias Outputs = [String: Output<String>]
 
         public var name: String
         public var runtime: Runtime

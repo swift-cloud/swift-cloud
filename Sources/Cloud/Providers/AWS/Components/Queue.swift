@@ -5,16 +5,16 @@ extension AWS {
         public let queue: Resource
         public let deadLetterQueue: Resource
 
-        public var name: String {
+        public var name: Output<String> {
             queue.name
         }
 
-        public var region: String {
+        public var region: Output<String> {
             getARN(queue).region
         }
 
-        public var url: String {
-            queue.keyPath("url")
+        public var url: Output<String> {
+            queue.output.keyPath("url")
         }
 
         public init(
@@ -92,11 +92,11 @@ extension AWS.Queue: Linkable {
         ]
     }
 
-    public var resources: [String] {
+    public var resources: [Output<String>] {
         [queue.arn]
     }
 
-    public var environmentVariables: [String: String] {
+    public var environmentVariables: [String: CustomStringConvertible] {
         [
             "queue \(queue.chosenName) name": name,
             "queue \(queue.chosenName) url": url,

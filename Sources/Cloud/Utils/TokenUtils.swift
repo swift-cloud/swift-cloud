@@ -1,8 +1,12 @@
 import Foundation
 
-func tokenize(_ inputs: String..., separator: String = "-") -> String {
+func tokenize(_ inputs: CustomStringConvertible..., separator: String = "-") -> String {
     // Step 1: Join inputs and trim leading and trailing whitespace
-    let trimmedString = inputs.joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
+    let trimmedString =
+        inputs
+        .map { $0.description }
+        .joined(separator: " ")
+        .trimmingCharacters(in: .whitespacesAndNewlines)
 
     // Step 2: Split camelCase and lowercase the string
     let camelCaseRegex = try! Regex<(Substring, Substring, Substring)>("([a-z0-9])([A-Z])")

@@ -4,8 +4,8 @@ extension AWS {
     public struct DockerImage: ResourceProvider {
         public let resource: Resource
 
-        public var uri: String {
-            keyPath("imageUri")
+        public var uri: Output<String> {
+            output.keyPath("imageUri")
         }
 
         public init(

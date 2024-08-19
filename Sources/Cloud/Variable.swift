@@ -1,4 +1,6 @@
 public protocol VariableProvider: Sendable {
+    associatedtype Shape
+
     var variable: Variable { get }
 }
 
@@ -24,18 +26,14 @@ public struct Variable: Sendable {
 }
 
 extension Variable: VariableProvider {
+    public typealias Shape = Any
+
     public var variable: Variable { self }
 }
 
 extension VariableProvider {
-
-    public func keyPath(_ paths: String...) -> String {
-        let parts = [variable.internalName] + paths
-        return "${\(parts.joined(separator: "."))}"
-    }
-
-    public var value: String {
-        keyPath()
+    public var output: Output<Shape> {
+        .init(variable.internalName)
     }
 }
 

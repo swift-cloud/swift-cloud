@@ -2,8 +2,8 @@ extension AWS {
     public struct ImageRepository: ResourceProvider {
         public let resource: Resource
 
-        public var url: String {
-            keyPath("repositoryUrl")
+        public var url: Output<String> {
+            output.keyPath("repositoryUrl")
         }
 
         public init(

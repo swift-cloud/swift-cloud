@@ -11,7 +11,7 @@ extension AWS {
         public let concurrency: Int
         public let environment: Environment
 
-        public var name: String {
+        public var name: Output<String> {
             serviceName
         }
 
@@ -19,27 +19,27 @@ extension AWS {
             service.chosenName
         }
 
-        public var region: String {
+        public var region: Output<String> {
             getARN(cluster).region
         }
 
-        public var serviceName: String {
-            service.keyPath("service", "name")
+        public var serviceName: Output<String> {
+            service.output.keyPath("service", "name")
         }
 
-        public var clusterName: String {
+        public var clusterName: Output<String> {
             cluster.name
         }
 
-        public var hostname: String {
-            applicationLoadBalancer.keyPath("loadBalancer", "dnsName")
+        public var hostname: Output<String> {
+            applicationLoadBalancer.output.keyPath("loadBalancer", "dnsName")
         }
 
-        public var zoneId: String {
-            applicationLoadBalancer.keyPath("loadBalancer", "zoneId")
+        public var zoneId: Output<String> {
+            applicationLoadBalancer.output.keyPath("loadBalancer", "zoneId")
         }
 
-        public var url: String {
+        public var url: Output<String> {
             if let domainName {
                 return "https://\(domainName.domainName)"
             } else {
@@ -148,7 +148,7 @@ extension AWS {
                                 [
                                     "containerPort": instancePort,
                                     "hostPort": instancePort,
-                                    "targetGroup": applicationLoadBalancer.keyPath("defaultTargetGroup"),
+                                    "targetGroup": applicationLoadBalancer.output.keyPath("defaultTargetGroup"),
                                 ]
                             ],
                             "environment": self.environment,

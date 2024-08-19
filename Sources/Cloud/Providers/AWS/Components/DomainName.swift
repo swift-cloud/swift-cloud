@@ -7,8 +7,8 @@ extension AWS {
         public let hostedZone: Variable
         public let validationRecord: Resource
 
-        public var name: String {
-            domainName
+        public var name: Output<String> {
+            .init("", prefix: domainName)
         }
 
         public init(
@@ -36,12 +36,12 @@ extension AWS {
                 name: "\(domainName)-validation-record",
                 type: "aws:route53:Record",
                 properties: [
-                    "zoneId": hostedZone.keyPath("id"),
-                    "name": certificate.domainValidationOptions.recordName,
-                    "type": certificate.domainValidationOptions.recordType,
+                    "zoneId": hostedZone.output.keyPath("id"),
+                    "name": certificate.domainValidationOptions[0].recordName,
+                    "type": certificate.domainValidationOptions[0].recordType,
                     "ttl": 60,
                     "allowOverwrite": true,
-                    "records": [certificate.domainValidationOptions.recordValue],
+                    "records": [certificate.domainValidationOptions[0].recordValue],
                 ],
                 options: options
             )
@@ -55,14 +55,14 @@ extension AWS {
 }
 
 extension AWS.DomainName {
-    public func aliasTo(hostname: String, zoneId: String) {
+    public func aliasTo(hostname: CustomStringConvertible, zoneId: CustomStringConvertible) {
         _ = Resource(
             name: "\(domainName)-alias",
             type: "aws:route53:Record",
             properties: [
                 "name": domainName,
                 "type": "A",
-                "zoneId": hostedZone.keyPath("id"),
+                "zoneId": hostedZone.output.keyPath("id"),
                 "allowOverwrite": !Context.current.isProduction,
                 "aliases": [
                     [
