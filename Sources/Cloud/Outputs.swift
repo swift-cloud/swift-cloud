@@ -57,15 +57,16 @@ public struct Output<T>: Encodable, Sendable, CustomStringConvertible {
     }
 
     subscript<U>(dynamicMember member: KeyPath<T, U>) -> Output<U> {
-        Output<U>(root, path: path + [.property("\(member)")])
+        let memberString = "\(member)".split(separator: ".").last!
+        return Output<U>(root, path: path + [.property(.init(memberString))])
     }
 
-    subscript<U>(index: Int) -> Output<U> where T: Collection {
-        Output<U>(root, path: path + [.arrayIndex(index)])
+    subscript<U>(index: Int) -> Output<U> where T == [U] {
+        return Output<U>(root, path: path + [.arrayIndex(index)])
     }
 
     subscript<U>(key: String) -> Output<U> where T == [String: U] {
-        Output<U>(root, path: path + [.dictionaryKey(key)])
+        return Output<U>(root, path: path + [.dictionaryKey(key)])
     }
 
     public func keyPath<U>(_ properties: String...) -> Output<U> {

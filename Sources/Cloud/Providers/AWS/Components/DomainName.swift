@@ -37,11 +37,11 @@ extension AWS {
                 type: "aws:route53:Record",
                 properties: [
                     "zoneId": hostedZone.output.keyPath("id"),
-                    "name": certificate.domainValidationOptions[0].recordName,
-                    "type": certificate.domainValidationOptions[0].recordType,
+                    "name": certificate.domainValidationOptions[0].resourceRecordName,
+                    "type": certificate.domainValidationOptions[0].resourceRecordType,
                     "ttl": 60,
                     "allowOverwrite": true,
-                    "records": [certificate.domainValidationOptions[0].recordValue],
+                    "records": [certificate.domainValidationOptions[0].resourceRecordValue],
                 ],
                 options: options
             )

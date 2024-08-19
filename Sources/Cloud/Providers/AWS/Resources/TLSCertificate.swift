@@ -2,7 +2,9 @@ extension AWS {
     public struct TLSCertificate: ResourceProvider {
         public let resource: Resource
 
-        public var domainValidationOptions: Output<[(recordName: String, recordType: String, recordValue: String)]> {
+        public var domainValidationOptions:
+            Output<[(resourceRecordName: String, resourceRecordType: String, resourceRecordValue: String)]>
+        {
             return resource.output.keyPath("domainValidationOptions")
         }
 
