@@ -1,14 +1,19 @@
 public protocol VariableProvider: Sendable {
-    associatedtype Shape
+    associatedtype Outputs
 
-    var variable: Variable { get }
+    var variable: Variable<Outputs> { get }
+
+    var output: Output<Outputs> { get }
+
+    func pulumiProjectVariables() -> Pulumi.Project.Variables
 }
 
-public struct Variable: Sendable {
+public struct Variable<Outputs>: Sendable {
     public let chosenName: String
+
     public let definition: AnyEncodable
 
-    internal var internalName: String {
+    var internalName: String {
         tokenize(Context.current.stage, chosenName)
     }
 
@@ -17,23 +22,19 @@ public struct Variable: Sendable {
         self.definition = definition
         Context.current.store.track(self)
     }
-
-    func pulumiProjectVariables() -> Pulumi.Project.Variables {
-        return [
-            internalName: definition
-        ]
-    }
 }
 
 extension Variable: VariableProvider {
-    public typealias Shape = Any
-
     public var variable: Variable { self }
-}
 
-extension VariableProvider {
-    public var output: Output<Shape> {
-        .init(variable.internalName)
+    public var output: Output<Outputs> {
+        .init(prefix: "", root: internalName, path: [])
+    }
+
+    public func pulumiProjectVariables() -> Pulumi.Project.Variables {
+        return [
+            internalName: definition
+        ]
     }
 }
 
@@ -42,7 +43,7 @@ extension Variable {
         name: String,
         function: String,
         arguments: [String: Any] = [:]
-    ) -> Variable {
+    ) -> Variable<Outputs> {
         .init(
             name: name,
             definition: [

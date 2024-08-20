@@ -101,7 +101,7 @@ extension Resource: ResourceProvider {
 
 extension ResourceProvider {
     public var output: Output<Any> {
-        .init(resource.internalName)
+        .init(prefix: "", root: resource.internalName, path: [])
     }
 
     public var id: Output<String> {

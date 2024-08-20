@@ -63,13 +63,7 @@ extension AWS {
                 options: .provider(cfProvider)
             )
 
-            let originRequestPolicy = Variable.function(
-                name: "\(name)-origin-request-policy",
-                function: "aws:cloudfront:getOriginRequestPolicy",
-                arguments: [
-                    "name": "Managed-AllViewerExceptHostHeader"
-                ]
-            )
+            let originRequestPolicy = getOriginRequestPolicy(name: "Managed-AllViewerExceptHostHeader")
 
             guard let defaultOrigin = origins.defaultOrigin() else {
                 fatalError("Missing a default origin. You must specify at least one origin with `path: *`.")
@@ -128,7 +122,7 @@ extension AWS {
                         "compress": true,
                         "defaultTtl": 0,
                         "cachePolicyId": cachePolicy.id,
-                        "originRequestPolicyId": originRequestPolicy.output.keyPath("id"),
+                        "originRequestPolicyId": originRequestPolicy.id,
                     ],
                     "orderedCacheBehaviors": origins.withoutDefaultOrigin().map { origin in
                         [
@@ -152,7 +146,7 @@ extension AWS {
                             "compress": true,
                             "defaultTtl": 0,
                             "cachePolicyId": cachePolicy.id,
-                            "originRequestPolicyId": originRequestPolicy.output.keyPath("id"),
+                            "originRequestPolicyId": originRequestPolicy.id,
                         ]
                     },
                     "viewerCertificate": [

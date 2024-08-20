@@ -11,8 +11,8 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _resources = newValue } }
     }
 
-    private var _variables: [Variable] = []
-    var variables: [Variable] {
+    private var _variables: [any VariableProvider] = []
+    var variables: [any VariableProvider] {
         get { queue.sync { _variables } }
         set { queue.sync { _variables = newValue } }
     }
@@ -47,7 +47,7 @@ extension Store {
         resources.append(resource)
     }
 
-    public func track(_ variable: Variable) {
+    public func track(_ variable: any VariableProvider) {
         variables.append(variable)
     }
 
