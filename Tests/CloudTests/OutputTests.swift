@@ -4,11 +4,7 @@ import XCTest
 
 final class OutputTests: XCTestCase {
     func testRoot() throws {
-        let out = Output<Any>(
-            prefix: "",
-            root: "root",
-            path: []
-        )
+        let out = Output<Any>(prefix: "", root: "root", path: [])
         XCTAssertEqual("${root}", out.description)
     }
 
@@ -49,6 +45,12 @@ final class OutputTests: XCTestCase {
     func testStringLiteral() throws {
         let out: Output<String> = "hello-world"
         XCTAssertEqual("hello-world", out.description)
+    }
+
+    func testStringInterpolation() throws {
+        let root = Output<Any>(prefix: "", root: "root", path: [])
+        let out: Output<String> = "foo-bar\(root)hello-world"
+        XCTAssertEqual("foo-bar${root}hello-world", out.description)
     }
 
     func testEncodable() throws {
