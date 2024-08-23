@@ -11,7 +11,7 @@ public struct Resource: Sendable {
     public let dependsOn: [any ResourceProvider]?
     public let options: Options?
 
-    internal var internalName: String {
+    fileprivate var internalName: String {
         tokenize(Context.current.stage, chosenName)
     }
 

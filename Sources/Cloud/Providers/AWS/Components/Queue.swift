@@ -64,7 +64,7 @@ extension AWS.Queue {
         function.link(self)
 
         let _ = Resource(
-            name: "\(queue.internalName)-subscription",
+            name: "\(queue.chosenName)-subscription",
             type: "aws:lambda:EventSourceMapping",
             properties: [
                 "eventSourceArn": queue.arn,
