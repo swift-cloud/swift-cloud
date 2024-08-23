@@ -6,7 +6,7 @@ extension AWS {
     }
 
     public static func getOriginRequestPolicy(name: String) -> Output<GetOriginRequestPolicy> {
-        let variable = Variable<GetOriginRequestPolicy>.function(
+        let variable = Variable<GetOriginRequestPolicy>.invoke(
             name: "\(name)-origin-request-policy",
             function: "aws:cloudfront:getOriginRequestPolicy",
             arguments: [

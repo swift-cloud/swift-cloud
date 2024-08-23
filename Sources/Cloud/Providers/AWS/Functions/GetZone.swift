@@ -5,7 +5,7 @@ extension AWS {
     }
 
     public static func getZone(name: String) -> Output<GetZone> {
-        let variable = Variable<GetZone>.function(
+        let variable = Variable<GetZone>.invoke(
             name: "\(name)-zone",
             function: "aws:route53:getZone",
             arguments: ["name": name]

@@ -7,7 +7,7 @@ extension AWS {
     }
 
     public static func getARN(_ resource: any ResourceProvider) -> Output<GetARN> {
-        let variable = Variable<GetARN>.function(
+        let variable = Variable<GetARN>.invoke(
             name: "\(resource.resource.chosenName)-arn",
             function: "aws:getArn",
             arguments: ["arn": resource.arn]

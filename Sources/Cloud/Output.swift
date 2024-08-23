@@ -72,8 +72,8 @@ extension Output: Encodable {
     }
 }
 
-extension Output<String>: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral,
-    ExpressibleByUnicodeScalarLiteral
+extension Output<String>:
+    ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral
 {
     public init(stringLiteral value: String) {
         self.init(prefix: value, root: "", path: [])

@@ -39,7 +39,7 @@ extension Variable: VariableProvider {
 }
 
 extension Variable {
-    public static func function(
+    public static func invoke(
         name: String,
         function: String,
         arguments: [String: Any] = [:]
