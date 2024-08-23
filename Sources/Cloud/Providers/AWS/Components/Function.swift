@@ -9,23 +9,23 @@ extension AWS {
         public let functionUrl: Resource?
         public let environment: Environment
 
-        public var name: String {
+        public var name: Output<String> {
             function.name
         }
 
-        public var region: String {
+        public var region: Output<String> {
             getARN(function).region
         }
 
-        public var hostname: String {
+        public var hostname: Output<String> {
             guard let functionUrl else {
                 fatalError("Function created without a url. Please pass `url: .enabled()` to the function constructor.")
             }
-            let urlId = functionUrl.keyPath("urlId")
+            let urlId = functionUrl.output.keyPath("urlId")
             return "\(urlId).lambda-url.\(region).on.aws"
         }
 
-        public var url: String {
+        public var url: Output<String> {
             return "https://\(hostname)"
         }
 
@@ -135,11 +135,11 @@ extension AWS.Function: Linkable {
         ["lambda:InvokeFunction"]
     }
 
-    public var resources: [String] {
+    public var resources: [Output<String>] {
         [function.arn]
     }
 
-    public var environmentVariables: [String: String] {
+    public var environmentVariables: [String: CustomStringConvertible] {
         [
             "function \(function.chosenName) name": name,
             "function \(function.chosenName) url": url,

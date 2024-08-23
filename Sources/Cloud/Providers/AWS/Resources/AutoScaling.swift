@@ -29,9 +29,9 @@ extension AWS {
                     type: "aws:appautoscaling:Policy",
                     properties: [
                         "policyType": "TargetTrackingScaling",
-                        "resourceId": resource.keyPath("resourceId"),
-                        "scalableDimension": resource.keyPath("scalableDimension"),
-                        "serviceNamespace": resource.keyPath("serviceNamespace"),
+                        "resourceId": resource.output.keyPath("resourceId"),
+                        "scalableDimension": resource.output.keyPath("scalableDimension"),
+                        "serviceNamespace": resource.output.keyPath("serviceNamespace"),
                         "targetTrackingScalingPolicyConfiguration": [
                             "predefinedMetricSpecification": [
                                 "predefinedMetricType": metric.predefinedMetricType

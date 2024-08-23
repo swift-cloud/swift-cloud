@@ -4,11 +4,11 @@ extension AWS {
         public let zoneName: String?
         public let certificate: AWS.TLSCertificate
         public let validation: AWS.TLSCertificate.Validation
-        public let hostedZone: Variable
+        public let hostedZone: Output<GetZone>
         public let validationRecord: Resource
 
-        public var name: String {
-            domainName
+        public var name: Output<String> {
+            .init(prefix: domainName, root: "", path: [])
         }
 
         public init(
@@ -19,13 +19,7 @@ extension AWS {
             self.domainName = domainName
             self.zoneName = zoneName
 
-            hostedZone = Variable.function(
-                name: "\(domainName)-zone",
-                function: "aws:route53:getZone",
-                arguments: [
-                    "name": zoneName ?? Self.inferredZoneName(domainName: domainName)
-                ]
-            )
+            hostedZone = getZone(name: zoneName ?? Self.inferredZoneName(domainName: domainName))
 
             certificate = AWS.TLSCertificate(
                 domainName: domainName,
@@ -36,12 +30,12 @@ extension AWS {
                 name: "\(domainName)-validation-record",
                 type: "aws:route53:Record",
                 properties: [
-                    "zoneId": hostedZone.keyPath("id"),
-                    "name": certificate.domainValidationOptions.recordName,
-                    "type": certificate.domainValidationOptions.recordType,
+                    "zoneId": hostedZone.id,
+                    "name": certificate.domainValidationOptions[0].resourceRecordName,
+                    "type": certificate.domainValidationOptions[0].resourceRecordType,
                     "ttl": 60,
                     "allowOverwrite": true,
-                    "records": [certificate.domainValidationOptions.recordValue],
+                    "records": [certificate.domainValidationOptions[0].resourceRecordValue],
                 ],
                 options: options
             )
@@ -55,14 +49,14 @@ extension AWS {
 }
 
 extension AWS.DomainName {
-    public func aliasTo(hostname: String, zoneId: String) {
+    public func aliasTo(hostname: CustomStringConvertible, zoneId: CustomStringConvertible) {
         _ = Resource(
             name: "\(domainName)-alias",
             type: "aws:route53:Record",
             properties: [
                 "name": domainName,
                 "type": "A",
-                "zoneId": hostedZone.keyPath("id"),
+                "zoneId": hostedZone.id,
                 "allowOverwrite": !Context.current.isProduction,
                 "aliases": [
                     [

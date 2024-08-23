@@ -2,8 +2,8 @@ extension Random {
     public struct Bytes: ResourceProvider {
         public let resource: Resource
 
-        public var hex: String {
-            resource.keyPath("hex")
+        public var hex: Output<String> {
+            resource.output.keyPath("hex")
         }
 
         public init(

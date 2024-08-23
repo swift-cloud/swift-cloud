@@ -72,7 +72,7 @@ extension UI {
             return
         }
         for (key, value) in outputs {
-            guard !Outputs.isInternal(key) else {
+            guard !Outputs.isInternalKey(key) else {
                 continue
             }
             UI.writeBlock(key: key, value: "\(value)")

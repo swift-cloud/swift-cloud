@@ -1,13 +1,13 @@
 public protocol Linkable {
-    var name: String { get }
+    var name: Output<String> { get }
 
     var effect: String { get }
 
     var actions: [String] { get }
 
-    var resources: [String] { get }
+    var resources: [Output<String>] { get }
 
-    var environmentVariables: [String: String] { get }
+    var environmentVariables: [String: CustomStringConvertible] { get }
 }
 
 extension Linkable {
@@ -32,7 +32,7 @@ extension Linkable {
 public protocol RoleProvider {
     associatedtype RoleType: ResourceProvider
 
-    var name: String { get }
+    var name: Output<String> { get }
 
     var role: RoleType { get }
 }

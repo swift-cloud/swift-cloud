@@ -3,15 +3,15 @@ extension AWS {
         public let distribution: Resource
         public let domainName: AWS.DomainName?
 
-        public var name: String {
+        public var name: Output<String> {
             distribution.name
         }
 
-        public var hostname: String {
-            distribution.keyPath("domainName")
+        public var hostname: Output<String> {
+            distribution.output.keyPath("domainName")
         }
 
-        public var url: String {
+        public var url: Output<String> {
             if let domainName {
                 return "https://\(domainName.domainName)"
             } else {
@@ -19,8 +19,8 @@ extension AWS {
             }
         }
 
-        public var zoneId: String {
-            distribution.keyPath("hostedZoneId")
+        public var zoneId: Output<String> {
+            distribution.output.keyPath("hostedZoneId")
         }
 
         public init(
@@ -63,13 +63,7 @@ extension AWS {
                 options: .provider(cfProvider)
             )
 
-            let originRequestPolicy = Variable.function(
-                name: "\(name)-origin-request-policy",
-                function: "aws:cloudfront:getOriginRequestPolicy",
-                arguments: [
-                    "name": "Managed-AllViewerExceptHostHeader"
-                ]
-            )
+            let originRequestPolicy = getOriginRequestPolicy(name: "Managed-AllViewerExceptHostHeader")
 
             guard let defaultOrigin = origins.defaultOrigin() else {
                 fatalError("Missing a default origin. You must specify at least one origin with `path: *`.")
@@ -127,8 +121,8 @@ extension AWS {
                         ],
                         "compress": true,
                         "defaultTtl": 0,
-                        "cachePolicyId": cachePolicy.keyPath("id"),
-                        "originRequestPolicyId": originRequestPolicy.keyPath("id"),
+                        "cachePolicyId": cachePolicy.id,
+                        "originRequestPolicyId": originRequestPolicy.id,
                     ],
                     "orderedCacheBehaviors": origins.withoutDefaultOrigin().map { origin in
                         [
@@ -151,8 +145,8 @@ extension AWS {
                             ],
                             "compress": true,
                             "defaultTtl": 0,
-                            "cachePolicyId": cachePolicy.keyPath("id"),
-                            "originRequestPolicyId": originRequestPolicy.keyPath("id"),
+                            "cachePolicyId": cachePolicy.id,
+                            "originRequestPolicyId": originRequestPolicy.id,
                         ]
                     },
                     "viewerCertificate": [
@@ -200,8 +194,8 @@ extension AWS.CDN {
             path == "/"
         }
 
-        public init(url: String, path: String, shieldRegion: String? = nil) {
-            self.url = url
+        public init(url: CustomStringConvertible, path: String, shieldRegion: String? = nil) {
+            self.url = url.description
             self.path = path
             self.shieldRegion = shieldRegion
         }

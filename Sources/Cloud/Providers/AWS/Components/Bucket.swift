@@ -4,16 +4,16 @@ extension AWS {
         internal let ownershipControls: Resource
         internal let publicAccessBlock: Resource
 
-        public var name: String {
+        public var name: Output<String> {
             bucket.id
         }
 
-        public var region: String {
+        public var region: Output<String> {
             getARN(bucket).region
         }
 
-        public var hostname: String {
-            bucket.keyPath("bucketRegionalDomainName")
+        public var hostname: Output<String> {
+            bucket.output.keyPath("bucketRegionalDomainName")
         }
 
         public init(
@@ -34,7 +34,7 @@ extension AWS {
                 name: "\(name)-oc",
                 type: "aws:s3:BucketOwnershipControls",
                 properties: [
-                    "bucket": "\(bucket.ref)",
+                    "bucket": bucket.output,
                     "rule": [
                         "objectOwnership": "ObjectWriter"
                     ],
@@ -46,7 +46,7 @@ extension AWS {
                 name: "\(name)-pab",
                 type: "aws:s3:BucketPublicAccessBlock",
                 properties: [
-                    "bucket": "\(bucket.ref)",
+                    "bucket": bucket.output,
                     "blockPublicAcls": false,
                 ],
                 options: options
@@ -65,14 +65,14 @@ extension AWS.Bucket: Linkable {
         ]
     }
 
-    public var resources: [String] {
+    public var resources: [Output<String>] {
         [
             "\(bucket.arn)",
             "\(bucket.arn)/*",
         ]
     }
 
-    public var environmentVariables: [String: String] {
+    public var environmentVariables: [String: CustomStringConvertible] {
         [
             "bucket \(bucket.chosenName) name": name,
             "bucket \(bucket.chosenName) hostname": hostname,

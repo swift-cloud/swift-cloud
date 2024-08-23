@@ -1,12 +1,19 @@
 public protocol VariableProvider: Sendable {
-    var variable: Variable { get }
+    associatedtype Outputs
+
+    var variable: Variable<Outputs> { get }
+
+    var output: Output<Outputs> { get }
+
+    func pulumiProjectVariables() -> Pulumi.Project.Variables
 }
 
-public struct Variable: Sendable {
+public struct Variable<Outputs>: Sendable {
     public let chosenName: String
+
     public let definition: AnyEncodable
 
-    internal var internalName: String {
+    var internalName: String {
         tokenize(Context.current.stage, chosenName)
     }
 
@@ -15,36 +22,28 @@ public struct Variable: Sendable {
         self.definition = definition
         Context.current.store.track(self)
     }
+}
 
-    func pulumiProjectVariables() -> Pulumi.Project.Variables {
+extension Variable: VariableProvider {
+    public var variable: Variable { self }
+
+    public var output: Output<Outputs> {
+        .init(prefix: "", root: internalName, path: [])
+    }
+
+    public func pulumiProjectVariables() -> Pulumi.Project.Variables {
         return [
             internalName: definition
         ]
     }
 }
 
-extension Variable: VariableProvider {
-    public var variable: Variable { self }
-}
-
-extension VariableProvider {
-
-    public func keyPath(_ paths: String...) -> String {
-        let parts = [variable.internalName] + paths
-        return "${\(parts.joined(separator: "."))}"
-    }
-
-    public var value: String {
-        keyPath()
-    }
-}
-
 extension Variable {
-    public static func function(
+    public static func invoke(
         name: String,
         function: String,
         arguments: [String: Any] = [:]
-    ) -> Variable {
+    ) -> Variable<Outputs> {
         .init(
             name: name,
             definition: [

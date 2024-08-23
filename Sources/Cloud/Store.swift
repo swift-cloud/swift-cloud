@@ -11,8 +11,8 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _resources = newValue } }
     }
 
-    private var _variables: [Variable] = []
-    var variables: [Variable] {
+    private var _variables: [any VariableProvider] = []
+    var variables: [any VariableProvider] {
         get { queue.sync { _variables } }
         set { queue.sync { _variables = newValue } }
     }
@@ -35,8 +35,8 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _environments = newValue } }
     }
 
-    private var _outputs: [String: String] = [:]
-    var outputs: [String: String] {
+    private var _outputs: [String: Output<String>] = [:]
+    var outputs: [String: Output<String>] {
         get { queue.sync { _outputs } }
         set { queue.sync { _outputs = newValue } }
     }
@@ -47,7 +47,7 @@ extension Store {
         resources.append(resource)
     }
 
-    public func track(_ variable: Variable) {
+    public func track(_ variable: any VariableProvider) {
         variables.append(variable)
     }
 
@@ -55,7 +55,7 @@ extension Store {
         environments.append(environment)
     }
 
-    public func setOutput(_ output: String, value: String) {
+    public func setOutput(_ output: String, value: Output<String>) {
         outputs[output] = value
     }
 
