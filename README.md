@@ -253,6 +253,17 @@ queue.subscribe(
 )
 ```
 
+#### Topic
+
+```swift
+let topic = AWS.Topic("my-sns-topic")
+
+// Subscribe a lambda function to the topic to process events
+topic.subscribe(
+    AWS.Function("my-lambda-function", targetName: "App")
+)
+```
+
 #### Cron
 
 ```swift
