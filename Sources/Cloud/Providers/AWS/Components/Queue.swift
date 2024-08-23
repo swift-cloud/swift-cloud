@@ -41,7 +41,7 @@ extension AWS {
                 type: "aws:sqs:Queue",
                 properties: [
                     "fifoQueue": fifo,
-                    "visibilityTimeoutSeconds": visibilityTimeout,
+                    "visibilityTimeoutSeconds": visibilityTimeout.components.seconds,
                     "messageRetentionSeconds": messageRetentionInterval.components.seconds,
                     "redrivePolicy": Resource.JSON([
                         "deadLetterTargetArn": deadLetterQueue.arn,
