@@ -18,7 +18,7 @@ extension Docker.Dockerfile {
 extension Docker.Dockerfile {
     public static func awsLambda(targetName: String, architecture: Architecture = .current) -> String {
         """
-        FROM public.ecr.aws/lambda/provided:al2023
+        FROM public.ecr.aws/lambda/provided:al2
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) /var/runtime/bootstrap
 
@@ -28,7 +28,7 @@ extension Docker.Dockerfile {
 
     public static func amazonLinux(targetName: String, architecture: Architecture = .current, port: Int) -> String {
         """
-        FROM amazonlinux:2023
+        FROM amazonlinux:2
 
         WORKDIR /app/
 
