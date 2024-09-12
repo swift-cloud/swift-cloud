@@ -214,7 +214,7 @@ let cdn = AWS.CDN(
 )
 ```
 
-You can also route traffic on different paths to different resoruces:
+You can also route traffic on different paths to different resources:
 
 ```swift
 let cdn = AWS.CDN(
