@@ -2,7 +2,7 @@ import AsyncHTTPClient
 import Foundation
 import Yams
 
-public let PulumiClientVersion = "v3.129.0"
+public let PulumiClientVersion = "v3.132.0"
 
 extension Pulumi {
     public struct Client: Sendable {
