@@ -207,29 +207,29 @@ extension AWS.CDN {
 }
 
 extension AWS.CDN.Origin {
-    public static func function(_ function: AWS.Function, path: String, shieldRegion: String? = nil) -> Self {
+    public static func function(_ function: AWS.Function, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
         .init(url: function.url, path: path, shieldRegion: shieldRegion)
     }
 
-    public static func webServer(_ server: AWS.WebServer, path: String, shieldRegion: String? = nil) -> Self {
+    public static func webServer(_ server: AWS.WebServer, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
         .init(url: server.url, path: path, shieldRegion: shieldRegion)
     }
 
-    public static func url(_ url: String, path: String, shieldRegion: String? = nil) -> Self {
+    public static func url(_ url: CustomStringConvertible, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
         .init(url: url, path: path, shieldRegion: shieldRegion)
     }
 }
 
 extension [AWS.CDN.Origin] {
-    public static func function(_ function: AWS.Function, shieldRegion: String? = nil) -> Self {
+    public static func function(_ function: AWS.Function, shieldRegion: CustomStringConvertible? = nil) -> Self {
         [.function(function, path: "*", shieldRegion: shieldRegion)]
     }
 
-    public static func webServer(_ server: AWS.WebServer, shieldRegion: String? = nil) -> Self {
+    public static func webServer(_ server: AWS.WebServer, shieldRegion: CustomStringConvertible? = nil) -> Self {
         [.webServer(server, path: "*", shieldRegion: shieldRegion)]
     }
 
-    public static func url(_ url: String, shieldRegion: String? = nil) -> Self {
+    public static func url(_ url: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
         [.url(url, path: "*", shieldRegion: shieldRegion)]
     }
 
