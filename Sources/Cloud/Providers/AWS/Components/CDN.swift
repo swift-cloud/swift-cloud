@@ -194,10 +194,14 @@ extension AWS.CDN {
             path == "/"
         }
 
-        public init(url: CustomStringConvertible, path: String, shieldRegion: String? = nil) {
+        public init(
+            url: CustomStringConvertible,
+            path: CustomStringConvertible,
+            shieldRegion: CustomStringConvertible? = nil
+        ) {
             self.url = url.description
-            self.path = path
-            self.shieldRegion = shieldRegion
+            self.path = path.description
+            self.shieldRegion = shieldRegion?.description
         }
     }
 }
