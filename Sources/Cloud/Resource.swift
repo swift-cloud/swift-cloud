@@ -1,3 +1,4 @@
+import Crypto
 import Foundation
 
 public protocol ResourceProvider: Sendable {
@@ -13,6 +14,12 @@ public struct Resource: Sendable {
 
     fileprivate var internalName: String {
         tokenize(Context.current.stage, chosenName)
+    }
+
+    fileprivate var internalHashedName: String {
+        let tokenName = tokenize(chosenName)
+        let hash = SHA256.hash(data: Data(tokenName.utf8)).hexEncodedString()
+        return tokenize(Context.current.stage, hash.prefix(10))
     }
 
     public init(

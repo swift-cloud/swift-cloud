@@ -10,7 +10,7 @@ extension Data {
     }
 }
 
-extension Data {
+extension Sequence where Element == UInt8 {
     func hexEncodedString() -> String {
         return self.map { String(format: "%02hhx", $0) }.joined()
     }
