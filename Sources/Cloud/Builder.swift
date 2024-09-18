@@ -55,13 +55,13 @@ extension Builder {
 extension Builder {
     public func buildWasm(targetName: String) async throws {
         let swiftVersion = try await currentSwiftVersion()
-            let imageName: String
-            switch swiftVersion {
-            case "5.10":
-                imageName = "ghcr.io/swiftwasm/swift:5.10-focal"
-            default:
-                fatalError("Unsupported Swift version: \(swiftVersion)")
-            }
+        let imageName: String
+        switch swiftVersion {
+        case "5.10":
+            imageName = "ghcr.io/swiftwasm/swift:5.10-focal"
+        default:
+            fatalError("Unsupported Swift version: \(swiftVersion)")
+        }
         try await buildDocker(
             targetName: targetName,
             imageName: imageName,
