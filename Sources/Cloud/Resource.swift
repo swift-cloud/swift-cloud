@@ -13,13 +13,17 @@ public struct Resource: Sendable {
     public let options: Options?
 
     fileprivate var internalName: String {
-        tokenize(Context.current.stage, chosenName)
+        let token = tokenize(Context.current.stage, chosenName)
+        if token.count <= 32 {
+            return token
+        }
+        return token.prefix(27) + "-" + internalHashedName.prefix(4)
     }
 
     fileprivate var internalHashedName: String {
-        let tokenName = tokenize(chosenName)
-        let hash = SHA256.hash(data: Data(tokenName.utf8)).hexEncodedString()
-        return tokenize(Context.current.stage, hash.prefix(10))
+        let token = tokenize(chosenName)
+        let data = Data(token.utf8)
+        return SHA256.hash(data: data).hexEncodedString()
     }
 
     public init(
