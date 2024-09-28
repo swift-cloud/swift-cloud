@@ -1,4 +1,4 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [Cloud]
+    - documentation_targets: [Cloud, AWSCloud]
