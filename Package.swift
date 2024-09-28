@@ -1,11 +1,11 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 
 import PackageDescription
 
 let package = Package(
     name: "swift-cloud",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v14)
     ],
     products: [
         .library(name: "Cloud", targets: ["Cloud"]),
@@ -31,33 +31,19 @@ let package = Package(
                 .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Yams", package: "Yams"),
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .target(
             name: "AWSCloud",
-            dependencies: [
-                .byName(name: "Cloud")
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            dependencies: ["Cloud"]
         ),
         .executableTarget(
             name: "Example",
-            dependencies: ["AWSCloud"],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            dependencies: ["AWSCloud"]
         ),
         .testTarget(
             name: "CloudTests",
-            dependencies: ["Cloud"],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            dependencies: ["Cloud"]
         ),
     ]
 )
