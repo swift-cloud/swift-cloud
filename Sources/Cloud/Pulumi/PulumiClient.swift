@@ -2,7 +2,8 @@ import AsyncHTTPClient
 import Foundation
 import Yams
 
-public let PulumiClientVersion = "v3.132.0"
+// https://www.pulumi.com/docs/iac/download-install/versions/
+public let PulumiClientVersion = "v3.134.1"
 
 extension Pulumi {
     public struct Client: Sendable {

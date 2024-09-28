@@ -1,7 +1,7 @@
-import Cloud
+import AWSCloud
 
 @main
-struct Example: Project {
+struct Example: AWSProject {
     func build() async throws -> Outputs {
         let server = AWS.WebServer(
             "My Server",

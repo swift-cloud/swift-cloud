@@ -30,16 +30,16 @@ public struct Output<T>: Sendable {
         self.path = path
     }
 
-    subscript<U>(dynamicMember member: KeyPath<T, U>) -> Output<U> {
+    public subscript<U>(dynamicMember member: KeyPath<T, U>) -> Output<U> {
         let memberString = "\(member)".split(separator: ".").last!
         return Output<U>(prefix: prefix, root: root, path: path + [.property(.init(memberString))])
     }
 
-    subscript<U>(index: Int) -> Output<U> where T == [U] {
+    public subscript<U>(index: Int) -> Output<U> where T == [U] {
         return Output<U>(prefix: prefix, root: root, path: path + [.arrayIndex(index)])
     }
 
-    subscript<U>(key: String) -> Output<U> where T == [String: U] {
+    public subscript<U>(key: String) -> Output<U> where T == [String: U] {
         return Output<U>(prefix: prefix, root: root, path: path + [.dictionaryKey(key)])
     }
 

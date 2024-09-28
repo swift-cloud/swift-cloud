@@ -1,3 +1,5 @@
+public enum Random {}
+
 extension Random {
     public struct Bytes: ResourceProvider {
         public let resource: Resource

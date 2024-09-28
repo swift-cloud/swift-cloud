@@ -1,3 +1,19 @@
+@_exported import Cloud
+
+public enum AWS {}
+
+public protocol AWSProject: Project {}
+
+extension AWSProject {
+    public var home: Home.AWS {
+        Home.AWS()
+    }
+
+    public var providers: [Provider] {
+        [.aws()]
+    }
+}
+
 extension Provider {
     public static func aws(
         accessKey: String = "",

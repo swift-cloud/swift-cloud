@@ -15,18 +15,6 @@ public protocol Project: Sendable {
 }
 
 extension Project {
-    public var home: Home.AWS {
-        Home.AWS()
-    }
-}
-
-extension Project {
-    public var providers: [Provider] {
-        [.aws()]
-    }
-}
-
-extension Project {
     public static func main() async throws {
         let command = try? Command.parseAsRoot()
         switch command {

@@ -67,7 +67,7 @@ targets: [
     .executableTarget(
         name: "Infra",
         dependencies: [
-            .product(name: "Cloud", package: "swift-cloud")
+            .product(name: "AWSCloud", package: "swift-cloud")
         ]
     )
 ]
@@ -78,10 +78,10 @@ Next, inside your `Sources` directory create a new folder called `Infra`.
 Finally, add a new Swift file called `Project.swift`:
 
 ```swift
-import Cloud
+import AWSCloud
 
 @main
-struct SwiftCloudDemo: Project {
+struct SwiftCloudDemo: AWSProject {
     func build() async throws -> Outputs {
         let server = AWS.WebServer(
             "my-vapor-web-server",
@@ -159,10 +159,10 @@ We abstracted this concept into a `HomeProvider` protocol, and allow you to deci
 For quick prototyping, you can use the `Home.Local` provider, which stores your configuration in a local file. This is great for testing and development, but it's not recommended for production use.
 
 ```swift
-import Cloud
+import AWSCloud
 
 @main
-struct SwiftCloudDemo: Project {
+struct SwiftCloudDemo: AWSProject {
 
     // Override the default home provider with a local provider
     let home = Home.Local()

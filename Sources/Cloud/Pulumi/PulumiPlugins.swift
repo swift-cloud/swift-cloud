@@ -13,13 +13,13 @@ extension Pulumi {
 extension Pulumi.Plugin {
     public static let aws = Pulumi.Plugin(
         name: "aws",
-        version: "6.48.0",
+        version: "6.54.0",
         repo: "pulumi/pulumi-aws"
     )
 
     public static let awsx = Pulumi.Plugin(
         name: "awsx",
-        version: "2.13.0",
+        version: "2.16.0",
         repo: "pulumi/pulumi-awsx"
     )
 

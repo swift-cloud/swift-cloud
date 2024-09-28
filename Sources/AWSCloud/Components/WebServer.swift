@@ -139,7 +139,7 @@ extension AWS {
                             "cpuArchitecture": Architecture.current.ecsArchitecture
                         ],
                         "container": [
-                            "name": tokenize("\(name)-container"),
+                            "name": "\(name)-container",
                             "image": dockerImage.uri,
                             "cpu": cpu,
                             "memory": memory,

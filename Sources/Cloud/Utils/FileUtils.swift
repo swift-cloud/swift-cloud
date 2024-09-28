@@ -1,23 +1,23 @@
 import Foundation
 
-func currentDirectoryPath() -> String {
+public func currentDirectoryPath() -> String {
     FileManager.default.currentDirectoryPath
 }
 
-func userHomeDirectoryPath() -> String {
+public func userHomeDirectoryPath() -> String {
     FileManager.default.homeDirectoryForCurrentUser.path
 }
 
-func createDirectory(atPath path: String, withIntermediateDirectories: Bool = true) throws {
+public func createDirectory(atPath path: String, withIntermediateDirectories: Bool = true) throws {
     try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: withIntermediateDirectories)
 }
 
-func readFile(atPath path: String) throws -> Data {
+public func readFile(atPath path: String) throws -> Data {
     let url = URL(fileURLWithPath: path)
     return try Data(contentsOf: url)
 }
 
-func createFile(
+public func createFile(
     atPath path: String,
     contents: Data?,
     withIntermediateDirectories: Bool = true
@@ -30,7 +30,7 @@ func createFile(
     try contents?.write(to: url)
 }
 
-func createFile(
+public func createFile(
     atPath path: String,
     contents: String,
     withIntermediateDirectories: Bool = true
@@ -42,10 +42,10 @@ func createFile(
     )
 }
 
-func removeFile(atPath path: String) throws {
+public func removeFile(atPath path: String) throws {
     try FileManager.default.removeItem(atPath: path)
 }
 
-func fileExists(atPath path: String) -> Bool {
+public func fileExists(atPath path: String) -> Bool {
     FileManager.default.fileExists(atPath: path)
 }

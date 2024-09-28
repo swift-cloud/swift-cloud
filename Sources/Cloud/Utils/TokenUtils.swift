@@ -1,6 +1,6 @@
 import Foundation
 
-func tokenize(_ inputs: CustomStringConvertible..., separator: String = "-") -> String {
+public func tokenize(_ inputs: CustomStringConvertible..., separator: String = "-") -> String {
     // Step 1: Join inputs and trim leading and trailing whitespace
     let trimmedString =
         inputs

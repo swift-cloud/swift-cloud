@@ -8,7 +8,8 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .library(name: "Cloud", targets: ["Cloud"])
+        .library(name: "Cloud", targets: ["Cloud"]),
+        .library(name: "AWSCloud", targets: ["AWSCloud"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
@@ -35,9 +36,18 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
+        .target(
+            name: "AWSCloud",
+            dependencies: [
+                .byName(name: "Cloud")
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
         .executableTarget(
             name: "Example",
-            dependencies: ["Cloud"],
+            dependencies: ["AWSCloud"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
