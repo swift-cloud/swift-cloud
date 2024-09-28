@@ -207,15 +207,21 @@ extension AWS.CDN {
 }
 
 extension AWS.CDN.Origin {
-    public static func function(_ function: AWS.Function, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
+    public static func function(
+        _ function: AWS.Function, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil
+    ) -> Self {
         .init(url: function.url, path: path, shieldRegion: shieldRegion)
     }
 
-    public static func webServer(_ server: AWS.WebServer, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
+    public static func webServer(
+        _ server: AWS.WebServer, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil
+    ) -> Self {
         .init(url: server.url, path: path, shieldRegion: shieldRegion)
     }
 
-    public static func url(_ url: CustomStringConvertible, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
+    public static func url(
+        _ url: CustomStringConvertible, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil
+    ) -> Self {
         .init(url: url, path: path, shieldRegion: shieldRegion)
     }
 }

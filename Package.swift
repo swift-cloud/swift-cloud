@@ -9,11 +9,11 @@ let package = Package(
     ],
     products: [
         .library(name: "Cloud", targets: ["Cloud"]),
-        .library(name: "AWSCloud", targets: ["AWSCloud"])
+        .library(name: "AWSCloud", targets: ["AWSCloud"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
-        .package(url: "https://github.com/apple/swift-crypto", "1.0.0" ..< "4.0.0"),
+        .package(url: "https://github.com/apple/swift-crypto", "1.0.0"..<"4.0.0"),
         .package(url: "https://github.com/jpsim/Yams", from: "5.1.3"),
         .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.22.1"),
