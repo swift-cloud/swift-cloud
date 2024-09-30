@@ -1,5 +1,5 @@
 extension AWS {
-    public struct Cron: Component {
+    public struct Cron: AWSComponent {
         public let eventRule: Resource
 
         public var name: Output<String> {

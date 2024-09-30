@@ -1,7 +1,7 @@
 import Foundation
 
 extension AWS {
-    public struct Topic: Component {
+    public struct Topic: AWSComponent {
         public let topic: Resource
 
         public var name: Output<String> {

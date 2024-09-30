@@ -1,7 +1,7 @@
 import Foundation
 
 extension AWS {
-    public struct Role: ResourceProvider {
+    public struct Role: AWSResourceProvider {
         public let resource: Resource
 
         public init(

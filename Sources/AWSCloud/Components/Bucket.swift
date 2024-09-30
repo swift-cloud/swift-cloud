@@ -1,5 +1,5 @@
 extension AWS {
-    public struct Bucket: Component {
+    public struct Bucket: AWSComponent {
         internal let bucket: Resource
         internal let ownershipControls: Resource
         internal let publicAccessBlock: Resource

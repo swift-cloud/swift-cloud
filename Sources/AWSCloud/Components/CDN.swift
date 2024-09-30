@@ -1,5 +1,5 @@
 extension AWS {
-    public struct CDN: Component {
+    public struct CDN: AWSComponent {
         public let distribution: Resource
         public let domainName: AWS.DomainName?
 

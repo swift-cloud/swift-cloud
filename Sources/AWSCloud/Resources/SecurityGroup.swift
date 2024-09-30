@@ -1,5 +1,5 @@
 extension AWS {
-    public struct SecurityGroup: ResourceProvider {
+    public struct SecurityGroup: AWSResourceProvider {
         public let resource: Resource
         private let ingressRules: [Resource]
         private let egressRules: [Resource]

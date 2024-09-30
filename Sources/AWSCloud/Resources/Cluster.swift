@@ -1,5 +1,5 @@
 extension AWS {
-    public struct Cluster: ResourceProvider {
+    public struct Cluster: AWSResourceProvider {
         public let resource: Resource
         private let capacityProviders: Resource
 

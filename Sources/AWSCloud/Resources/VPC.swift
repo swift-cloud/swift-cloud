@@ -1,5 +1,5 @@
 extension AWS {
-    public struct VPC: ResourceProvider {
+    public struct VPC: AWSResourceProvider {
         public let resource: Resource
 
         public var publicSubnetIds: Output<[String]> {

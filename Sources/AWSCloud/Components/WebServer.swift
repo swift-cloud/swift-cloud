@@ -1,5 +1,5 @@
 extension AWS {
-    public struct WebServer: Component, EnvironmentProvider {
+    public struct WebServer: AWSComponent, EnvironmentProvider {
         public let cluster: AWS.Cluster
         public let dockerImage: DockerImage
         public let role: Role

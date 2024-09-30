@@ -1,5 +1,5 @@
 extension AWS {
-    public struct AutoScaling: ResourceProvider {
+    public struct AutoScaling: AWSResourceProvider {
         public let resource: Resource
         private let policies: [Resource]
 

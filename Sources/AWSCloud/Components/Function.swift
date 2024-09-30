@@ -1,7 +1,7 @@
 import Foundation
 
 extension AWS {
-    public struct Function: Component, EnvironmentProvider {
+    public struct Function: AWSComponent, EnvironmentProvider {
         public let dockerImage: DockerImage
         public let role: Role
         public let rolePolicyAttachment: Resource

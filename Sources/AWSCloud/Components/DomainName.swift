@@ -1,5 +1,5 @@
 extension AWS {
-    public struct DomainName: Component {
+    public struct DomainName: AWSComponent {
         public let domainName: String
         public let zoneName: String?
         public let certificate: AWS.TLSCertificate

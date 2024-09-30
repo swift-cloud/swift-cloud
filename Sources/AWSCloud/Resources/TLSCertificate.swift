@@ -1,5 +1,5 @@
 extension AWS {
-    public struct TLSCertificate: ResourceProvider {
+    public struct TLSCertificate: AWSResourceProvider {
         public let resource: Resource
 
         public var domainValidationOptions:

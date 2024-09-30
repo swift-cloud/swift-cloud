@@ -1,7 +1,7 @@
 import Foundation
 
 extension AWS {
-    public struct Queue: Component {
+    public struct Queue: AWSComponent {
         public let queue: Resource
         public let deadLetterQueue: Resource
 

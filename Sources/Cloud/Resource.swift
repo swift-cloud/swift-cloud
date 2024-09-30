@@ -119,16 +119,12 @@ extension ResourceProvider {
         output.keyPath("id")
     }
 
-    public var arn: Output<String> {
-        output.keyPath("arn")
-    }
-
     public var name: Output<String> {
         output.keyPath("name")
     }
 }
 
-extension Resource {
+extension ResourceProvider {
     public static func JSON(_ input: String) -> AnyEncodable {
         guard let data = try? JSONSerialization.jsonObject(with: .init(input.utf8)) else {
             fatalError("Invalid JSON string: \(input)")

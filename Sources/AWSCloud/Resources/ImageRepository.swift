@@ -1,5 +1,5 @@
 extension AWS {
-    public struct ImageRepository: ResourceProvider {
+    public struct ImageRepository: AWSResourceProvider {
         public let resource: Resource
 
         public var url: Output<String> {
