@@ -13,13 +13,13 @@ extension AWS {
         public init(
             _ name: String,
             primaryIndex: PrimaryIndex,
+            secondaryIndexes: [PrimaryIndex] = [],
             options: Resource.Options? = nil
         ) {
             table = Resource(
                 name: name,
                 type: "aws:dynamodb:Table",
                 properties: [
-                    "name": name,
                     "billingMode": "PAY_PER_REQUEST",
                     "hashKey": primaryIndex.hashKey.name,
                     "rangeKey": primaryIndex.rangeKey.name,
@@ -27,6 +27,14 @@ extension AWS {
                         ["name": primaryIndex.hashKey.name, "type": primaryIndex.hashKey.type.rawValue],
                         ["name": primaryIndex.rangeKey.name, "type": primaryIndex.rangeKey.type.rawValue],
                     ],
+                    "globalSecondaryIndexes": secondaryIndexes.map { index in
+                        [
+                            "name": index.rangeKey.name,
+                            "projectionType": "ALL",
+                            "hashKey": index.hashKey.name,
+                            "rangeKey": index.rangeKey.name,
+                        ]
+                    },
                 ],
                 options: options
             )
@@ -43,14 +51,6 @@ extension AWS.DynamoDB {
 
         public init(hashKey: IndexKey, rangeKey: IndexKey) {
             self.hashKey = hashKey
-            self.rangeKey = rangeKey
-        }
-    }
-
-    public struct LocalIndex: Sendable {
-        public let rangeKey: IndexKey
-
-        public init(rangeKey: IndexKey) {
             self.rangeKey = rangeKey
         }
     }
