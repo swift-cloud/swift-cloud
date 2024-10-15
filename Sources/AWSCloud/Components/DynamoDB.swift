@@ -40,10 +40,19 @@ extension AWS.DynamoDB {
     public struct PrimaryIndex: Sendable {
         public let hashKey: IndexKey
         public let rangeKey: IndexKey
+
+        public init(hashKey: IndexKey, rangeKey: IndexKey) {
+            self.hashKey = hashKey
+            self.rangeKey = rangeKey
+        }
     }
 
     public struct LocalIndex: Sendable {
         public let rangeKey: IndexKey
+
+        public init(rangeKey: IndexKey) {
+            self.rangeKey = rangeKey
+        }
     }
 }
 
