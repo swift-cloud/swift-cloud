@@ -139,10 +139,10 @@ extension AWS.Function: Linkable {
         [function.arn]
     }
 
-    public var environmentVariables: [String: CustomStringConvertible] {
+    public var environmentVariables: [String: Input<String>] {
         [
-            "function \(function.chosenName) name": name,
-            "function \(function.chosenName) url": url,
+            "function \(function.chosenName) name": .init(name),
+            "function \(function.chosenName) url": .init(url),
         ]
     }
 }

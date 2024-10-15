@@ -7,7 +7,7 @@ public protocol Linkable {
 
     var resources: [Output<String>] { get }
 
-    var environmentVariables: [String: CustomStringConvertible] { get }
+    var environmentVariables: [String: Input<String>] { get }
 }
 
 extension Linkable {
