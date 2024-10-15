@@ -22,7 +22,8 @@ extension AWS {
                 properties: [
                     "scheduleExpression": schedule.value,
                     "state": enabled ? "ENABLED" : "DISABLED",
-                ]
+                ],
+                options: options
             )
         }
     }
@@ -38,7 +39,8 @@ extension AWS.Cron {
                 "rule": eventRule.name,
                 "arn": function.function.arn,
                 "targetId": "\(tokenize(name))-\(function.function.chosenName)-target-id",
-            ]
+            ],
+            options: function.function.options
         )
         return self
     }

@@ -253,6 +253,21 @@ queue.subscribe(
 )
 ```
 
+#### DynamoDB
+
+```swift
+let table = AWS.DynamoDB(
+    "Users",
+    primaryIndex: .init(
+        hashKey: ("id", .string),
+        rangeKey: ("createdAt", .number)
+    )
+)
+
+// Link the table to a function or web server
+function.link(table)
+```
+
 #### Topic
 
 ```swift
@@ -331,3 +346,4 @@ Here is a list of all the linked resources:
 | AWS SQS Queue | `QUEUE_<NAME>_NAME` |
 | AWS Lambda Function | `FUNCTION_<NAME>_URL` |
 | AWS Lambda Function | `FUNCTION_<NAME>_NAME` |
+| AWS DynamoDB Table | `DYNAMODB_<NAME>_NAME` |
