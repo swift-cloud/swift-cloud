@@ -259,8 +259,7 @@ queue.subscribe(
 let table = AWS.DynamoDB(
     "Users",
     primaryIndex: .init(
-        hashKey: ("id", .string),
-        rangeKey: ("createdAt", .number)
+        partitionKey: ("id", .string)
     )
 )
 

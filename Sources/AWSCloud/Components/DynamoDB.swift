@@ -12,8 +12,8 @@ extension AWS {
 
         public init(
             _ name: String,
-            primaryIndex: PrimaryIndex,
-            secondaryIndexes: [PrimaryIndex] = [],
+            primaryIndex: Index,
+            secondaryIndexes: [Index] = [],
             options: Resource.Options? = nil
         ) {
             table = Resource(
@@ -21,18 +21,18 @@ extension AWS {
                 type: "aws:dynamodb:Table",
                 properties: [
                     "billingMode": "PAY_PER_REQUEST",
-                    "hashKey": primaryIndex.hashKey.name,
-                    "rangeKey": primaryIndex.rangeKey.name,
+                    "hashKey": primaryIndex.partitionKey.name,
+                    "rangeKey": primaryIndex.sortKey?.name,
                     "attributes": [
-                        ["name": primaryIndex.hashKey.name, "type": primaryIndex.hashKey.type.rawValue],
-                        ["name": primaryIndex.rangeKey.name, "type": primaryIndex.rangeKey.type.rawValue],
-                    ],
+                        ["name": primaryIndex.partitionKey.name, "type": primaryIndex.partitionKey.type.rawValue],
+                        primaryIndex.sortKey.map { ["name": $0.name, "type": $0.type.rawValue] },
+                    ].compacted(),
                     "globalSecondaryIndexes": secondaryIndexes.map { index in
                         [
-                            "name": index.rangeKey.name,
+                            "name": index.partitionKey.name,
                             "projectionType": "ALL",
-                            "hashKey": index.hashKey.name,
-                            "rangeKey": index.rangeKey.name,
+                            "hashKey": index.partitionKey.name,
+                            "rangeKey": index.sortKey?.name,
                         ]
                     },
                 ],
@@ -45,13 +45,13 @@ extension AWS {
 extension AWS.DynamoDB {
     public typealias IndexKey = (name: String, type: AttributeType)
 
-    public struct PrimaryIndex: Sendable {
-        public let hashKey: IndexKey
-        public let rangeKey: IndexKey
+    public struct Index: Sendable {
+        public let partitionKey: IndexKey
+        public let sortKey: IndexKey?
 
-        public init(hashKey: IndexKey, rangeKey: IndexKey) {
-            self.hashKey = hashKey
-            self.rangeKey = rangeKey
+        public init(partitionKey: IndexKey, sortKey: IndexKey? = nil) {
+            self.partitionKey = partitionKey
+            self.sortKey = sortKey
         }
     }
 }
