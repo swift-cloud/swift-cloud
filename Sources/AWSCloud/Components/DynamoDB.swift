@@ -26,7 +26,7 @@ extension AWS {
                     "attributes": [
                         ["name": primaryIndex.partitionKey.name, "type": primaryIndex.partitionKey.type.rawValue],
                         primaryIndex.sortKey.map { ["name": $0.name, "type": $0.type.rawValue] },
-                    ].compacted(),
+                    ].compactMap { $0 },
                     "globalSecondaryIndexes": secondaryIndexes.map { index in
                         [
                             "name": index.partitionKey.name,
