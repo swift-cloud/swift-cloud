@@ -10,6 +10,7 @@ let package = Package(
     products: [
         .library(name: "Cloud", targets: ["Cloud"]),
         .library(name: "AWSCloud", targets: ["AWSCloud"]),
+        .library(name: "DigitalOceanCloud", targets: ["DigitalOceanCloud"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
@@ -37,9 +38,13 @@ let package = Package(
             name: "AWSCloud",
             dependencies: ["Cloud"]
         ),
+        .target(
+            name: "DigitalOceanCloud",
+            dependencies: ["Cloud"]
+        ),
         .executableTarget(
             name: "Example",
-            dependencies: ["AWSCloud"]
+            dependencies: ["AWSCloud", "DigitalOceanCloud"]
         ),
         .testTarget(
             name: "CloudTests",

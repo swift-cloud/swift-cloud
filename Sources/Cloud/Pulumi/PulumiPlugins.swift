@@ -41,9 +41,9 @@ extension Pulumi.Plugin {
         repo: "pulumi/pulumi-cloudflare"
     )
 
-    public static let digitalocean = Pulumi.Plugin(
+    public static let digitalOcean = Pulumi.Plugin(
         name: "digitalocean",
-        version: "4.31.0",
+        version: "4.34.0",
         repo: "pulumi/pulumi-digitalocean"
     )
 
