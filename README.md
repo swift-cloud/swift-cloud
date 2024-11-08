@@ -2,10 +2,26 @@
 
 The fastest way to build and deploy server side Swift applications.
 
-Swift Cloud is based on the premise that infrastructure should be defined along side your application, in the same language as your application. In our case, Swift. Define a new target, describe your infrastructure, and deploy it with a single command. There's no Dockerfiles, no Terrafrom configurations, no Node.js packages. Everything is defined in Swift and the complex configuration is handled behind the scenes, using modern architecture best practices.
+Swift Cloud is based on the premise that infrastructure should be defined along
+side your application, in the same language as your application. In our case,
+Swift. Define a new target, describe your infrastructure, and deploy it with a
+single command. There's no Dockerfiles, no Terrafrom configurations, no Node.js
+packages. Everything is defined in Swift and the complex configuration is
+handled behind the scenes, using modern architecture best practices.
 
 ```swift
-AWS.WebServer(
+let jobHandler = AWS.Function(
+    "my-lambda-function",
+    targetName: "JobProcessor",
+    url: .enabled(cors: true),
+    memory: 512,
+    timeout: .seconds(10)
+)
+
+let queue = AWS.Queue("job-queue")
+queue.subscribe(jobHandler)
+
+let server = AWS.WebServer(
     "my-vapor-app",
     targetName: "App",
     concurrency: 1,
@@ -14,11 +30,18 @@ AWS.WebServer(
         metrics: [.cpu(50), .memory(50)]
     )
 )
+
+server.link(queue)
 ```
 
 ## How it works
 
-The Swift Cloud package is powered by [Pulumi](https://www.pulumi.com). Specifically, the SDK vends Swift components that are compiled into Pulumi YAML files, and then the Pulumi CLI is used to deploy your application. You do not need a Pulumi account to use Swift Cloud, nor do you need to install Pulumi CLI on your machine. Everything is managed by the SDK and written to a `.cloud` directory in your project.
+The Swift Cloud package is powered by [Pulumi](https://www.pulumi.com).
+Specifically, the SDK vends Swift components that are compiled into Pulumi YAML
+files, and then the Pulumi CLI is used to deploy your application. You do not
+need a Pulumi account to use Swift Cloud, nor do you need to install Pulumi CLI
+on your machine. Everything is managed by the SDK and written to a `.cloud`
+directory in your project.
 
 ## Get Started
 
@@ -26,20 +49,26 @@ The Swift Cloud package is powered by [Pulumi](https://www.pulumi.com). Specific
 
 #### Setup Docker
 
-In order to use Swift Cloud you need to have Docker installed on your machine. This is a short term limitation until Swift 6 where we will be able to natively cross-compile to Linux and other SDKs.
+In order to use Swift Cloud you need to have Docker installed on your machine.
+This is a short term limitation until Swift 6 where we will be able to natively
+cross-compile to Linux and other SDKs.
 
-If you're on a Mac the easiest way to install Docker is [OrbStack](https://orbstack.dev). Simply download OrbStack and run the installer.
+If you're on a Mac the easiest way to install Docker is
+[OrbStack](https://orbstack.dev). Simply download OrbStack and run the
+installer.
 
 #### Setup AWS
 
-Today, Swift Cloud only supports AWS. You will need to have an AWS account and AWS credentials loaded on your machine or in the typical environment variables.
+Today, Swift Cloud only supports AWS. You will need to have an AWS account and
+AWS credentials loaded on your machine or in the typical environment variables.
 
 ```bash
 export AWS_ACCESS_KEY_ID=...
 export AWS_SECRET_ACCESS_KEY=...
 ```
 
-If you're on a Mac the easiest way to manage your AWS credentials is [Leapp](https://www.leapp.cloud).
+If you're on a Mac the easiest way to manage your AWS credentials is
+[Leapp](https://www.leapp.cloud).
 
 You can also use the AWS CLI to configure your credentials:
 
@@ -57,7 +86,8 @@ dependencies: [
 
 ### Define your infrastructure
 
-Swift Cloud works by declaring your infrastructure as Swift code. To do this you must create a new executable target in the same package as your application.
+Swift Cloud works by declaring your infrastructure as Swift code. To do this you
+must create a new executable target in the same package as your application.
 
 Start by defining a new executable target in your `Package.swift` file:
 
@@ -108,7 +138,8 @@ swift run Infra deploy --stage production
 
 ## Commands
 
-Swift Cloud is invoked directly from your Swift package. You can run the following commands:
+Swift Cloud is invoked directly from your Swift package. You can run the
+following commands:
 
 ### Deploy
 
@@ -152,11 +183,20 @@ swift run Infra cancel --stage development
 
 ## Home
 
-Swift Cloud allows you to deploy infrastructure across multiple cloud providers. In order to handle incremental changes to your infrastructure, Swift Cloud must store your underlying configuration in a durable location so it can be referenced anytime you run a deploy, whether from your local machine or a CI/CD pipeline.
+Swift Cloud allows you to deploy infrastructure across multiple cloud providers.
+In order to handle incremental changes to your infrastructure, Swift Cloud must
+store your underlying configuration in a durable location so it can be
+referenced anytime you run a deploy, whether from your local machine or a CI/CD
+pipeline.
 
-We abstracted this concept into a `HomeProvider` protocol, and allow you to decide where your configuration is stored. By default, Swift Cloud uses the AWS S3 service to store your configuration, but you can easily swap this out for any other provider that supports the `HomeProvider` protocol.
+We abstracted this concept into a `HomeProvider` protocol, and allow you to
+decide where your configuration is stored. By default, Swift Cloud uses the AWS
+S3 service to store your configuration, but you can easily swap this out for any
+other provider that supports the `HomeProvider` protocol.
 
-For quick prototyping, you can use the `Home.Local` provider, which stores your configuration in a local file. This is great for testing and development, but it's not recommended for production use.
+For quick prototyping, you can use the `Home.Local` provider, which stores your
+configuration in a local file. This is great for testing and development, but
+it's not recommended for production use.
 
 ```swift
 import AWSCloud
@@ -177,7 +217,9 @@ struct SwiftCloudDemo: AWSProject {
 
 #### WebServer
 
-This component creates a high performance web server using an application load balancer, auto-scaling group, and Fargate. Everything is fully managed and scales automatically based on your configuration.
+This component creates a high performance web server using an application load
+balancer, auto-scaling group, and Fargate. Everything is fully managed and
+scales automatically based on your configuration.
 
 ```swift
 let server = AWS.WebServer(
@@ -205,7 +247,9 @@ let lambda = AWS.Function(
 
 #### CDN
 
-This component creates a CDN that sits in front of your application. It can be used to cache your application assets, or to serve your application from a custom domain.
+This component creates a CDN that sits in front of your application. It can be
+used to cache your application assets, or to serve your application from a
+custom domain.
 
 ```swift
 let cdn = AWS.CDN(
@@ -294,9 +338,13 @@ cron.invoke(
 
 #### Domain Name
 
-The `DomainName` construct manages a TLS certificate and the necessary validation, and can be linked to a `WebServer` to provide a fully managed domain name.
+The `DomainName` construct manages a TLS certificate and the necessary
+validation, and can be linked to a `WebServer` to provide a fully managed domain
+name.
 
-> Important: You must host your domain in a Route53 hosted zone in your AWS account to use this construct. In the future we will add support for domains hosted on other providers.
+> Important: You must host your domain in a Route53 hosted zone in your AWS
+> account to use this construct. In the future we will add support for domains
+> hosted on other providers.
 
 ```swift
 // Optionally pass a `zoneName` if the domain is not simply inferred from the `domainName`
@@ -316,7 +364,9 @@ return Outputs([
 
 ### Linking
 
-You can link resources together to provide the necessary permissions to access each other. This is more secure than sharing access key ids and secrets in environment variables.
+You can link resources together to provide the necessary permissions to access
+each other. This is more secure than sharing access key ids and secrets in
+environment variables.
 
 For example you can link an S3 bucket to a Lambda function:
 
@@ -324,11 +374,13 @@ For example you can link an S3 bucket to a Lambda function:
 myFunction.link(bucket)
 ```
 
-This allows the lambda function to access the bucket without needing to share access keys.
+This allows the lambda function to access the bucket without needing to share
+access keys.
 
 #### Using linked resources
 
-You can use linked resources in your server or function via environment variables in your application:
+You can use linked resources in your server or function via environment
+variables in your application:
 
 ```swift
 let bucketUrl = ProcessInfo.processInfo.environment["bucket:my-bucket:url"]
@@ -336,13 +388,13 @@ let bucketUrl = ProcessInfo.processInfo.environment["bucket:my-bucket:url"]
 
 Here is a list of all the linked resources:
 
-| Resource | Environment Variable |
-| --- | --- |
-| AWS S3 Bucket | `BUCKET_<NAME>_URL` |
-| AWS S3 Bucket | `BUCKET_<NAME>_HOSTNAME` |
-| AWS S3 Bucket | `BUCKET_<NAME>_NAME` |
-| AWS SQS Queue | `QUEUE_<NAME>_URL` |
-| AWS SQS Queue | `QUEUE_<NAME>_NAME` |
-| AWS Lambda Function | `FUNCTION_<NAME>_URL` |
-| AWS Lambda Function | `FUNCTION_<NAME>_NAME` |
-| AWS DynamoDB Table | `DYNAMODB_<NAME>_NAME` |
+| Resource            | Environment Variable     |
+| ------------------- | ------------------------ |
+| AWS S3 Bucket       | `BUCKET_<NAME>_URL`      |
+| AWS S3 Bucket       | `BUCKET_<NAME>_HOSTNAME` |
+| AWS S3 Bucket       | `BUCKET_<NAME>_NAME`     |
+| AWS SQS Queue       | `QUEUE_<NAME>_URL`       |
+| AWS SQS Queue       | `QUEUE_<NAME>_NAME`      |
+| AWS Lambda Function | `FUNCTION_<NAME>_URL`    |
+| AWS Lambda Function | `FUNCTION_<NAME>_NAME`   |
+| AWS DynamoDB Table  | `DYNAMODB_<NAME>_NAME`   |
