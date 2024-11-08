@@ -11,7 +11,7 @@ handled behind the scenes, using modern architecture best practices.
 
 ```swift
 let jobHandler = AWS.Function(
-    "my-lambda-function",
+    "job-handler",
     targetName: "JobProcessor",
     url: .enabled(cors: true),
     memory: 512,
@@ -19,10 +19,11 @@ let jobHandler = AWS.Function(
 )
 
 let queue = AWS.Queue("job-queue")
+
 queue.subscribe(jobHandler)
 
 let server = AWS.WebServer(
-    "my-vapor-app",
+    "hummingbird-server",
     targetName: "App",
     concurrency: 1,
     autoScaling: .init(
