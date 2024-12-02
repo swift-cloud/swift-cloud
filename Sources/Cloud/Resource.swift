@@ -11,6 +11,7 @@ public struct Resource: Sendable {
     public let properties: AnyEncodable?
     public let dependsOn: [any ResourceProvider]?
     public let options: Options?
+    public let existingId: String?
 
     fileprivate var internalName: String {
         let token = tokenize(Context.current.stage, chosenName)
@@ -31,13 +32,15 @@ public struct Resource: Sendable {
         type: String,
         properties: AnyEncodable? = nil,
         dependsOn: [any ResourceProvider]? = nil,
-        options: Options? = nil
+        options: Options? = nil,
+        existingId: String? = nil
     ) {
         self.chosenName = name
         self.type = type
         self.properties = properties
         self.dependsOn = dependsOn
         self.options = options
+        self.existingId = existingId
         Context.current.store.track(self)
     }
 
@@ -50,9 +53,22 @@ public struct Resource: Sendable {
                     dependsOn: (dependsOn ?? options?.dependsOn)?.map { $0.output },
                     protect: options?.protect,
                     provider: options?.provider?.output
-                )
+                ),
+                get: existingId.map {
+                    .init(id: $0)
+                }
             )
         ]
+    }
+}
+
+extension Resource {
+    public static func lookup(type: String, id: String) -> Resource {
+        .init(
+            name: "\(type):\(id)",
+            type: type,
+            existingId: id
+        )
     }
 }
 

@@ -53,9 +53,13 @@ extension Pulumi {
                 public var protect: Bool?
                 public var provider: Output<Any>?
             }
+            public struct Lookup: Encodable {
+                public var id: String
+            }
             public var type: String
             public var properties: AnyEncodable?
             public var options: Options?
+            public var get: Lookup?
         }
 
         public struct ConfigValue: Encodable {
