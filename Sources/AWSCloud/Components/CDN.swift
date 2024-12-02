@@ -63,7 +63,7 @@ extension AWS {
                 options: .provider(cfProvider)
             )
 
-            let originRequestPolicy = getOriginRequestPolicy(name: "Managed-AllViewerExceptHostHeader")
+            let originRequestPolicy = Cloudfront.getOriginRequestPolicy(name: "Managed-AllViewerExceptHostHeader")
 
             guard let defaultOrigin = origins.defaultOrigin() else {
                 fatalError("Missing a default origin. You must specify at least one origin with `path: *`.")

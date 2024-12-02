@@ -4,7 +4,7 @@ extension AWS {
         public let zoneName: String?
         public let certificate: AWS.TLSCertificate
         public let validation: AWS.TLSCertificate.Validation
-        public let hostedZone: Output<GetZone>
+        public let hostedZone: Output<Route53.GetZone>
         public let validationRecord: Resource
 
         public var name: Output<String> {
@@ -19,7 +19,7 @@ extension AWS {
             self.domainName = domainName
             self.zoneName = zoneName
 
-            hostedZone = getZone(name: zoneName ?? Self.inferredZoneName(domainName: domainName))
+            hostedZone = Route53.getZone(name: zoneName ?? Self.inferredZoneName(domainName: domainName))
 
             certificate = AWS.TLSCertificate(
                 domainName: domainName,
