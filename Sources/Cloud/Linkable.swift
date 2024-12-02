@@ -7,9 +7,7 @@ public protocol Linkable {
 
     var resources: [Output<String>] { get }
 
-    var condition: [String: AnyEncodable]? { get }
-
-    var environmentVariables: [String: CustomStringConvertible] { get }
+    var environmentVariables: [String: Output<String>] { get }
 }
 
 extension Linkable {
@@ -17,24 +15,24 @@ extension Linkable {
         "Allow"
     }
 
-    public var condition: [String: AnyEncodable]? {
-        nil
+    public var actions: [String] {
+        ["*"]
+    }
+
+    public var environmentVariables: [String: Output<String>] {
+        [:]
     }
 }
 
 extension Linkable {
     public var policy: AnyEncodable {
-        var statement: [String: Encodable] = [
-            "Effect": effect,
-            "Action": actions,
-            "Resource": resources,
-        ]
-        if let condition, !condition.isEmpty {
-            statement["Condition"] = condition
-        }
         return Resource.JSON([
             "Version": "2012-10-17",
-            "Statement": statement,
+            "Statement": [
+                "Effect": effect,
+                "Action": actions,
+                "Resource": resources,
+            ],
         ])
     }
 }

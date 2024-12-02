@@ -96,7 +96,7 @@ extension AWS.Queue: Linkable {
         [queue.arn]
     }
 
-    public var environmentVariables: [String: CustomStringConvertible] {
+    public var environmentVariables: [String: Output<String>] {
         [
             "queue \(queue.chosenName) name": name,
             "queue \(queue.chosenName) url": url,

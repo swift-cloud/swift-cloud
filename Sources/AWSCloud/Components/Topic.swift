@@ -74,7 +74,7 @@ extension AWS.Topic: Linkable {
         [topic.arn]
     }
 
-    public var environmentVariables: [String: CustomStringConvertible] {
+    public var environmentVariables: [String: Output<String>] {
         [
             "topic \(topic.chosenName) name": name
         ]

@@ -72,7 +72,7 @@ extension AWS.Bucket: Linkable {
         ]
     }
 
-    public var environmentVariables: [String: CustomStringConvertible] {
+    public var environmentVariables: [String: Output<String>] {
         [
             "bucket \(bucket.chosenName) name": name,
             "bucket \(bucket.chosenName) hostname": hostname,

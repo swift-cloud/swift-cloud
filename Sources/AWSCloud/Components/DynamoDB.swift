@@ -80,7 +80,7 @@ extension AWS.DynamoDB: Linkable {
         [table.arn]
     }
 
-    public var environmentVariables: [String: CustomStringConvertible] {
+    public var environmentVariables: [String: Output<String>] {
         [
             "dynamodb \(table.chosenName) name": name
         ]
