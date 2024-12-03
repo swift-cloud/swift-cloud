@@ -23,7 +23,7 @@ extension AWS {
                 name: "\(resource.chosenName)-default-sg",
                 type: "aws:ec2:DefaultSecurityGroup",
                 properties: [
-                    "vpcId": resource.id
+                    "vpcId": self.id
                 ],
                 options: resource.options
             )
