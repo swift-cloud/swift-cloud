@@ -2,6 +2,14 @@ extension AWS {
     public struct VPC: AWSResourceProvider {
         public let resource: Resource
 
+        public var id: Output<String> {
+            resource.output.keyPath("vpcId")
+        }
+
+        public var urn: Output<String> {
+            resource.output.keyPath("urn")
+        }
+
         public var publicSubnetIds: Output<[String]> {
             resource.output.keyPath("publicSubnetIds")
         }
