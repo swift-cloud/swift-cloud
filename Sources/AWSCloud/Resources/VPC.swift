@@ -10,6 +10,17 @@ extension AWS {
             resource.output.keyPath("privateSubnetIds")
         }
 
+        public var defaultSecurityGroup: Resource {
+            .init(
+                name: "\(resource.chosenName)-default-sg",
+                type: "aws:ec2:DefaultSecurityGroup",
+                properties: [
+                    "vpcId": resource.id
+                ],
+                options: resource.options
+            )
+        }
+
         fileprivate init(resource: Resource) {
             self.resource = resource
         }
