@@ -38,8 +38,7 @@ extension AWS {
                             "fromPort": 0,
                             "toPort": 0,
                             "cidrBlocks": [
-                                "0.0.0.0/0",
-                                "::/0",
+                                "0.0.0.0/0"
                             ],
                         ]
                     ],
