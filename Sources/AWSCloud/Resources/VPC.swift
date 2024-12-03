@@ -35,7 +35,6 @@ extension AWS {
                     "egress": [
                         [
                             "protocol": "-1",
-                            "self": true,
                             "fromPort": 0,
                             "toPort": 0,
                             "cidrBlocks": [
