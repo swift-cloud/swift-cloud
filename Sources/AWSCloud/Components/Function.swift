@@ -62,7 +62,9 @@ extension AWS {
                 type: "aws:iam:RolePolicyAttachment",
                 properties: [
                     "role": "\(role.name)",
-                    "policyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                    "policyArn": vpc == nil
+                        ? "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                        : "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
                 ],
                 options: options
             )
