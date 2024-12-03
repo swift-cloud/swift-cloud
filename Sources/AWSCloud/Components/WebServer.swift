@@ -56,7 +56,7 @@ extension AWS {
             memory: Int = 2048,
             autoScaling: AutoScalingConfiguration? = nil,
             instancePort: Int = 8080,
-            vpc: AWS.VPC = .default,
+            vpc: AWS.VPC? = nil,
             environment: [String: String] = [:],
             options: Resource.Options? = nil
         ) {
@@ -121,6 +121,8 @@ extension AWS {
                 dependsOn: domainName.map { [$0.validation] },
                 options: options
             )
+
+            let vpc = vpc ?? AWS.VPC.default(options: options)
 
             service = Resource(
                 name: "\(name)-service",

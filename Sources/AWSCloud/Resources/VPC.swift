@@ -36,10 +36,13 @@ extension AWS {
 }
 
 extension AWS.VPC {
-    public static let `default` = AWS.VPC(
-        resource: Resource(
-            name: "default-vpc",
-            type: "awsx:ec2:DefaultVpc"
+    public static func `default`(options: Resource.Options? = nil) -> AWS.VPC {
+        .init(
+            resource: .init(
+                name: "default-vpc",
+                type: "awsx:ec2:DefaultVpc",
+                options: options
+            )
         )
-    )
+    }
 }
