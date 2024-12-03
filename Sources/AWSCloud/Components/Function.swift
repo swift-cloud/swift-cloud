@@ -83,7 +83,6 @@ extension AWS {
                     "reservedConcurrentExecutions": reservedConcurrency,
                     "vpcConfig": vpc.map {
                         [
-                            "vpcId": $0.vpc.id,
                             "subnetIds": $0.subnetIds,
                             "securityGroupIds": [$0.vpc.defaultSecurityGroup.id],
                         ]
