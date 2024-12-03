@@ -23,7 +23,27 @@ extension AWS {
                 name: "\(resource.chosenName)-default-sg",
                 type: "aws:ec2:DefaultSecurityGroup",
                 properties: [
-                    "vpcId": self.id
+                    "vpcId": self.id,
+                    "ingress": [
+                        [
+                            "protocol": "-1",
+                            "self": true,
+                            "fromPort": 0,
+                            "toPort": 0,
+                        ]
+                    ],
+                    "egress": [
+                        [
+                            "protocol": "-1",
+                            "self": true,
+                            "fromPort": 0,
+                            "toPort": 0,
+                            "cidrBlocks": [
+                                "0.0.0.0/0",
+                                "::/0",
+                            ],
+                        ]
+                    ],
                 ],
                 options: resource.options
             )
