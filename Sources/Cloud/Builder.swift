@@ -54,8 +54,10 @@ extension Builder {
     public func packageForAwsLambda(targetName: String, architecture: Architecture = .current) async throws {
         let binaryPath = "\(Context.buildDirectory)/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName)"
         let lambdaDirectory = "\(Context.buildDirectory)/lambda"
+        let bootstrapPath = "\(lambdaDirectory)/bootstrap"
         try? createDirectory(atPath: lambdaDirectory)
-        try copyFile(fromPath: binaryPath, toPath: "\(lambdaDirectory)/bootstrap")
+        try? removeFile(atPath: bootstrapPath)
+        try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
         let zipCmdPath = try await shellOut(to: "which", arguments: ["zip"])
         try await shellOut(
             to: zipCmdPath.stdout,
@@ -63,7 +65,7 @@ extension Builder {
                 "--recurse-paths",
                 "--symlinks",
                 "\(targetName).zip",
-                "\(lambdaDirectory)/bootstrap",
+                bootstrapPath,
             ]
         )
     }
