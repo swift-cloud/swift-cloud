@@ -69,7 +69,7 @@ extension Builder {
             guard fileName.hasSuffix("resources") else {
                 continue
             }
-            try copyFile(atPath: filePath, toPath: "\(lambdaDirectory)/\(fileName)")
+            try copyFile(fromPath: filePath, toPath: "\(lambdaDirectory)/\(fileName)")
             zipArguments.append(fileName)
         }
         try await shellOut(
