@@ -61,14 +61,16 @@ extension Builder {
         try? removeFile(atPath: zipPath)
         try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
         let zipCmdPath = try await shellOut(to: "which", arguments: ["zip"])
+        print("zipCmdPath: \(zipCmdPath.stdout)")
         try await shellOut(
             to: zipCmdPath.stdout,
             arguments: [
                 "--recurse-paths",
                 "--symlinks",
-                zipPath,
-                bootstrapPath,
-            ]
+                zipPath.components(separatedBy: "/").last!,
+                bootstrapPath.components(separatedBy: "/").last!,
+            ],
+            workingDirectory: lambdaDirectory
         )
     }
 }
