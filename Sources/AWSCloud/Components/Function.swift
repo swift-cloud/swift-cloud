@@ -66,6 +66,7 @@ extension AWS {
                     "role": "\(role.arn)",
                     "packageType": "Zip",
                     "runtime": "provided.al2",
+                    "handler": "bootstrap",
                     "code": [
                         "fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName).zip"
                     ],
