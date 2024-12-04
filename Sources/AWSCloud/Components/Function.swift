@@ -65,7 +65,9 @@ extension AWS {
                 properties: [
                     "role": "\(role.arn)",
                     "packageType": "Zip",
-                    "code": "\(Context.buildDirectory)/lambda/\(targetName).zip",
+                    "code": [
+                        "fn::FileArchive": "\(Context.buildDirectory)/lambda/\(targetName).zip"
+                    ],
                     "architectures": [Architecture.current.lambdaArchitecture],
                     "memorySize": memory,
                     "timeout": timeout.components.seconds,
