@@ -55,6 +55,7 @@ extension Builder {
         let binaryPath = "\(Context.buildDirectory)/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName)"
         let lambdaDirectory = "\(Context.buildDirectory)/lambda"
         let bootstrapPath = "\(lambdaDirectory)/bootstrap"
+        let zipPath = "\(lambdaDirectory)/\(targetName).zip"
         try? createDirectory(atPath: lambdaDirectory)
         try? removeFile(atPath: bootstrapPath)
         try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
@@ -64,7 +65,7 @@ extension Builder {
             arguments: [
                 "--recurse-paths",
                 "--symlinks",
-                "\(targetName).zip",
+                zipPath,
                 bootstrapPath,
             ]
         )
