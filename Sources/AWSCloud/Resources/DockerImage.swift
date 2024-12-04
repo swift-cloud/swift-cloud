@@ -21,7 +21,7 @@ extension AWS {
                 type: "awsx:ecr:Image",
                 properties: [
                     "repositoryUrl": "\(imageRepository.url)",
-                    "context": "\(context ?? currentDirectoryPath())",
+                    "context": "\(context ?? Context.projectDirectory)",
                     "dockerfile": "\(dockerFilePath)",
                     "platform": "\(platform ?? Architecture.current.dockerPlatform)",
                     "args": ["DOCKER_BUILDKIT": "1"],

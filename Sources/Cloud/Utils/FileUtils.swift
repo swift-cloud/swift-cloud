@@ -1,23 +1,23 @@
 import Foundation
 
-public func currentDirectoryPath() -> String {
+func currentDirectoryPath() -> String {
     FileManager.default.currentDirectoryPath
 }
 
-public func userHomeDirectoryPath() -> String {
+func userHomeDirectoryPath() -> String {
     FileManager.default.homeDirectoryForCurrentUser.path
 }
 
-public func createDirectory(atPath path: String, withIntermediateDirectories: Bool = true) throws {
+func createDirectory(atPath path: String, withIntermediateDirectories: Bool = true) throws {
     try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: withIntermediateDirectories)
 }
 
-public func readFile(atPath path: String) throws -> Data {
+func readFile(atPath path: String) throws -> Data {
     let url = URL(fileURLWithPath: path)
     return try Data(contentsOf: url)
 }
 
-public func createFile(
+func createFile(
     atPath path: String,
     contents: Data?,
     withIntermediateDirectories: Bool = true
@@ -30,7 +30,7 @@ public func createFile(
     try contents?.write(to: url)
 }
 
-public func createFile(
+func createFile(
     atPath path: String,
     contents: String,
     withIntermediateDirectories: Bool = true
@@ -42,23 +42,23 @@ public func createFile(
     )
 }
 
-public func copyFile(fromPath: String, toPath: String) throws {
+func copyFile(fromPath: String, toPath: String) throws {
     try FileManager.default.copyItem(atPath: fromPath, toPath: toPath)
 }
 
-public func removeFile(atPath path: String) throws {
+func removeFile(atPath path: String) throws {
     try FileManager.default.removeItem(atPath: path)
 }
 
-public func fileExists(atPath path: String) -> Bool {
+func fileExists(atPath path: String) -> Bool {
     FileManager.default.fileExists(atPath: path)
 }
 
-public func removeDirectory(atPath path: String) throws {
+func removeDirectory(atPath path: String) throws {
     try FileManager.default.removeItem(atPath: path)
 }
 
-public func scanDirectory(atPath path: String) throws -> [(name: String, path: String)] {
+func scanDirectory(atPath path: String) throws -> [(name: String, path: String)] {
     try FileManager.default.contentsOfDirectory(atPath: path).map { name in
         (name: name, path: "\(path)/\(name)")
     }
