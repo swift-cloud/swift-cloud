@@ -58,6 +58,7 @@ extension Builder {
         let zipPath = "\(lambdaDirectory)/\(targetName).zip"
         try? createDirectory(atPath: lambdaDirectory)
         try? removeFile(atPath: bootstrapPath)
+        try? removeFile(atPath: zipPath)
         try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
         let zipCmdPath = try await shellOut(to: "which", arguments: ["zip"])
         try await shellOut(
