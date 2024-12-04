@@ -54,6 +54,7 @@ extension Builder {
     public func packageForAwsLambda(targetName: String, architecture: Architecture = .current) async throws {
         let binaryPath = "\(Context.buildDirectory)/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName)"
         let lambdaDirectory = "\(Context.buildDirectory)/lambda"
+        try? createDirectory(atPath: lambdaDirectory)
         try copyFile(fromPath: binaryPath, toPath: "\(lambdaDirectory)/bootstrap")
         let zipCmdPath = try await shellOut(to: "which", arguments: ["zip"])
         try await shellOut(
