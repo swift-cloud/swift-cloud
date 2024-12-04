@@ -47,6 +47,26 @@ extension AWS {
             )
         }
 
+        public init(
+            _ name: String,
+            cidrBlock: String = "10.0.0.0/16",
+            enableDnsHostnames: Bool = true,
+            enableDnsSupport: Bool = true,
+            options: Resource.Options? = nil
+        ) {
+            resource = .init(
+                name: name,
+                type: "awsx:ec2:Vpc",
+                properties: [
+                    "cidrBlock": cidrBlock,
+                    "enableDnsHostnames": enableDnsHostnames,
+                    "enableDnsSupport": enableDnsSupport,
+                    "subnetStrategy": "Auto",
+                ],
+                options: options
+            )
+        }
+
         fileprivate init(resource: Resource) {
             self.resource = resource
         }
