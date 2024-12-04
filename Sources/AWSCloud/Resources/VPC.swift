@@ -64,7 +64,7 @@ extension AWS {
                     "enableDnsSupport": enableDnsSupport,
                     "subnetStrategy": "Auto",
                     "natGateways": [
-                        "strategy": natGatewatStrategy.rawValue
+                        "strategy": natGatewatStrategy
                     ],
                 ],
                 options: options
@@ -78,7 +78,7 @@ extension AWS {
 }
 
 extension AWS.VPC {
-    public enum NatGatewayStrategy: String, Sendable {
+    public enum NatGatewayStrategy: String, Sendable, Codable {
         case disabled = "None"
         case standard = "Single"
         case highAvailability = "OnePerAz"
