@@ -50,6 +50,7 @@ extension AWS {
         public init(
             _ name: String,
             cidrBlock: String = "10.0.0.0/16",
+            natGatewatStrategy: NatGatewayStrategy = .disabled,
             enableDnsHostnames: Bool = true,
             enableDnsSupport: Bool = true,
             options: Resource.Options? = nil
@@ -62,6 +63,9 @@ extension AWS {
                     "enableDnsHostnames": enableDnsHostnames,
                     "enableDnsSupport": enableDnsSupport,
                     "subnetStrategy": "Auto",
+                    "natGateways": [
+                        "strategy": natGatewatStrategy.rawValue
+                    ],
                 ],
                 options: options
             )
@@ -70,6 +74,14 @@ extension AWS {
         fileprivate init(resource: Resource) {
             self.resource = resource
         }
+    }
+}
+
+extension AWS.VPC {
+    public enum NatGatewayStrategy: String, Sendable {
+        case disabled = "None"
+        case standard = "Single"
+        case highAvailability = "OnePerAz"
     }
 }
 
