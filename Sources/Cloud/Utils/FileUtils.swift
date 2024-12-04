@@ -57,3 +57,9 @@ public func fileExists(atPath path: String) -> Bool {
 public func removeDirectory(atPath path: String) throws {
     try FileManager.default.removeItem(atPath: path)
 }
+
+public func scanDirectory(atPath path: String) throws -> [(name: String, path: String)] {
+    try FileManager.default.contentsOfDirectory(atPath: path).map { name in
+        (name: name, path: "\(path)/\(name)")
+    }
+}
