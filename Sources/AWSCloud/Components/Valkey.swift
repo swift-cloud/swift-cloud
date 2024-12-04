@@ -22,7 +22,7 @@ extension AWS {
 
         public init(
             _ name: String,
-            vpc: VPC,
+            vpc: VPC.Configuration,
             options: Resource.Options? = nil
         ) {
             cache = Resource(
@@ -31,8 +31,8 @@ extension AWS {
                 properties: [
                     "engine": "valkey",
                     "majorEngineVersion": "8",
-                    "securityGroupIds": [vpc.defaultSecurityGroup.id],
-                    "subnetIds": vpc.privateSubnetIds,
+                    "securityGroupIds": vpc.securityGroupIds,
+                    "subnetIds": vpc.subnetIds,
                 ],
                 options: options
             )

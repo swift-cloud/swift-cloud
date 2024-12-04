@@ -64,3 +64,32 @@ extension AWS.VPC {
         )
     }
 }
+
+extension AWS.VPC {
+    public enum Configuration {
+        case `public`(_ vpc: AWS.VPC)
+        case `private`(_ vpc: AWS.VPC)
+
+        public var vpc: AWS.VPC {
+            switch self {
+            case .public(let vpc):
+                return vpc
+            case .private(let vpc):
+                return vpc
+            }
+        }
+
+        public var securityGroupIds: [Output<String>] {
+            return [vpc.defaultSecurityGroup.id]
+        }
+
+        public var subnetIds: Output<[String]> {
+            switch self {
+            case .public(let vpc):
+                return vpc.publicSubnetIds
+            case .private(let vpc):
+                return vpc.privateSubnetIds
+            }
+        }
+    }
+}

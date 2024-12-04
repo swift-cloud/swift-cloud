@@ -37,7 +37,7 @@ extension AWS {
             timeout: Duration? = nil,
             reservedConcurrency: Int? = nil,
             environment: [String: Output<String>]? = nil,
-            vpc: VPCConfiguration? = nil,
+            vpc: VPC.Configuration? = nil,
             options: Resource.Options? = nil
         ) {
             let dockerFilePath = Docker.Dockerfile.filePath(name)
@@ -86,7 +86,7 @@ extension AWS {
                     "vpcConfig": vpc.map {
                         [
                             "subnetIds": $0.subnetIds,
-                            "securityGroupIds": [$0.vpc.defaultSecurityGroup.id],
+                            "securityGroupIds": $0.securityGroupIds,
                         ]
                     },
                 ],
@@ -134,31 +134,6 @@ extension AWS.Function {
     public enum FunctionURL {
         case enabled(cors: Bool = true)
         case disabled
-    }
-}
-
-extension AWS.Function {
-    public enum VPCConfiguration {
-        case `public`(_ vpc: AWS.VPC)
-        case `private`(_ vpc: AWS.VPC)
-
-        public var vpc: AWS.VPC {
-            switch self {
-            case .public(let vpc):
-                return vpc
-            case .private(let vpc):
-                return vpc
-            }
-        }
-
-        public var subnetIds: Output<[String]> {
-            switch self {
-            case .public(let vpc):
-                return vpc.publicSubnetIds
-            case .private(let vpc):
-                return vpc.privateSubnetIds
-            }
-        }
     }
 }
 
