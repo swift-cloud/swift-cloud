@@ -42,10 +42,18 @@ public func createFile(
     )
 }
 
+public func copyFile(fromPath: String, toPath: String) throws {
+    try FileManager.default.copyItem(atPath: fromPath, toPath: toPath)
+}
+
 public func removeFile(atPath path: String) throws {
     try FileManager.default.removeItem(atPath: path)
 }
 
 public func fileExists(atPath path: String) -> Bool {
     FileManager.default.fileExists(atPath: path)
+}
+
+public func removeDirectory(atPath path: String) throws {
+    try FileManager.default.removeItem(atPath: path)
 }

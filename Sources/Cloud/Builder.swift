@@ -50,6 +50,25 @@ extension Builder {
             )
         }
     }
+
+    public func packageForAwsLambda(targetName: String, architecture: Architecture = .current) async throws {
+        let binaryPath = "\(Context.buildDirectory)/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName)"
+        let lambdaDirectory = "\(Context.buildDirectory)/lambda"
+        let bootstrapPath = "\(lambdaDirectory)/bootstrap"
+        try? removeDirectory(atPath: lambdaDirectory)
+        try? createDirectory(atPath: lambdaDirectory)
+        try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
+        try await shellOut(
+            to: "zip",
+            arguments: [
+                "--recurse-paths",
+                "--symlinks",
+                "\(targetName).zip",
+                "bootstrap",
+            ],
+            workingDirectory: lambdaDirectory
+        )
+    }
 }
 
 extension Builder {

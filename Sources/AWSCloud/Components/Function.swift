@@ -2,7 +2,6 @@ import Foundation
 
 extension AWS {
     public struct Function: AWSComponent, EnvironmentProvider {
-        public let dockerImage: DockerImage
         public let role: Role
         public let rolePolicyAttachment: Resource
         public let function: Resource
@@ -40,16 +39,7 @@ extension AWS {
             vpc: VPC.Configuration? = nil,
             options: Resource.Options? = nil
         ) {
-            let dockerFilePath = Docker.Dockerfile.filePath(name)
-
             self.environment = Environment(environment, shape: .keyValue)
-
-            dockerImage = DockerImage(
-                "\(name)-image",
-                imageRepository: .shared(options: options),
-                dockerFilePath: dockerFilePath,
-                options: options
-            )
 
             role = AWS.Role(
                 "\(name)-role",
@@ -74,8 +64,12 @@ extension AWS {
                 type: "aws:lambda:Function",
                 properties: [
                     "role": "\(role.arn)",
-                    "packageType": "Image",
-                    "imageUri": "\(dockerImage.uri)",
+                    "packageType": "Zip",
+                    "runtime": "provided.al2",
+                    "handler": "bootstrap",
+                    "code": [
+                        "fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName).zip"
+                    ],
                     "architectures": [Architecture.current.lambdaArchitecture],
                     "memorySize": memory,
                     "timeout": timeout.components.seconds,
@@ -118,13 +112,9 @@ extension AWS {
                     )
                 }
 
-            Context.current.store.invoke { _ in
-                let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
-                try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
-            }
-
             Context.current.store.build {
                 try await $0.builder.buildAmazonLinux(targetName: targetName)
+                try await $0.builder.packageForAwsLambda(targetName: targetName)
             }
         }
     }
