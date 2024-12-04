@@ -53,3 +53,7 @@ public func removeFile(atPath path: String) throws {
 public func fileExists(atPath path: String) -> Bool {
     FileManager.default.fileExists(atPath: path)
 }
+
+public func removeDirectory(atPath path: String) throws {
+    try FileManager.default.removeItem(atPath: path)
+}

@@ -56,9 +56,8 @@ extension Builder {
         let lambdaDirectory = "\(Context.buildDirectory)/lambda"
         let bootstrapPath = "\(lambdaDirectory)/bootstrap"
         let zipPath = "\(lambdaDirectory)/\(targetName).zip"
+        try? removeDirectory(atPath: lambdaDirectory)
         try? createDirectory(atPath: lambdaDirectory)
-        try? removeFile(atPath: bootstrapPath)
-        try? removeFile(atPath: zipPath)
         try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
         try await shellOut(
             to: "zip",
