@@ -33,8 +33,8 @@ extension AWS {
             _ name: String,
             targetName: String,
             url: FunctionURL = .disabled,
-            memory: Int? = nil,
-            timeout: Duration? = nil,
+            memory: Int = 1769,
+            timeout: Duration = .seconds(10),
             reservedConcurrency: Int? = nil,
             environment: [String: Output<String>]? = nil,
             vpc: VPC.Configuration? = nil,
@@ -78,7 +78,7 @@ extension AWS {
                     "imageUri": "\(dockerImage.uri)",
                     "architectures": [Architecture.current.lambdaArchitecture],
                     "memorySize": memory,
-                    "timeout": timeout?.components.seconds,
+                    "timeout": timeout.components.seconds,
                     "environment": [
                         "variables": self.environment
                     ],
