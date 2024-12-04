@@ -8,16 +8,16 @@ extension AWS {
             cache.name
         }
 
-        public var readWriteUrl: Output<String> {
-            let address = cache.output.keyPath("endpoints[0].address")
-            let port = cache.output.keyPath("endpoints[0].port")
-            return "redis://\(address):\(port)"
+        public var hostname: Output<String> {
+            cache.output.keyPath("endpoints[0].address")
         }
 
-        public var readUrl: Output<String> {
-            let address = cache.output.keyPath("readerEndpoints[0].address")
-            let port = cache.output.keyPath("readerEndpoints[0].port")
-            return "redis://\(address):\(port)"
+        public var port: Output<String> {
+            cache.output.keyPath("endpoints[0].port")
+        }
+
+        public var url: Output<String> {
+            return "redis://\(hostname):\(port)"
         }
 
         public init(
@@ -53,7 +53,9 @@ extension AWS.Valkey: Linkable {
 
     public var environmentVariables: [String: Output<String>] {
         [
-            "valkey \(cache.chosenName) url": self.readWriteUrl
+            "valkey \(cache.chosenName) hostname": self.hostname,
+            "valkey \(cache.chosenName) port": self.port,
+            "valkey \(cache.chosenName) url": self.url,
         ]
     }
 }

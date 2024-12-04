@@ -312,6 +312,17 @@ let table = AWS.DynamoDB(
 function.link(table)
 ```
 
+#### Valkey
+
+```swift
+let vpc = AWS.VPC("my-vpc")
+
+let cache = AWS.Valkey("my-valkey-cache", vpc: .private(vpc))
+
+// Allow the function or web server to connect to the cache
+function.link(cache)
+```
+
 #### Topic
 
 ```swift
@@ -399,3 +410,6 @@ Here is a list of all the linked resources:
 | AWS Lambda Function | `FUNCTION_<NAME>_URL`    |
 | AWS Lambda Function | `FUNCTION_<NAME>_NAME`   |
 | AWS DynamoDB Table  | `DYNAMODB_<NAME>_NAME`   |
+| AWS Valkey          | `VALKEY_<NAME>_HOSTNAME` |
+| AWS Valkey          | `VALKEY_<NAME>_PORT`     |
+| AWS Valkey          | `VALKEY_<NAME>_URL`      |
