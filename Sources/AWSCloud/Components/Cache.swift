@@ -2,6 +2,8 @@ import Foundation
 
 extension AWS {
     public struct Cache: AWSComponent {
+        public let engine: Engine
+
         public let cache: Resource
 
         public var name: Output<String> {
@@ -16,12 +18,17 @@ extension AWS {
             cache.output.keyPath("endpoints[0].port")
         }
 
+        public var url: Output<String> {
+            return "\(engine.name)://\(hostname):\(port)"
+        }
+
         public init(
             _ name: String,
             engine: Engine = .valkey(version: "8"),
             vpc: VPC.Configuration,
             options: Resource.Options? = nil
         ) {
+            self.engine = engine
             cache = Resource(
                 name: name,
                 type: "aws:elasticache:ServerlessCache",
@@ -82,6 +89,7 @@ extension AWS.Cache: Linkable {
         [
             "cache \(cache.chosenName) hostname": self.hostname,
             "cache \(cache.chosenName) port": self.port,
+            "cache \(cache.chosenName) url": self.url,
         ]
     }
 }
