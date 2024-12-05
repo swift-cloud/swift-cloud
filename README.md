@@ -412,4 +412,3 @@ Here is a list of all the linked resources:
 | AWS DynamoDB Table  | `DYNAMODB_<NAME>_NAME`   |
 | AWS Cache           | `CACHE_<NAME>_HOSTNAME`  |
 | AWS Cache           | `CACHE_<NAME>_PORT`      |
-| AWS Cache           | `CACHE_<NAME>_URL`       |

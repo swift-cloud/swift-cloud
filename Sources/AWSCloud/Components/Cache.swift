@@ -16,10 +16,6 @@ extension AWS {
             cache.output.keyPath("endpoints[0].port")
         }
 
-        public var url: Output<String> {
-            return "redis://\(hostname):\(port)"
-        }
-
         public init(
             _ name: String,
             engine: Engine = .valkey(version: "8"),
@@ -86,7 +82,6 @@ extension AWS.Cache: Linkable {
         [
             "cache \(cache.chosenName) hostname": self.hostname,
             "cache \(cache.chosenName) port": self.port,
-            "cache \(cache.chosenName) url": self.url,
         ]
     }
 }
