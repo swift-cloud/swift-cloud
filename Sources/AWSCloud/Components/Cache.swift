@@ -19,7 +19,7 @@ extension AWS {
         }
 
         public var url: Output<String> {
-            return "\(engine.name)://\(hostname):\(port)"
+            return "\(engine.scheme)://\(hostname):\(port)"
         }
 
         public init(
@@ -55,6 +55,15 @@ extension AWS.Cache {
             case .valkey:
                 return "valkey"
             case .redis:
+                return "redis"
+            case .memcached:
+                return "memcached"
+            }
+        }
+
+        public var scheme: String {
+            switch self {
+            case .valkey, .redis:
                 return "redis"
             case .memcached:
                 return "memcached"
