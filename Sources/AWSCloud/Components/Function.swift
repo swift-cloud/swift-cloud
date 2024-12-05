@@ -68,7 +68,7 @@ extension AWS {
                     "runtime": "provided.al2",
                     "handler": "bootstrap",
                     "code": [
-                        "fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName).zip"
+                        "fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName)/package.zip"
                     ],
                     "architectures": [Architecture.current.lambdaArchitecture],
                     "memorySize": memory,
