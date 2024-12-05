@@ -64,7 +64,7 @@ extension AWS.Cache {
         public var scheme: String {
             switch self {
             case .valkey, .redis:
-                return "redis"
+                return "rediss"
             case .memcached:
                 return "memcached"
             }
