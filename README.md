@@ -312,12 +312,16 @@ let table = AWS.DynamoDB(
 function.link(table)
 ```
 
-#### Valkey
+#### Cache
 
 ```swift
 let vpc = AWS.VPC("my-vpc")
 
-let cache = AWS.Valkey("my-valkey-cache", vpc: .private(vpc))
+let cache = AWS.Cache(
+    "my-valkey-cache",
+    engine: .valkey(), // or .redis() or .memcached()
+    vpc: .private(vpc)
+)
 
 // Allow the function or web server to connect to the cache
 function.link(cache)
