@@ -24,7 +24,7 @@ extension AWS {
 
         public init(
             _ name: String,
-            engine: Engine = .valkey(version: "8"),
+            engine: Engine = .valkey(),
             vpc: VPC.Configuration,
             options: Resource.Options? = nil
         ) {
@@ -46,9 +46,9 @@ extension AWS {
 
 extension AWS.Cache {
     public enum Engine: Sendable {
-        case valkey(version: String = "8")
-        case redis(version: String = "7")
-        case memcached(version: String = "1.6")
+        case valkey(_ version: ValkeyVersion = .v8)
+        case redis(_ version: RedisVersion = .v7)
+        case memcached(_ version: MemcachedVersion = .v1_6)
 
         public var name: String {
             switch self {
@@ -73,13 +73,26 @@ extension AWS.Cache {
         var version: String {
             switch self {
             case .valkey(let version):
-                return version
+                return version.rawValue
             case .redis(let version):
-                return version
+                return version.rawValue
             case .memcached(let version):
-                return version
+                return version.rawValue
             }
         }
+    }
+
+    public enum ValkeyVersion: String, Sendable {
+        case v8 = "8"
+        case v7 = "7"
+    }
+
+    public enum RedisVersion: String, Sendable {
+        case v7 = "7"
+    }
+
+    public enum MemcachedVersion: String, Sendable {
+        case v1_6 = "1.6"
     }
 }
 
