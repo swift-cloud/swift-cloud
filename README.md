@@ -399,7 +399,7 @@ You can use linked resources in your server or function via environment
 variables in your application:
 
 ```swift
-let bucketUrl = ProcessInfo.processInfo.environment["bucket:my-bucket:url"]
+let bucketUrl = ProcessInfo.processInfo.environment["BUCKET_MEDIA_URL"]
 ```
 
 Here is a list of all the linked resources:
