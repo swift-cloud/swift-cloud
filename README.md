@@ -410,6 +410,6 @@ Here is a list of all the linked resources:
 | AWS Lambda Function | `FUNCTION_<NAME>_URL`    |
 | AWS Lambda Function | `FUNCTION_<NAME>_NAME`   |
 | AWS DynamoDB Table  | `DYNAMODB_<NAME>_NAME`   |
-| AWS Valkey          | `VALKEY_<NAME>_HOSTNAME` |
-| AWS Valkey          | `VALKEY_<NAME>_PORT`     |
-| AWS Valkey          | `VALKEY_<NAME>_URL`      |
+| AWS Cache           | `CACHE_<NAME>_HOSTNAME`  |
+| AWS Cache           | `CACHE_<NAME>_PORT`      |
+| AWS Cache           | `CACHE_<NAME>_URL`       |

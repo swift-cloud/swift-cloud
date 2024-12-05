@@ -1,7 +1,7 @@
 import Foundation
 
 extension AWS {
-    public struct Valkey: AWSComponent {
+    public struct Cache: AWSComponent {
         public let cache: Resource
 
         public var name: Output<String> {
@@ -22,6 +22,7 @@ extension AWS {
 
         public init(
             _ name: String,
+            engine: Engine = .valkey(version: "8"),
             vpc: VPC.Configuration,
             options: Resource.Options? = nil
         ) {
@@ -29,8 +30,8 @@ extension AWS {
                 name: name,
                 type: "aws:elasticache:ServerlessCache",
                 properties: [
-                    "engine": "valkey",
-                    "majorEngineVersion": "8",
+                    "engine": engine.name,
+                    "majorEngineVersion": engine.version,
                     "securityGroupIds": vpc.securityGroupIds,
                     "subnetIds": vpc.subnetIds,
                 ],
@@ -40,7 +41,37 @@ extension AWS {
     }
 }
 
-extension AWS.Valkey: Linkable {
+extension AWS.Cache {
+    public enum Engine: Sendable {
+        case valkey(version: String = "8")
+        case redis(version: String = "7")
+        case memcached(version: String = "1.6")
+
+        public var name: String {
+            switch self {
+            case .valkey:
+                return "valkey"
+            case .redis:
+                return "redis"
+            case .memcached:
+                return "memcached"
+            }
+        }
+
+        var version: String {
+            switch self {
+            case .valkey(let version):
+                return version
+            case .redis(let version):
+                return version
+            case .memcached(let version):
+                return version
+            }
+        }
+    }
+}
+
+extension AWS.Cache: Linkable {
     public var actions: [String] {
         [
             "elasticache:Connect"
@@ -53,9 +84,9 @@ extension AWS.Valkey: Linkable {
 
     public var environmentVariables: [String: Output<String>] {
         [
-            "valkey \(cache.chosenName) hostname": self.hostname,
-            "valkey \(cache.chosenName) port": self.port,
-            "valkey \(cache.chosenName) url": self.url,
+            "cache \(cache.chosenName) hostname": self.hostname,
+            "cache \(cache.chosenName) port": self.port,
+            "cache \(cache.chosenName) url": self.url,
         ]
     }
 }
