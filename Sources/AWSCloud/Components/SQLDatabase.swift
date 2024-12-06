@@ -51,8 +51,8 @@ extension AWS {
                     "masterPassword": masterPassword,
                     "storageEncrypted": true,
                     "serverlessv2ScalingConfiguration": [
-                        "minCapacity": 0,
-                        "maxCapacity": 64,
+                        "minCapacity": 0.5,
+                        "maxCapacity": 256,
                     ],
                     "vpcSecurityGroupIds": [vpc.defaultSecurityGroup.id],
                 ],
