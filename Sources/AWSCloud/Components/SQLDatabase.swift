@@ -48,7 +48,7 @@ extension AWS {
                     "engineMode": "provisioned",
                     "databaseName": databaseName,
                     "masterUsername": masterUsername,
-                    "masterUserPassword": masterPassword,
+                    "masterPassword": masterPassword,
                     "storageEncrypted": true,
                     "serverlessv2ScalingConfiguration": [
                         "minCapacity": 0,
