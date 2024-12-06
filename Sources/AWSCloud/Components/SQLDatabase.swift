@@ -60,7 +60,7 @@ extension AWS {
             )
 
             instance = Resource(
-                name: name,
+                name: "\(name)-instance",
                 type: "aws:rds:ClusterInstance",
                 properties: [
                     "clusterIdentifier": cluster.id,
