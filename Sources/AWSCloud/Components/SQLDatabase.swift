@@ -29,7 +29,7 @@ extension AWS {
             engine: Engine = .postgres(),
             databaseName: String = Context.current.stage,
             masterUsername: String = "admin",
-            vpc: VPC,
+            vpc: VPC.Configuration,
             options: Resource.Options? = nil
         ) {
             self.databaseName = databaseName
@@ -38,11 +38,21 @@ extension AWS {
 
             masterPassword = Random.Bytes("\(name)-master-password", length: 16).hex
 
+            let subnetGroup = Resource(
+                name: "\(name)-sg",
+                type: "aws:rds:SubnetGroup",
+                properties: [
+                    "name": tokenize(Context.current.stage, name, "default"),
+                    "subnetIds": vpc.subnetIds,
+                ],
+                options: options
+            )
+
             cluster = Resource(
                 name: name,
                 type: "aws:rds:Cluster",
                 properties: [
-                    "clusterIdentifier": tokenize("\(Context.current.stage)-\(name)"),
+                    "clusterIdentifier": tokenize(Context.current.stage, name),
                     "engine": engine.name,
                     "engineVersion": engine.version,
                     "engineMode": "provisioned",
@@ -54,7 +64,8 @@ extension AWS {
                         "minCapacity": 0.5,
                         "maxCapacity": 256,
                     ],
-                    "vpcSecurityGroupIds": [vpc.defaultSecurityGroup.id],
+                    "dbSubnetGroupName": subnetGroup.output.keyPath("name"),
+                    "vpcSecurityGroupIds": vpc.securityGroupIds,
                 ],
                 options: options
             )
