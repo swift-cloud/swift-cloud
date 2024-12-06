@@ -28,7 +28,7 @@ extension AWS {
             _ name: String,
             engine: Engine = .postgres(),
             databaseName: String = Context.current.stage,
-            masterUsername: String = "admin",
+            masterUsername: String = "swift",
             vpc: VPC.Configuration,
             options: Resource.Options? = nil
         ) {
