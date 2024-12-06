@@ -327,6 +327,19 @@ let cache = AWS.Cache(
 function.link(cache)
 ```
 
+#### SQL Database
+
+```swift
+let database = AWS.SQLDatabase(
+    "my-postgres-database",
+    engine: .postgres(),
+    vpc: .private(vpc)
+)
+
+// Allow the function or web server to connect to the database
+function.link(database)
+```
+
 #### Topic
 
 ```swift
