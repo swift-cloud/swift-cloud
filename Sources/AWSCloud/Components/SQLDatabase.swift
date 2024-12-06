@@ -6,6 +6,8 @@ extension AWS {
 
         public let instance: Resource
 
+        public let subnetGroup: Resource
+
         public let masterUsername: String
 
         public let masterPassword: Output<String>
@@ -38,21 +40,25 @@ extension AWS {
 
             masterPassword = Random.Bytes("\(name)-master-password", length: 16).hex
 
-            let subnetGroup = Resource(
+            let subnetGroupName = tokenize(Context.current.stage, name, "default")
+
+            subnetGroup = Resource(
                 name: "\(name)-sg",
                 type: "aws:rds:SubnetGroup",
                 properties: [
-                    "name": tokenize(Context.current.stage, name, "default"),
+                    "name": subnetGroupName,
                     "subnetIds": vpc.subnetIds,
                 ],
                 options: options
             )
 
+            let clusterIdentifier = tokenize(Context.current.stage, name)
+
             cluster = Resource(
                 name: name,
                 type: "aws:rds:Cluster",
                 properties: [
-                    "clusterIdentifier": tokenize(Context.current.stage, name),
+                    "clusterIdentifier": clusterIdentifier,
                     "engine": engine.name,
                     "engineVersion": engine.version,
                     "engineMode": "provisioned",
@@ -64,7 +70,7 @@ extension AWS {
                         "minCapacity": 0.5,
                         "maxCapacity": 256,
                     ],
-                    "dbSubnetGroupName": subnetGroup.output.keyPath("name"),
+                    "dbSubnetGroupName": subnetGroupName,
                     "vpcSecurityGroupIds": vpc.securityGroupIds,
                 ],
                 options: options
@@ -74,10 +80,10 @@ extension AWS {
                 name: "\(name)-instance",
                 type: "aws:rds:ClusterInstance",
                 properties: [
-                    "clusterIdentifier": cluster.id,
+                    "clusterIdentifier": clusterIdentifier,
                     "instanceClass": "db.serverless",
-                    "engine": cluster.output.keyPath("engine"),
-                    "engineVersion": cluster.output.keyPath("engineVersion"),
+                    "engine": engine.name,
+                    "engineVersion": engine.version,
                 ],
                 options: options
             )
