@@ -2,6 +2,8 @@ import Cloud
 
 extension AWS {
     public struct SQLDatabase: AWSComponent {
+        public let engine: Engine
+
         public let cluster: Resource
 
         public let instance: Resource
@@ -18,12 +20,16 @@ extension AWS {
 
         public let databaseName: String
 
-        public var endpoint: Output<String> {
+        public var hostname: Output<String> {
             cluster.output.keyPath("endpoint")
         }
 
-        public var readerEndpoint: Output<String> {
-            cluster.output.keyPath("readerEndpoint")
+        public var port: Output<String> {
+            "\(engine.port)"
+        }
+
+        public var url: Output<String> {
+            return "\(engine.scheme)://\(masterUsername):\(masterPassword)@\(hostname):\(port)/\(databaseName)"
         }
 
         public init(
@@ -34,6 +40,8 @@ extension AWS {
             vpc: VPC.Configuration,
             options: Resource.Options? = nil
         ) {
+            self.engine = engine
+
             self.databaseName = databaseName
 
             self.masterUsername = masterUsername
@@ -61,6 +69,7 @@ extension AWS {
                     "clusterIdentifier": clusterIdentifier,
                     "engine": engine.name,
                     "engineVersion": engine.version,
+                    "port": engine.port,
                     "engineMode": "provisioned",
                     "databaseName": databaseName,
                     "masterUsername": masterUsername,
@@ -113,6 +122,24 @@ extension AWS.SQLDatabase {
                 return version.rawValue
             }
         }
+
+        public var scheme: String {
+            switch self {
+            case .postgres:
+                return "postgres"
+            case .mysql:
+                return "mysql"
+            }
+        }
+
+        public var port: Int {
+            switch self {
+            case .postgres:
+                return 5432
+            case .mysql:
+                return 3306
+            }
+        }
     }
 
     public enum PostgresVersion: String, Sendable {
@@ -140,11 +167,12 @@ extension AWS.SQLDatabase: Linkable {
 
     public var environmentVariables: [String: Output<String>] {
         [
-            "sqldb \(cluster.chosenName) endpoint": self.endpoint,
-            "sqldb \(cluster.chosenName) reader endpoint": self.readerEndpoint,
+            "sqldb \(cluster.chosenName) hostname": self.hostname,
+            "sqldb \(cluster.chosenName) port": self.port,
             "sqldb \(cluster.chosenName) database name": "\(self.databaseName)",
             "sqldb \(cluster.chosenName) username": "\(self.masterUsername)",
             "sqldb \(cluster.chosenName) password": self.masterPassword,
+            "sqldb \(cluster.chosenName) url": self.url,
         ]
     }
 }

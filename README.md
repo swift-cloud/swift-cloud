@@ -404,21 +404,22 @@ let bucketUrl = ProcessInfo.processInfo.environment["BUCKET_MEDIA_URL"]
 
 Here is a list of all the linked resources:
 
-| Resource            | Environment Variable           |
-| ------------------- | ------------------------------ |
-| AWS S3 Bucket       | `BUCKET_<NAME>_URL`            |
-| AWS S3 Bucket       | `BUCKET_<NAME>_HOSTNAME`       |
-| AWS S3 Bucket       | `BUCKET_<NAME>_NAME`           |
-| AWS SQS Queue       | `QUEUE_<NAME>_URL`             |
-| AWS SQS Queue       | `QUEUE_<NAME>_NAME`            |
-| AWS Lambda Function | `FUNCTION_<NAME>_URL`          |
-| AWS Lambda Function | `FUNCTION_<NAME>_NAME`         |
-| AWS DynamoDB Table  | `DYNAMODB_<NAME>_NAME`         |
-| AWS Cache           | `CACHE_<NAME>_HOSTNAME`        |
-| AWS Cache           | `CACHE_<NAME>_PORT`            |
-| AWS Cache           | `CACHE_<NAME>_URL`             |
-| AWS SQL Database    | `SQLDB_<NAME>_ENDPOINT`        |
-| AWS SQL Database    | `SQLDB_<NAME>_READER_ENDPOINT` |
-| AWS SQL Database    | `SQLDB_<NAME>_DATABASE_NAME`   |
-| AWS SQL Database    | `SQLDB_<NAME>_USERNAME`        |
-| AWS SQL Database    | `SQLDB_<NAME>_PASSWORD`        |
+| Resource            | Environment Variable         |
+| ------------------- | ---------------------------- |
+| AWS S3 Bucket       | `BUCKET_<NAME>_URL`          |
+| AWS S3 Bucket       | `BUCKET_<NAME>_HOSTNAME`     |
+| AWS S3 Bucket       | `BUCKET_<NAME>_NAME`         |
+| AWS SQS Queue       | `QUEUE_<NAME>_URL`           |
+| AWS SQS Queue       | `QUEUE_<NAME>_NAME`          |
+| AWS Lambda Function | `FUNCTION_<NAME>_URL`        |
+| AWS Lambda Function | `FUNCTION_<NAME>_NAME`       |
+| AWS DynamoDB Table  | `DYNAMODB_<NAME>_NAME`       |
+| AWS Cache           | `CACHE_<NAME>_HOSTNAME`      |
+| AWS Cache           | `CACHE_<NAME>_PORT`          |
+| AWS Cache           | `CACHE_<NAME>_URL`           |
+| AWS SQL Database    | `SQLDB_<NAME>_HOSTNAME`      |
+| AWS SQL Database    | `SQLDB_<NAME>_PORT`          |
+| AWS SQL Database    | `SQLDB_<NAME>_DATABASE_NAME` |
+| AWS SQL Database    | `SQLDB_<NAME>_USERNAME`      |
+| AWS SQL Database    | `SQLDB_<NAME>_PASSWORD`      |
+| AWS SQL Database    | `SQLDB_<NAME>_URL`           |
