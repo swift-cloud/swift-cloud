@@ -78,3 +78,24 @@ extension RoleProvider {
         return link(linkables)
     }
 }
+
+extension Linkable {
+    @discardableResult
+    public func linkTo(_ provider: any RoleProvider) -> Self {
+        provider.link(self)
+        return self
+    }
+
+    @discardableResult
+    public func linkTo(_ providers: [any RoleProvider]) -> Self {
+        for provider in providers {
+            linkTo(provider)
+        }
+        return self
+    }
+
+    @discardableResult
+    public func linkTo(_ providers: any RoleProvider...) -> Self {
+        return linkTo(providers)
+    }
+}
