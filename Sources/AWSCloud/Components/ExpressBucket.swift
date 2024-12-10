@@ -21,7 +21,7 @@ extension AWS {
             forceDestroy: Bool = true,
             options: Resource.Options? = nil
         ) {
-            self.availabilityZoneId = azId ?? Self.availabilityZones.output[Context.current.region][0]
+            self.availabilityZoneId = azId ?? Self.availabilityZones.output.keyPath(Context.current.region)[0]
 
             let suffix = Random.Text(
                 "\(chosenName)-suffix",
