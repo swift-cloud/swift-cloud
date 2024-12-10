@@ -47,10 +47,10 @@ extension AWS.ExpressBucket: Linkable {
     public var actions: [String] {
         [
             "s3express:CreateSession",
-            "s3express:PutObject",
-            "s3express:GetObject",
-            "s3express:DeleteObject",
-            "s3express:ListBucket",
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:DeleteObject",
+            "s3:ListBucket",
         ]
     }
 
