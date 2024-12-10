@@ -46,18 +46,13 @@ extension AWS {
 extension AWS.ExpressBucket: Linkable {
     public var actions: [String] {
         [
-            "s3express:CreateSession",
-            "s3:PutObject",
-            "s3:GetObject",
-            "s3:DeleteObject",
-            "s3:ListBucket",
+            "s3express:CreateSession"
         ]
     }
 
     public var resources: [Output<String>] {
         [
-            "\(bucket.arn)",
-            "\(bucket.arn)/*",
+            "\(bucket.arn)"
         ]
     }
 
