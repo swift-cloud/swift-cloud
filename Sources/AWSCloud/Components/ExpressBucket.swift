@@ -22,9 +22,13 @@ extension AWS {
         ) {
             self.availabilityZoneId = getSubnet(vpc.subnetIds[2]).availabilityZoneId
 
-            let suffix = Random.Text("\(chosenName)-suffix", length: 6).value
+            let suffix = Random.Text(
+                "\(chosenName)-suffix",
+                length: 6,
+                casing: [.lower]
+            )
 
-            self.name = "\(tokenize(Context.current.stage, chosenName))-\(suffix)--\(availabilityZoneId)--x-s3"
+            self.name = "\(tokenize(Context.current.stage, chosenName))-\(suffix.value)--\(availabilityZoneId)--x-s3"
 
             bucket = Resource(
                 name: chosenName,
