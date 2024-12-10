@@ -16,11 +16,12 @@ extension AWS {
 
         public init(
             _ chosenName: String,
-            vpc: VPC.Configuration,
+            availabilityZoneId azId: Output<String>? = nil,
+            vpc: VPC? = nil,
             forceDestroy: Bool = true,
             options: Resource.Options? = nil
         ) {
-            self.availabilityZoneId = getSubnet(vpc.subnetIds[2]).availabilityZoneId
+            self.availabilityZoneId = azId ?? Self.availabilityZones.output[Context.current.region][0]
 
             let suffix = Random.Text(
                 "\(chosenName)-suffix",
@@ -28,7 +29,8 @@ extension AWS {
                 casing: [.lower]
             )
 
-            self.name = "\(tokenize(Context.current.stage, chosenName))-\(suffix.value)--\(availabilityZoneId)--x-s3"
+            self.name =
+                "\(tokenize(Context.current.stage, chosenName))-\(suffix.value)--\(availabilityZoneId)--x-s3"
 
             bucket = Resource(
                 name: chosenName,
@@ -39,7 +41,7 @@ extension AWS {
                     "forceDestroy": forceDestroy,
                     "type": "Directory",
                     "location": [
-                        "name": availabilityZoneId,
+                        "name": self.availabilityZoneId,
                         "type": "AvailabilityZone",
                     ],
                 ],
@@ -47,6 +49,21 @@ extension AWS {
             )
         }
     }
+}
+
+extension AWS.ExpressBucket {
+    public static let availabilityZones: Variable<[String: [String]]> = .init(
+        name: "s3-express-azs",
+        definition: [
+            "us-east-1": ["use1-az4", "use1-az5", "use1-az6"],
+            "us-east-2": ["use2-az1", "use2-az2"],
+            "us-west-2": ["usw2-az1", "usw2-az3", "usw2-az4"],
+            "ap-south-1": ["aps1-az1", "aps1-az3"],
+            "ap-northeast-1": ["apne1-az1", "apne1-az4"],
+            "eu-west-1": ["euw1-az1", "euw1-az3"],
+            "eu-north-1": ["eun1-az1", "eun1-az2", "eun1-az3"],
+        ]
+    )
 }
 
 extension AWS.ExpressBucket: Linkable {

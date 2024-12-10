@@ -1,7 +1,7 @@
 public struct Provider: Sendable {
-    let plugin: Pulumi.Plugin
-    let configuration: [String: String]
-    let dependencies: [Pulumi.Plugin]
+    public let plugin: Pulumi.Plugin
+    public let configuration: [String: String]
+    public let dependencies: [Pulumi.Plugin]
 
     public init(
         plugin: Pulumi.Plugin,

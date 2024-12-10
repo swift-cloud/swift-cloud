@@ -48,3 +48,12 @@ extension AWS {
         }
     }
 }
+
+extension Context {
+    public var region: String {
+        guard let project = project as? any AWSProject else {
+            fatalError("Project definition does not conform to AWSProject")
+        }
+        return project.region
+    }
+}
