@@ -24,7 +24,7 @@ extension AWS {
 
             let suffix = Random.Bytes("\(chosenName)-suffix", length: 4).hex
 
-            self.name = "\(tokenize(Context.current.stage, chosenName, suffix))--\(availabilityZoneId)--x-s3"
+            self.name = "\(tokenize(Context.current.stage, chosenName))-\(suffix)--\(availabilityZoneId)--x-s3"
 
             bucket = Resource(
                 name: chosenName,
