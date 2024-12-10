@@ -20,7 +20,7 @@ extension AWS {
             forceDestroy: Bool = true,
             options: Resource.Options? = nil
         ) {
-            self.availabilityZoneId = getSubnet(vpc.subnetIds[0]).availabilityZoneId
+            self.availabilityZoneId = getSubnet(vpc.subnetIds[2]).availabilityZoneId
 
             self.name = "\(tokenize(Context.current.stage, chosenName))--\(availabilityZoneId)--x-s3"
 
