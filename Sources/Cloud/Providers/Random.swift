@@ -24,3 +24,32 @@ extension Random {
         }
     }
 }
+
+extension Random {
+    public struct Text: ResourceProvider {
+        public let resource: Resource
+
+        public var value: Output<String> {
+            resource.output.keyPath("result")
+        }
+
+        public init(
+            _ name: String,
+            length: Int,
+            numerics: Bool = false,
+            specialCharacters: Bool = false,
+            options: Resource.Options? = nil
+        ) {
+            resource = Resource(
+                name: name,
+                type: "random:RandomString",
+                properties: [
+                    "length": length,
+                    "numeric": numerics,
+                    "special": specialCharacters,
+                ],
+                options: options
+            )
+        }
+    }
+}
