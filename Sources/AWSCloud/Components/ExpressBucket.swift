@@ -2,7 +2,7 @@ extension AWS {
     public struct ExpressBucket: AWSComponent {
         internal let bucket: Resource
 
-        public let name: Output<String>
+        public var name: Output<String>
 
         public let availabilityZoneId: Output<String>
 
@@ -15,17 +15,17 @@ extension AWS {
         }
 
         public init(
-            _ name: String,
+            _ chosenName: String,
             vpc: VPC.Configuration,
             forceDestroy: Bool = true,
             options: Resource.Options? = nil
         ) {
             self.availabilityZoneId = getSubnet(vpc.subnetIds[0]).availabilityZoneId
 
-            self.name = "\(tokenize(Context.current.stage, name))--\(availabilityZoneId)--x-s3"
+            self.name = "\(tokenize(Context.current.stage, chosenName))--\(availabilityZoneId)--x-s3"
 
             bucket = Resource(
-                name: name,
+                name: chosenName,
                 type: "aws:s3:DirectoryBucket",
                 properties: [
                     "bucket": name,
