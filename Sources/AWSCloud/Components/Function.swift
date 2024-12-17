@@ -91,13 +91,14 @@ extension AWS {
                 switch url {
                 case .disabled:
                     nil
-                case .enabled(let cors):
+                case .enabled(let cors, let invokeMode):
                     Resource(
                         name: "\(name)-url",
                         type: "aws:lambda:FunctionUrl",
                         properties: [
                             "functionName": "\(function.name)",
                             "authorizationType": "NONE",
+                            "invokeMode": invokeMode.rawValue,
                             "cors": cors
                                 ? [
                                     "allowCredentials": true,
@@ -122,8 +123,13 @@ extension AWS {
 
 extension AWS.Function {
     public enum FunctionURL {
-        case enabled(cors: Bool = true)
         case disabled
+        case enabled(cors: Bool = true, invokeMode: FunctionInvokeMode = .buffered)
+    }
+
+    public enum FunctionInvokeMode: String {
+        case buffered = "BUFFERED"
+        case streaming = "RESPONSE_STREAM"
     }
 }
 
