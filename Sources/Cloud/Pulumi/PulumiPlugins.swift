@@ -7,6 +7,12 @@ extension Pulumi {
         public var server: String {
             "https://github.com/\(repo)/releases/download/v\(version)/"
         }
+
+        public init(name: String, version: String, repo: String) {
+            self.name = name
+            self.version = version
+            self.repo = repo
+        }
     }
 }
 
