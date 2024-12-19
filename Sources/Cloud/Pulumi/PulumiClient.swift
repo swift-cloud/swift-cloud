@@ -3,7 +3,7 @@ import Foundation
 import Yams
 
 // https://www.pulumi.com/docs/iac/download-install/versions/
-public let PulumiClientVersion = "v3.142.0"
+public let PulumiClientVersion = "v3.143.0"
 
 extension Pulumi {
     public struct Client: Sendable {
