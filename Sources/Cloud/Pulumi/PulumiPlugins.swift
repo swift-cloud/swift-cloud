@@ -76,7 +76,7 @@ extension Pulumi.Plugin {
 
     public static let random = Pulumi.Plugin(
         name: "random",
-        version: "4.16.7",
+        version: "4.16.8",
         repo: "pulumi/pulumi-random"
     )
 
