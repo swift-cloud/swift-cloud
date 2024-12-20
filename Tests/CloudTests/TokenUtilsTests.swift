@@ -1,15 +1,17 @@
-import XCTest
-
+import Testing
 @testable import Cloud
 
-final class TokenUtilsTests: XCTestCase {
-    func testTokenizeSimple() throws {
+@Suite("Token Utils Tests")
+struct TokenUtilsTests {
+    @Test("Simple tokenization")
+    func tokenizeSimple() throws {
         let value = tokenize("Hello World")
-        XCTAssertEqual(value, "hello-world")
+        #expect(value == "hello-world")
     }
 
-    func testTokenizeCamelCase() throws {
+    @Test("Camel case tokenization")
+    func tokenizeCamelCase() throws {
         let value = tokenize("  --- camelCase ----")
-        XCTAssertEqual(value, "camel-case")
+        #expect(value == "camel-case")
     }
 }
