@@ -1,14 +1,17 @@
-import XCTest
-
+import Testing
+import Foundation
 @testable import Cloud
 
-final class OutputTests: XCTestCase {
-    func testRoot() throws {
+@Suite("Output Tests")
+struct OutputTests {
+    @Test("Root output formatting")
+    func root() throws {
         let out = Output<Any>(prefix: "", root: "root", path: [])
-        XCTAssertEqual("${root}", out.description)
+        #expect(out.description == "${root}")
     }
 
-    func testRootWithPath() throws {
+    @Test("Output with path components")
+    func rootWithPath() throws {
         let out = Output<Any>(
             prefix: "",
             root: "root",
@@ -18,45 +21,51 @@ final class OutputTests: XCTestCase {
                 .dictionaryKey("bar"),
             ]
         )
-        XCTAssertEqual("${root.foo[4][\"bar\"]}", out.description)
+        #expect(out.description == "${root.foo[4][\"bar\"]}")
     }
 
-    func testRootWithPrefix() throws {
+    @Test("Output with prefix")
+    func rootWithPrefix() throws {
         let out = Output<Any>(
             prefix: "https://",
             root: "root",
             path: []
         )
-        XCTAssertEqual("https://${root}", out.description)
+        #expect(out.description == "https://${root}")
     }
 
-    func testDynamicMemberLookup() throws {
+    @Test("Dynamic member lookup")
+    func dynamicMemberLookup() throws {
         typealias T = (a: Int, b: Int, c: Int)
         let out = Output<T>(prefix: "", root: "root", path: []).a
-        XCTAssertEqual("${root.a}", out.description)
+        #expect(out.description == "${root.a}")
     }
 
-    func testDynamicMemberArrayLookup() throws {
-        typealias T = (a: [Int], b: [Int], c: [Int])
+    @Test("Dynamic member array lookup")
+    func dynamicMemberArrayLookup() throws {
+        typealias T = (a: [Int], b: [Int], c: Int)
         let out = Output<T>(prefix: "", root: "root", path: []).a[5]
-        XCTAssertEqual("${root.a[5]}", out.description)
+        #expect(out.description == "${root.a[5]}")
     }
 
-    func testStringLiteral() throws {
+    @Test("String literal initialization")
+    func stringLiteral() throws {
         let out: Output<String> = "hello-world"
-        XCTAssertEqual("hello-world", out.description)
+        #expect(out.description == "hello-world")
     }
 
-    func testStringInterpolation() throws {
+    @Test("String interpolation")
+    func stringInterpolation() throws {
         let root = Output<Any>(prefix: "", root: "root", path: [])
         let out: Output<String> = "foo-bar\(root)hello-world"
-        XCTAssertEqual("foo-bar${root}hello-world", out.description)
+        #expect(out.description == "foo-bar${root}hello-world")
     }
 
-    func testEncodable() throws {
-        typealias T = (a: [Int], b: [Int], c: [Int])
+    @Test("Encodable conformance")
+    func encodable() throws {
+        typealias T = (a: [Int], b: [Int], c: Int)
         let out = Output<T>(prefix: "", root: "root", path: []).a[5]
         let data = try JSONEncoder().encode(out)
-        XCTAssertEqual("\"${root.a[5]}\"", String(data: data, encoding: .utf8))
+        #expect(String(data: data, encoding: .utf8) == "\"${root.a[5]}\"")
     }
 }
