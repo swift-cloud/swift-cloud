@@ -43,6 +43,7 @@ extension AWS {
                     "fifoQueue": fifo,
                     "visibilityTimeoutSeconds": visibilityTimeout.components.seconds,
                     "messageRetentionSeconds": messageRetentionInterval.components.seconds,
+                    "receiveWaitTimeSeconds": 20,
                     "redrivePolicy": Resource.JSON([
                         "deadLetterTargetArn": deadLetterQueue.arn,
                         "maxReceiveCount": maxRetries + 1,
