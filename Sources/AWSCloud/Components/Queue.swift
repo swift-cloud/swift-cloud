@@ -30,6 +30,7 @@ extension AWS {
                 type: "aws:sqs:Queue",
                 properties: [
                     "fifoQueue": fifo,
+                    "receiveWaitTimeSeconds": 20,
                     "visibilityTimeoutSeconds": visibilityTimeout.components.seconds,
                     "messageRetentionSeconds": 1_209_600,
                 ],
