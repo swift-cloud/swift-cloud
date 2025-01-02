@@ -1,5 +1,7 @@
 # Swift Cloud
 
+Swift Infrastructure as Code
+
 The fastest way to build and deploy server side Swift applications.
 
 Swift Cloud is based on the premise that infrastructure should be defined along
