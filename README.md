@@ -13,7 +13,6 @@ handled behind the scenes, using modern architecture best practices.
 let jobHandler = AWS.Function(
     "job-handler",
     targetName: "JobProcessor",
-    url: .enabled(cors: true),
     memory: 512,
     timeout: .seconds(10)
 )
