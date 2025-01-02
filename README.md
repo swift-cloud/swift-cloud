@@ -2,7 +2,7 @@
 
 Swift Infrastructure as Code
 
-The fastest way to build and deploy server side Swift applications.
+The fastest way to build and deploy server side Swift applications.`
 
 Swift Cloud is based on the premise that infrastructure should be defined along
 side your application, in the same language as your application. In our case,
@@ -34,6 +34,10 @@ let server = AWS.WebServer(
 )
 
 server.link(queue)
+```
+
+```sh
+swift run Infra deploy --stage production
 ```
 
 ## How it works
