@@ -11,6 +11,7 @@ let package = Package(
         .library(name: "Cloud", targets: ["Cloud"]),
         .library(name: "AWSCloud", targets: ["AWSCloud"]),
         .library(name: "CloudflareCloud", targets: ["CloudflareCloud"]),
+        .library(name: "FastlyCloud", targets: ["FastlyCloud"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
@@ -40,6 +41,10 @@ let package = Package(
         ),
         .target(
             name: "CloudflareCloud",
+            dependencies: ["Cloud"]
+        ),
+        .target(
+            name: "FastlyCloud",
             dependencies: ["Cloud"]
         ),
         .executableTarget(
