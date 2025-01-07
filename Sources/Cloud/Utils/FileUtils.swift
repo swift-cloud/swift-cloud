@@ -63,3 +63,40 @@ func scanDirectory(atPath path: String) throws -> [(name: String, path: String)]
         (name: name, path: "\(path)/\(name)")
     }
 }
+
+func readEnvFile() -> [String: String] {
+    if let data = try? readFile(atPath: "\(currentDirectoryPath())/.env") {
+        let input = String(data: data, encoding: .utf8) ?? ""
+        return parseEnvFile(input)
+    }
+    if let data = try? readFile(atPath: "\(currentDirectoryPath())/.env.local") {
+        let input = String(data: data, encoding: .utf8) ?? ""
+        return parseEnvFile(input)
+    }
+    return [:]
+}
+
+func parseEnvFile(_ envFileContent: String) -> [String: String] {
+    var result: [String: String] = [:]
+
+    // Split the file content into lines
+    let lines = envFileContent.split(separator: "\n")
+
+    for line in lines {
+        // Trim whitespace and ignore empty lines or comments
+        let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedLine.isEmpty, !trimmedLine.hasPrefix("#") else { continue }
+
+        // Split by the first '=' into key and value
+        let components = trimmedLine.split(separator: "=", maxSplits: 1, omittingEmptySubsequences: false)
+        guard components.count == 2 else { continue }
+
+        let key = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
+        let value = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Add key-value pair to the result dictionary
+        result[key] = value
+    }
+
+    return result
+}
