@@ -81,6 +81,32 @@ extension Builder {
 }
 
 extension Builder {
+    public func packageForFastly(targetName: String, architecture: Architecture = .current) async throws {
+        let releaseDirectory = "\(Context.buildDirectory)/\(architecture.swiftBuildWasmDirectory)/release"
+        let binaryPath = "\(releaseDirectory)/\(targetName).wasm"
+        let fastlyDirectory = "\(Context.buildDirectory)/fastly/\(targetName)"
+        let bootstrapPath = "\(fastlyDirectory)/bin/main.wasm"
+        let configPath = "\(fastlyDirectory)/fastly.toml"
+        try? removeDirectory(atPath: fastlyDirectory)
+        try? createDirectory(atPath: fastlyDirectory)
+        try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
+        try createFile(atPath: configPath, contents: "manifest_version = 2\nlanguage = \"swift\"\n")
+        let zipArguments = [
+            "--recurse-paths",
+            "--symlinks",
+            "package.zip",
+            "bin/main.wasm",
+            "fastly.toml",
+        ]
+        try await shellOut(
+            to: "zip",
+            arguments: zipArguments,
+            workingDirectory: fastlyDirectory
+        )
+    }
+}
+
+extension Builder {
     public func buildWasm(targetName: String) async throws {
         let swiftVersion = try await currentSwiftVersion()
         let imageName: String
