@@ -116,7 +116,7 @@ extension Pulumi.Client {
             try await setup()
         }
 
-        var environment = ProcessInfo.processInfo.environment
+        var environment = currentEnvironment()
         environment["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         environment["PULUMI_CONFIG_PASSPHRASE"] = self.passphrase
         environment["PULUMI_SKIP_UPDATE_CHECK"] = "true"
