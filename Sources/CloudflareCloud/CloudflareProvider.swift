@@ -5,7 +5,7 @@ extension Provider {
         apiToken: String? = nil
     ) -> Self {
         .init(
-            plugin: .aws,
+            plugin: .cloudflare,
             configuration: [
                 "apiToken": apiToken
             ],
