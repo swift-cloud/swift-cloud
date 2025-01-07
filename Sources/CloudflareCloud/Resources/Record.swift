@@ -1,13 +1,9 @@
 extension Cloudflare {
-    public struct Record: CloudflareComponent {
-        public let record: Resource
-
-        public var name: Output<String> {
-            record.name
-        }
+    public struct Record: CloudflareResourceProvider {
+        public let resource: Resource
 
         public var hostname: Output<String> {
-            record.output.keyPath("hostname")
+            resource.output.keyPath("hostname")
         }
 
         public var url: Output<String> {
@@ -23,7 +19,7 @@ extension Cloudflare {
             ttl: Duration = .seconds(60),
             options: Resource.Options? = nil
         ) {
-            record = Resource(
+            resource = Resource(
                 name: "\(domain)-\(name)-record",
                 type: "cloudflare:Record",
                 properties: [
