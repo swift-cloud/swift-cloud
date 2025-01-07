@@ -100,7 +100,12 @@ func parseEnvironmentFile(_ envFileContent: String) -> [String: String] {
         guard components.count == 2 else { continue }
 
         let key = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
-        let value = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+        var value = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Check if the value is wrapped in quotes
+        if value.hasPrefix("\"") && value.hasSuffix("\"") && value.count >= 2 {
+            value = String(value.dropFirst().dropLast())
+        }
 
         // Add key-value pair to the result dictionary
         result[key] = value

@@ -7,7 +7,7 @@ extension Provider {
         return .init(
             plugin: .cloudflare,
             configuration: [
-                "apiToken": apiToken ?? Context.environment["CLOUDFLARE_API_TOKEN"]
+                "apiToken": apiToken
             ],
             dependencies: [.cloudflare]
         )
