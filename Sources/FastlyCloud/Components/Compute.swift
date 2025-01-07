@@ -65,13 +65,31 @@ extension Fastly.Compute {
 
 extension Fastly.Compute {
     public struct Backend: Encodable {
-        public var address: String
         public var name: String
-        public var overrideHost: String
+        public var address: String
         public var port: Int
+        public var overrideHost: String?
         public var sslCertHostname: String?
         public var sslSniHostname: String?
-        public var useSsl: Bool
+        public var useSsl: Bool?
+
+        public init(
+            name: String,
+            address: String,
+            port: Int = 80,
+            overrideHost: String? = nil,
+            sslCertHostname: String? = nil,
+            sslSniHostname: String? = nil,
+            useSsl: Bool? = nil
+        ) {
+            self.address = address
+            self.name = name
+            self.overrideHost = overrideHost
+            self.port = port
+            self.sslCertHostname = sslCertHostname
+            self.sslSniHostname = sslSniHostname
+            self.useSsl = useSsl
+        }
 
         public init(_ url: URL) {
             let ssl = url.scheme == "https"
@@ -87,5 +105,27 @@ extension Fastly.Compute {
         public init(_ url: String) {
             self.init(URL(string: url)!)
         }
+    }
+}
+
+extension Fastly.Compute.Backend:
+    ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral
+{
+    public init(stringLiteral value: String) {
+        self.init(value)
+    }
+
+    public init(extendedGraphemeClusterLiteral value: String) {
+        self.init(value)
+    }
+
+    public init(unicodeScalarLiteral value: String) {
+        self.init(value)
+    }
+}
+
+extension Fastly.Compute.Backend: ExpressibleByStringInterpolation {
+    public init(stringInterpolation: StringInterpolation) {
+        self.init(stringInterpolation.description)
     }
 }
