@@ -69,6 +69,7 @@ extension Fastly.Compute {
         public var name: String
         public var overrideHost: String
         public var port: Int
+        public var sslCertHostname: String?
         public var sslSniHostname: String?
         public var useSsl: Bool
 
@@ -78,6 +79,7 @@ extension Fastly.Compute {
             name = url.host ?? ""
             overrideHost = url.host ?? ""
             port = url.port ?? (ssl ? 443 : 80)
+            sslCertHostname = ssl ? url.host : nil
             sslSniHostname = ssl ? url.host : nil
             useSsl = ssl
         }
