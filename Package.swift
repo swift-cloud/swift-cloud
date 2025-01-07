@@ -47,10 +47,6 @@ let package = Package(
             name: "FastlyCloud",
             dependencies: ["Cloud"]
         ),
-        .executableTarget(
-            name: "Example",
-            dependencies: ["AWSCloud"]
-        ),
         .testTarget(
             name: "CloudTests",
             dependencies: ["Cloud"]
