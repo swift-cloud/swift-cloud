@@ -116,7 +116,7 @@ extension Pulumi.Client {
             try await setup()
         }
 
-        var environment = ProcessInfo.processInfo.environment
+        var environment = currentEnvironment()
         environment["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         environment["PULUMI_CONFIG_PASSPHRASE"] = self.passphrase
         environment["PULUMI_SKIP_UPDATE_CHECK"] = "true"
@@ -167,8 +167,13 @@ extension Pulumi.Client {
     public func configure(_ provider: Provider) async throws {
         for (key, value) in provider.configuration {
             let configKey = "\(provider.name):\(key)"
-            if !value.isEmpty {
-                try await invoke(command: "config", arguments: ["set", configKey, value])
+            if let value, !value.isEmpty {
+                let secret =
+                    configKey.lowercased().contains("secret")
+                    || configKey.lowercased().contains("password")
+                    || configKey.lowercased().contains("token")
+                try await invoke(
+                    command: "config", arguments: ["set", configKey, value, secret ? "--secret" : "--plaintext"])
             } else {
                 try await invoke(command: "config", arguments: ["rm", configKey])
             }

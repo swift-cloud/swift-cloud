@@ -31,6 +31,13 @@ extension Pulumi.Plugin {
         repo: "pulumi/pulumi-awsx"
     )
 
+    // https://github.com/pulumi/pulumi-cloudflare
+    public static let cloudflare = Pulumi.Plugin(
+        name: "cloudflare",
+        version: "5.46.0",
+        repo: "pulumi/pulumi-cloudflare"
+    )
+
     // https://github.com/pulumi/pulumi-random
     public static let random = Pulumi.Plugin(
         name: "random",

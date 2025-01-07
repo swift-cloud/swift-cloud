@@ -44,6 +44,8 @@ extension Context {
     public static let cloudBinDirectory = "\(cloudDirectory)/bin"
 
     public static let userCloudDirectory = "\(userHomeDirectoryPath())/.cloud"
+
+    public static let environment = currentEnvironment()
 }
 
 extension Context {
