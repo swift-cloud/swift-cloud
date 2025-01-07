@@ -2,12 +2,12 @@ import Cloud
 
 extension Provider {
     public static func fastly(
-        apiToken: String? = nil
+        apiKey: String? = nil
     ) -> Self {
         return .init(
             plugin: .fastly,
             configuration: [
-                "apiToken": apiToken
+                "apiKey": apiKey
             ],
             dependencies: []
         )
@@ -20,13 +20,13 @@ extension Fastly {
 
         public init(
             _ name: String,
-            apiToken: String? = nil
+            apiKey: String? = nil
         ) {
             resource = Resource(
                 name: name,
                 type: "pulumi:providers:fastly",
                 properties: [
-                    "apiToken": apiToken
+                    "apiKey": apiKey
                 ]
             )
         }
