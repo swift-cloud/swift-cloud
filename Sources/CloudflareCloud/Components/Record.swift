@@ -15,16 +15,16 @@ extension Cloudflare {
         }
 
         public init(
-            _ name: String,
             domain: String,
             type: RecordType,
+            name: CustomStringConvertible,
             value: CustomStringConvertible,
             proxied: Bool = false,
             ttl: Duration = .seconds(60),
             options: Resource.Options? = nil
         ) {
             record = Resource(
-                name: name,
+                name: "\(domain)-\(name)-record",
                 type: "cloudflare:Record",
                 properties: [
                     "zoneId": getZone(name: domain).zoneId,
