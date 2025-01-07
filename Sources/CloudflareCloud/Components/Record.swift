@@ -32,7 +32,7 @@ extension Cloudflare {
                     "name": name,
                     "content": value,
                     "proxied": proxied,
-                    "ttl": ttl.components.seconds,
+                    "ttl": proxied ? 1 : ttl.components.seconds,
                     "allowOverwrite": true,
                     "comment": "Managed by Swift Cloud",
                 ],
