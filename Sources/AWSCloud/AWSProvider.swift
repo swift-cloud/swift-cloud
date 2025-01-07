@@ -2,10 +2,10 @@ import Cloud
 
 extension Provider {
     public static func aws(
-        accessKey: String = "",
-        secretKey: String = "",
-        token: String = "",
-        profile: String = "",
+        accessKey: String? = nil,
+        secretKey: String? = nil,
+        token: String? = nil,
+        profile: String? = nil,
         region: String = "us-east-1"
     ) -> Self {
         .init(

@@ -2,7 +2,7 @@ import Cloud
 
 extension Provider {
     public static func cloudflare(
-        apiToken: String = ""
+        apiToken: String? = nil
     ) -> Self {
         .init(
             plugin: .aws,

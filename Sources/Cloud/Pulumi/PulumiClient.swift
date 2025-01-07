@@ -167,7 +167,7 @@ extension Pulumi.Client {
     public func configure(_ provider: Provider) async throws {
         for (key, value) in provider.configuration {
             let configKey = "\(provider.name):\(key)"
-            if !value.isEmpty {
+            if let value, !value.isEmpty {
                 try await invoke(command: "config", arguments: ["set", configKey, value])
             } else {
                 try await invoke(command: "config", arguments: ["rm", configKey])
