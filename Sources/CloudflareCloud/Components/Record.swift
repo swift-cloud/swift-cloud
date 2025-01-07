@@ -6,6 +6,14 @@ extension Cloudflare {
             record.name
         }
 
+        public var hostname: Output<String> {
+            record.output.keyPath("hostname")
+        }
+
+        public var url: Output<String> {
+            "https://\(hostname)"
+        }
+
         public init(
             _ name: String,
             domain: String,
