@@ -37,6 +37,10 @@ let package = Package(
             name: "AWSCloud",
             dependencies: ["Cloud"]
         ),
+        .target(
+            name: "CloudflareCloud",
+            dependencies: ["Cloud"]
+        ),
         .executableTarget(
             name: "Example",
             dependencies: ["AWSCloud"]
