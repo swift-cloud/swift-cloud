@@ -1,4 +1,4 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [Cloud, AWSCloud]
+    - documentation_targets: [Cloud, AWSCloud, CloudflareCloud, FastlyCloud]
