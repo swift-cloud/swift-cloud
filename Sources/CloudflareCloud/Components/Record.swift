@@ -29,6 +29,7 @@ extension Cloudflare {
                 properties: [
                     "zoneId": getZone(name: domain).zoneId,
                     "type": type.rawValue,
+                    "name": name,
                     "content": value,
                     "proxied": proxied,
                     "ttl": ttl.components.seconds,
