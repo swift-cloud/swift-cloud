@@ -9,7 +9,7 @@ extension Provider {
             configuration: [
                 "apiToken": apiToken
             ],
-            dependencies: [.cloudflare]
+            dependencies: []
         )
     }
 }
