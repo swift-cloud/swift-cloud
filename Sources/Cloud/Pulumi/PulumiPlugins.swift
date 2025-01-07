@@ -38,6 +38,13 @@ extension Pulumi.Plugin {
         repo: "pulumi/pulumi-cloudflare"
     )
 
+    // https://github.com/pulumi/pulumi-fastly
+    public static let fastly = Pulumi.Plugin(
+        name: "fastly",
+        version: "8.13.0",
+        repo: "pulumi/pulumi-fastly"
+    )
+
     // https://github.com/pulumi/pulumi-random
     public static let random = Pulumi.Plugin(
         name: "random",

@@ -50,6 +50,10 @@ extension Architecture {
         }
     }
 
+    public var swiftBuildWasmDirectory: String {
+        return "wasm32-unknown-wasi"
+    }
+
     public var pulumiArchitecture: String {
         switch self {
         case .arm64:
