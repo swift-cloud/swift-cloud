@@ -85,21 +85,28 @@ extension Builder {
         let releaseDirectory = "\(Context.buildDirectory)/\(architecture.swiftBuildWasmDirectory)/release"
         let binaryPath = "\(releaseDirectory)/\(targetName).wasm"
         let fastlyDirectory = "\(Context.buildDirectory)/fastly/\(targetName)"
-        let bootstrapPath = "\(fastlyDirectory)/bin/main.wasm"
-        let configPath = "\(fastlyDirectory)/fastly.toml"
+        let bootstrapPath = "\(fastlyDirectory)/package/bin/main.wasm"
+        let configPath = "\(fastlyDirectory)/package/fastly.toml"
         try? removeDirectory(atPath: fastlyDirectory)
-        try? createDirectory(atPath: fastlyDirectory)
+        try? createDirectory(atPath: "\(fastlyDirectory)/package/bin")
+        try createFile(
+            atPath: configPath,
+            contents:
+                """
+                manifest_version = 2
+                description = "Managed by Swift Cloud"
+                language = "swift"
+                """
+        )
         try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
-        try createFile(atPath: configPath, contents: "manifest_version = 2\nlanguage = \"swift\"\n")
         let zipArguments = [
-            "--recurse-paths",
-            "--symlinks",
-            "package.zip",
-            "bin/main.wasm",
-            "fastly.toml",
+            "-czf",
+            "package.tar.gz",
+            "package/bin/main.wasm",
+            "package/fastly.toml",
         ]
         try await shellOut(
-            to: "zip",
+            to: "tar",
             arguments: zipArguments,
             workingDirectory: fastlyDirectory
         )

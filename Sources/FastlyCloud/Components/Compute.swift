@@ -14,7 +14,7 @@ extension Fastly {
             domains: [CustomStringConvertible],
             options: Resource.Options? = nil
         ) {
-            let filename = "\(Context.buildDirectory)/fastly/\(targetName)/package.zip"
+            let filename = "\(Context.buildDirectory)/fastly/\(targetName)/package.tar.gz"
 
             service = Resource(
                 name: name,
