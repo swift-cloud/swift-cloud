@@ -14,13 +14,9 @@ func shellOut(
     to command: String,
     arguments: [String],
     workingDirectory: String? = nil,
-    environment: [String: String] = ProcessInfo.processInfo.environment,
+    environment: [String: String] = currentEnvironment(),
     onEvent: ShellEventHandler? = nil
 ) async throws -> (stdout: String, stderr: String) {
-    var environment = environment
-    for (key, value) in readEnvFile() {
-        environment[key] = value
-    }
     var stdout = ""
     var stderr = ""
     let stream = try shellStream(

@@ -64,19 +64,27 @@ func scanDirectory(atPath path: String) throws -> [(name: String, path: String)]
     }
 }
 
-func readEnvFile() -> [String: String] {
+func currentEnvironment() -> [String: String] {
+    var environment = ProcessInfo.processInfo.environment
+    for (key, value) in readEnvironmentFile() {
+        environment[key] = value
+    }
+    return environment
+}
+
+func readEnvironmentFile() -> [String: String] {
     if let data = try? readFile(atPath: "\(currentDirectoryPath())/.env") {
         let input = String(data: data, encoding: .utf8) ?? ""
-        return parseEnvFile(input)
+        return parseEnvironmentFile(input)
     }
     if let data = try? readFile(atPath: "\(currentDirectoryPath())/.env.local") {
         let input = String(data: data, encoding: .utf8) ?? ""
-        return parseEnvFile(input)
+        return parseEnvironmentFile(input)
     }
     return [:]
 }
 
-func parseEnvFile(_ envFileContent: String) -> [String: String] {
+func parseEnvironmentFile(_ envFileContent: String) -> [String: String] {
     var result: [String: String] = [:]
 
     // Split the file content into lines

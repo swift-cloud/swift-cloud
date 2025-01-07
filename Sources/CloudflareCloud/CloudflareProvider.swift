@@ -4,10 +4,10 @@ extension Provider {
     public static func cloudflare(
         apiToken: String? = nil
     ) -> Self {
-        .init(
+        return .init(
             plugin: .cloudflare,
             configuration: [
-                "apiToken": apiToken
+                "apiToken": apiToken ?? Context.environment["CLOUDFLARE_API_TOKEN"]
             ],
             dependencies: [.cloudflare]
         )
