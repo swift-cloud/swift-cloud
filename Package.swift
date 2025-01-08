@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "swift-cloud",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v13)
     ],
     products: [
         .library(name: "Cloud", targets: ["Cloud"]),
@@ -16,13 +16,12 @@ let package = Package(
         .library(name: "CloudSDK", targets: ["CloudSDK"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-crypto", "1.0.0"..<"4.0.0"),
-        .package(url: "https://github.com/jpsim/Yams", from: "5.1.3"),
         .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
-        .package(url: "https://github.com/swift-server/async-http-client", from: "1.22.1"),
-        .package(url: "https://github.com/tuist/Command", from: "0.9.32"),
-        .package(url: "https://github.com/vapor/console-kit", from: "4.15.0"),
+        .package(url: "https://github.com/swift-server/async-http-client", from: "1.0.0"),
+        .package(url: "https://github.com/tuist/Command", from: "0.9.0"),
+        .package(url: "https://github.com/vapor/console-kit", from: "4.0.0"),
     ],
     targets: [
         .target(
@@ -51,7 +50,6 @@ let package = Package(
                 .product(name: "ConsoleKitTerminal", package: "console-kit"),
                 .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "SotoCore", package: "soto-core"),
-                .product(name: "Yams", package: "Yams"),
             ]
         ),
         .target(
@@ -66,5 +64,9 @@ let package = Package(
             name: "CloudCoreTests",
             dependencies: ["CloudCore"]
         ),
+    ],
+    swiftLanguageVersions: [
+        .version("6"),
+        .v5,
     ]
 )

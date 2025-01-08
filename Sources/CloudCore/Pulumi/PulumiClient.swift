@@ -1,6 +1,5 @@
 import AsyncHTTPClient
 import Foundation
-import Yams
 
 // https://www.pulumi.com/docs/iac/download-install/versions/
 public let PulumiClientVersion = "v3.143.0"
@@ -183,13 +182,12 @@ extension Pulumi.Client {
 
 extension Pulumi.Client {
     public func writePulumiProject(_ project: Pulumi.Project) throws {
-        let encoder = YAMLEncoder()
-        encoder.options.indent = 2
-        encoder.options.mappingStyle = .block
-        encoder.options.sequenceStyle = .block
-        encoder.options.sortKeys = true
-        let yaml = try encoder.encode(project)
-        try createFile(atPath: configFilePath, contents: yaml)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.keyEncodingStrategy = .useDefaultKeys
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(project)
+        try createFile(atPath: configFilePath, contents: data)
     }
 }
 
