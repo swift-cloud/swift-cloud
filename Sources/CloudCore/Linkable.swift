@@ -133,7 +133,7 @@ extension Linkable {
     /// ensuring it is written to the CloudSDK resources.
     @discardableResult
     public func linked() -> Self {
-        Context.current.store.track(linkable)
+        Context.current.store.track(self)
         return self
     }
 }
