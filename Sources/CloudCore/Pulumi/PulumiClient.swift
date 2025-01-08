@@ -183,7 +183,7 @@ extension Pulumi.Client {
 extension Pulumi.Client {
     public func writePulumiProject(_ project: Pulumi.Project) throws {
         let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
         encoder.keyEncodingStrategy = .useDefaultKeys
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(project)
