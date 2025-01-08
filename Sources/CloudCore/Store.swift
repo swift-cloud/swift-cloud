@@ -17,12 +17,6 @@ public final class Store: @unchecked Sendable {
         set { queue.sync { _variables = newValue } }
     }
 
-    private var _operations: [Operation] = []
-    var operations: [Operation] {
-        get { queue.sync { _operations } }
-        set { queue.sync { _operations = newValue } }
-    }
-
     private var _builds: [Operation] = []
     var builds: [Operation] {
         get { queue.sync { _builds } }
@@ -69,10 +63,6 @@ extension Store {
 
     public func setOutput(_ output: String, value: Output<String>) {
         outputs[output] = value
-    }
-
-    public func invoke(_ operation: @escaping Operation) {
-        operations.append(operation)
     }
 
     public func build(_ operation: @escaping Operation) {

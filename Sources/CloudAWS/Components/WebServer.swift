@@ -177,12 +177,9 @@ extension AWS {
                 zoneId: zoneId
             )
 
-            Context.current.store.invoke { _ in
+            Context.current.store.build {
                 let dockerFile = Docker.Dockerfile.amazonLinux(targetName: targetName, port: instancePort)
                 try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
-            }
-
-            Context.current.store.build {
                 try await $0.builder.buildAmazonLinux(targetName: targetName)
             }
         }

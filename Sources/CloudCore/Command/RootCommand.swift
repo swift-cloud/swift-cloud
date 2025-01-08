@@ -79,11 +79,6 @@ extension Command.RunCommand {
         // Write SDK resource files
         try writeSDKResources(.init(context.store.links.values))
 
-        // Execute any operations
-        for operation in context.store.operations {
-            try await operation(context)
-        }
-
         // Execute any builds
         if buildTargets {
             for build in context.store.builds {
