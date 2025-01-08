@@ -6,6 +6,12 @@ extension Cloud {
     public enum Resource {}
 }
 
-func env(_ key: String) -> String {
-    return ProcessInfo.processInfo.environment[key] ?? ""
+extension Cloud {
+    /// Utility to access/read environment variables
+    public static func env(_ name: String) -> String? {
+        guard let value = getenv(name) else {
+            return nil
+        }
+        return String(cString: value)
+    }
 }
