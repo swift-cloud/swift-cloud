@@ -8,10 +8,9 @@ func writeKitResources(_ links: [LinkProperties]) throws {
 
 private func writeKitResource(_ link: LinkProperties) throws {
     let linkName = link.name.capitalized
-    let directory = "\(Context.cloudKitResourcesDirectory)"
-    let resourceFilename = "\(directory)/\(linkName).swift"
+    let filename = "\(Context.cloudKitResourcesDirectory)/\(linkName).swift"
 
-    let resourceFileTemplate =
+    let fileTemplate =
         """
         extension Cloud.Resource {
             public struct \(linkName) {
@@ -20,16 +19,13 @@ private func writeKitResource(_ link: LinkProperties) throws {
         }
         """
 
-    let resourceFileProperties = link.properties.map { key, _ in
+    let fileTemplateProperties = link.properties.map { key, _ in
         """
         public static let \(key): String = env("\(link.environmentKey(key))")
         """
     }.joined(separator: "\n\t\t")
 
-    try? removeDirectory(atPath: directory)
-    try createDirectory(atPath: directory)
-    try createFile(
-        atPath: resourceFilename,
-        contents: resourceFileTemplate.replacingOccurrences(of: "{{props}}", with: resourceFileProperties)
-    )
+    let fileContents = fileTemplate.replacingOccurrences(of: "{{props}}", with: fileTemplateProperties)
+
+    try createFile(atPath: filename, contents: fileContents)
 }
