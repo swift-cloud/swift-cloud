@@ -2,3 +2,4 @@
 @_exported import CloudCloudflare
 @_exported import CloudCore
 @_exported import CloudFastly
+@_exported import CloudVercel

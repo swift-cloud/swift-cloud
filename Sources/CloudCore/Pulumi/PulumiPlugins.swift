@@ -51,4 +51,11 @@ extension Pulumi.Plugin {
         version: "4.16.8",
         repo: "pulumi/pulumi-random"
     )
+
+    // https://github.com/pulumiverse/pulumi-vercel
+    public static let vercel = Pulumi.Plugin(
+        name: "vercel",
+        version: "1.14.3",
+        repo: "pulumiverse/pulumi-vercel"
+    )
 }
