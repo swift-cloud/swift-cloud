@@ -56,16 +56,26 @@ extension Builder {
     public func buildWasm(targetName: String) async throws {
         let swiftVersion = try await currentSwiftVersion()
         let imageName: String
+        let flags: String
+        let pre: String
         switch swiftVersion {
-        case "5.10", "6.0":
+        case "5.10":
             imageName = "ghcr.io/swiftwasm/swift:5.10-focal"
+            flags = "--triple wasm32-unknown-wasi"
+            pre = ":"
+        case "6.0":
+            imageName = "swift:6.0"
+            flags = "--swift-sdk wasm32-unknown-wasi"
+            pre =
+                "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.0.2-RELEASE/swift-wasm-6.0.2-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 6ffedb055cb9956395d9f435d03d53ebe9f6a8d45106b979d1b7f53358e1dcb4"
         default:
             fatalError("Unsupported Swift version: \(swiftVersion)")
         }
         try await buildDocker(
             targetName: targetName,
             imageName: imageName,
-            flags: "--triple wasm32-unknown-wasi"
+            flags: flags,
+            pre: pre
         )
     }
 }
@@ -88,7 +98,8 @@ extension Builder {
     private func buildDocker(
         targetName: String,
         imageName: String,
-        flags: String
+        flags: String,
+        pre: String = ":"
     ) async throws {
         let spinner = UI.spinner(label: #"Building target "\#(targetName)""#)
         defer { spinner.stop() }
@@ -102,7 +113,8 @@ extension Builder {
                 "-v", "\(Files.currentDirectoryPath()):/workspace",
                 "-w", "/workspace",
                 imageName,
-                "bash", "-cl", "swift build -c release --product \(targetName) \(flags)",
+                "bash", "-cl",
+                "\(pre) && swift build -c release --product \(targetName) \(flags)",
             ],
             onEvent: { spinner.push($0.string()) }
         )
