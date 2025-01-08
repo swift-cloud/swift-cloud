@@ -22,6 +22,10 @@ public struct LinkProperties: Sendable {
         self.name = name.description
         self.properties = properties
     }
+
+    func environmentKey(_ key: String) -> String {
+        return "\(type) \(name) \(key)"
+    }
 }
 
 extension Linkable {
@@ -43,7 +47,7 @@ extension Linkable {
         }
 
         return properties.properties.reduce(into: [:]) {
-            $0["\(properties.type) \(properties.name) \($1.key)"] = $1.value
+            $0[properties.environmentKey($1.key)] = $1.value
         }
     }
 }
@@ -85,6 +89,8 @@ extension RoleProvider {
         if let self = self as? EnvironmentProvider {
             self.environment.merge(linkable.environmentVariables)
         }
+
+        Context.current.store.track(linkable)
 
         return self
     }

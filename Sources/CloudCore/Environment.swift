@@ -46,17 +46,19 @@ public final class Environment: Encodable, @unchecked Sendable {
     }
 
     public subscript(key: String) -> CustomStringConvertible? {
-        get { store[toKey(key)] }
-        set { store[toKey(key)] = newValue }
+        get { store[Self.toKey(key)] }
+        set { store[Self.toKey(key)] = newValue }
     }
 
     public func merge(_ other: [String: CustomStringConvertible]) {
         for (key, value) in other {
-            store[toKey(key)] = value
+            store[Self.toKey(key)] = value
         }
     }
+}
 
-    private func toKey(_ key: String) -> String {
+extension Environment {
+    static func toKey(_ key: String) -> String {
         tokenize(key, separator: "_").uppercased()
     }
 }

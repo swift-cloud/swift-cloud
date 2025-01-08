@@ -40,6 +40,12 @@ public final class Store: @unchecked Sendable {
         get { queue.sync { _outputs } }
         set { queue.sync { _outputs = newValue } }
     }
+
+    private var _links: [String: LinkProperties] = [:]
+    var links: [String: LinkProperties] {
+        get { queue.sync { _links } }
+        set { queue.sync { _links = newValue } }
+    }
 }
 
 extension Store {
@@ -49,6 +55,12 @@ extension Store {
 
     public func track(_ variable: any VariableProvider) {
         variables.append(variable)
+    }
+
+    public func track(_ link: any Linkable) {
+        if let properties = link.properties {
+            links["\(properties.type):\(properties.name)"] = properties
+        }
     }
 
     public func track(_ environment: Environment) {
