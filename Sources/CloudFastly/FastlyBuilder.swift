@@ -19,15 +19,14 @@ extension Builder {
                 """
         )
         try Files.copyFile(fromPath: binaryPath, toPath: bootstrapPath)
-        let zipArguments = [
-            "-czf",
-            "package.tar.gz",
-            "package/bin/main.wasm",
-            "package/fastly.toml",
-        ]
         try await shellOut(
-            to: "tar",
-            arguments: zipArguments,
+            to: "/usr/bin/tar",
+            arguments: [
+                "-czf",
+                "package.tar.gz",
+                "package/bin/main.wasm",
+                "package/fastly.toml",
+            ],
             workingDirectory: fastlyDirectory
         )
     }

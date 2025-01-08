@@ -78,21 +78,10 @@ extension Pulumi.Client {
         try Files.createFile(atPath: downloadPath, contents: data)
 
         // Extract the archive
-        if Platform.current == .windows {
-            // Unzip for Windows
-            try await shellOut(
-                to: "powershell",
-                arguments: [
-                    "-Command", "Expand-Archive", "-Path", downloadPath, "-DestinationPath", pulumiPath, "-Force",
-                ]
-            )
-        } else {
-            // Untar for Linux and macOS
-            try await shellOut(
-                to: "/usr/bin/tar",
-                arguments: ["-xzf", downloadPath, "-C", pulumiPath, "--strip-components=1"]
-            )
-        }
+        try await shellOut(
+            to: "/usr/bin/tar",
+            arguments: ["-xzf", downloadPath, "-C", pulumiPath, "--strip-components=1"]
+        )
 
         // Clean up the downloaded archive
         try Files.removeFile(atPath: downloadPath)
