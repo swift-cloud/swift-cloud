@@ -36,7 +36,7 @@ private func writeKitResource(_ link: LinkProperties) throws {
 
     let resourceFileProperties = link.properties.map { key, _ in
         """
-        public let \(key): String = env("\(link.environmentKey(key))")
+        public static let \(key): String = env("\(link.environmentKey(key))")
         """
     }.joined(separator: "\n\t\t")
 
