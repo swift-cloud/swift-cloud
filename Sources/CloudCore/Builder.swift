@@ -5,6 +5,12 @@ public struct Builder: Sendable {
     public enum BuildError: Error {
         case invalidSwiftVersion
     }
+
+    public let binaryen: Binaryen.Client
+
+    init() {
+        binaryen = .init()
+    }
 }
 
 extension Builder {
@@ -78,7 +84,7 @@ extension Builder {
             pre: pre
         )
         let binaryPath = "\(Context.buildDirectory)/\(architecture.swiftBuildWasmDirectory)/release/\(targetName).wasm"
-        try await Binaryen.Client().optimize(input: binaryPath, output: binaryPath)
+        try await binaryen.optimize(input: binaryPath, output: binaryPath)
     }
 }
 
