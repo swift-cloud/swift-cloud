@@ -14,8 +14,9 @@ extension Builder {
             contents:
                 """
                 manifest_version = 2
-                description = "Managed by Swift Cloud"
                 language = "swift"
+                name = "\(targetName)"
+                description = "Managed by Swift Cloud"
                 """
         )
         try Files.copyFile(fromPath: binaryPath, toPath: bootstrapPath)
