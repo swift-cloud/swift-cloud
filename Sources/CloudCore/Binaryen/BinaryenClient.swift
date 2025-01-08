@@ -90,7 +90,7 @@ extension Binaryen.Client {
         }
         try await shellOut(
             to: executablePath,
-            arguments: ["-Oz", input, "-o", output]
+            arguments: ["-Oz", "-ffm", "-o", output, input]
         )
     }
 }
