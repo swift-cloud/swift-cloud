@@ -128,4 +128,12 @@ extension Linkable {
     public func linkTo(_ providers: any RoleProvider...) -> Self {
         return linkTo(providers)
     }
+
+    /// Links the current resource to the current context,
+    /// ensuring it is written to the CloudSDK resources.
+    @discardableResult
+    public func linked() -> Self {
+        Context.current.store.track(linkable)
+        return self
+    }
 }

@@ -19,7 +19,7 @@ private func writeSDKResource(_ link: LinkProperties) throws {
         """
     let fileTemplateProperties = link.properties.map { key, _ in
         """
-        public static let \(key): String = env("\(link.environmentKey(key))")
+        public static let \(key) = Cloud.env("\(link.environmentKey(key))")!
         """
     }.joined(separator: "\n\t\t")
     try Files.createFile(
