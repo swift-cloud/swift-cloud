@@ -36,7 +36,7 @@ extension Builder {
         if isAmazonLinux() {
             try await buildNative(
                 targetName: targetName,
-                flags: "--static-swift-stdlib"
+                flags: ["--static-swift-stdlib"]
             )
         } else {
             let swiftVersion = try await currentSwiftVersion()
@@ -52,7 +52,7 @@ extension Builder {
             try await buildDocker(
                 targetName: targetName,
                 imageName: imageName,
-                flags: "--static-swift-stdlib"
+                flags: ["--static-swift-stdlib"]
             )
         }
     }
@@ -62,16 +62,16 @@ extension Builder {
     public func buildWasm(targetName: String, architecture: Architecture = .current) async throws {
         let swiftVersion = try await currentSwiftVersion()
         let imageName: String
-        let flags: String
+        let flags: [String]
         let pre: String
         switch swiftVersion {
         case "5.10":
             imageName = "ghcr.io/swiftwasm/swift:5.10-focal"
-            flags = "--triple wasm32-unknown-wasi"
+            flags = ["--triple", "wasm32-unknown-wasi"]
             pre = ":"
         case "6.0":
             imageName = "swift:6.0.2"
-            flags = "--swift-sdk wasm32-unknown-wasi"
+            flags = ["--swift-sdk", "wasm32-unknown-wasi"]
             pre =
                 "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.0.2-RELEASE/swift-wasm-6.0.2-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 6ffedb055cb9956395d9f435d03d53ebe9f6a8d45106b979d1b7f53358e1dcb4"
         default:
@@ -89,7 +89,7 @@ extension Builder {
 }
 
 extension Builder {
-    private func buildNative(targetName: String, flags: String) async throws {
+    private func buildNative(targetName: String, flags: [String]) async throws {
         let spinner = UI.spinner(label: #"Building target "\#(targetName)""#)
         defer { spinner.stop() }
 
@@ -99,14 +99,15 @@ extension Builder {
                 "build",
                 "-c", "release",
                 "--product", targetName,
-            ] + flags.components(separatedBy: " ")
+            ] + flags,
+            onEvent: { spinner.push($0.string()) }
         )
     }
 
     private func buildDocker(
         targetName: String,
         imageName: String,
-        flags: String,
+        flags: [String],
         pre: String = ":"
     ) async throws {
         let spinner = UI.spinner(label: #"Building target "\#(targetName)""#)
@@ -122,7 +123,7 @@ extension Builder {
                 "-w", "/workspace",
                 imageName,
                 "bash", "-cl",
-                "\(pre) && swift build -c release --product \(targetName) \(flags)",
+                "\(pre) && swift build -c release --product \(targetName) \(flags.joined(separator: " "))",
             ],
             onEvent: { spinner.push($0.string()) }
         )
