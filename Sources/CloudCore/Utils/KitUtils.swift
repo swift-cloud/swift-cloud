@@ -26,7 +26,8 @@ private func writeKitResource(_ link: LinkProperties) throws {
         """
     }.joined(separator: "\n\t\t")
 
-    try? createDirectory(atPath: directory)
+    try? removeDirectory(atPath: directory)
+    try createDirectory(atPath: directory)
     try createFile(
         atPath: resourceFilename,
         contents: resourceFileTemplate.replacingOccurrences(of: "{{props}}", with: resourceFileProperties)
