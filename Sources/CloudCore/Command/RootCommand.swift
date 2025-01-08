@@ -75,8 +75,8 @@ extension Command.RunCommand {
         // Write pulumi configuration files
         try client.writePulumiProject(pulumiProject)
 
-        // Write kit resource
-        try writeKitResources(.init(context.store.links.values))
+        // Write SDK resource files
+        try writeSDKResources(.init(context.store.links.values))
 
         // Execute any operations
         for operation in context.store.operations {

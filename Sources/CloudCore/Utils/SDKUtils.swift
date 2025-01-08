@@ -1,13 +1,13 @@
-func writeKitResources(_ links: [LinkProperties]) throws {
+func writeSDKResources(_ links: [LinkProperties]) throws {
     try? removeDirectory(atPath: Context.cloudKitResourcesDirectory)
     try createDirectory(atPath: Context.cloudKitResourcesDirectory)
     for link in links {
-        try writeKitResource(link)
+        try writeSDKResource(link)
     }
 }
 
-private func writeKitResource(_ link: LinkProperties) throws {
-    let linkName = link.name.capitalized
+private func writeSDKResource(_ link: LinkProperties) throws {
+    let linkName = tokenize(link.name).split(separator: "-").map { $0.capitalized }.joined()
     let filename = "\(Context.cloudKitResourcesDirectory)/\(linkName).swift"
 
     let fileTemplate =

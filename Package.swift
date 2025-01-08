@@ -13,7 +13,7 @@ let package = Package(
         .library(name: "CloudCloudflare", targets: ["CloudCloudflare"]),
         .library(name: "CloudCore", targets: ["CloudCore"]),
         .library(name: "CloudFastly", targets: ["CloudFastly"]),
-        .library(name: "CloudKit", targets: ["CloudKit"]),
+        .library(name: "CloudSDK", targets: ["CloudSDK"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
@@ -59,7 +59,7 @@ let package = Package(
             dependencies: ["CloudCore"]
         ),
         .target(
-            name: "CloudKit",
+            name: "CloudSDK",
             dependencies: []
         ),
         .testTarget(
