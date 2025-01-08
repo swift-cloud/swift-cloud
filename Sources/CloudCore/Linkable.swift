@@ -7,7 +7,21 @@ public protocol Linkable {
 
     var resources: [Output<String>] { get }
 
-    var environmentVariables: [String: Output<String>] { get }
+    var properties: LinkProperties? { get }
+}
+
+public struct LinkProperties: Sendable {
+    public let type: String
+
+    public let name: String
+
+    public let properties: [String: Output<String>]
+
+    public init(type: String, name: CustomStringConvertible, properties: [String: Output<String>]) {
+        self.type = type
+        self.name = name.description
+        self.properties = properties
+    }
 }
 
 extension Linkable {
@@ -19,8 +33,18 @@ extension Linkable {
         ["*"]
     }
 
-    public var environmentVariables: [String: Output<String>] {
-        [:]
+    public var properties: LinkProperties? {
+        nil
+    }
+
+    public var environmentVariables: [String: CustomStringConvertible] {
+        guard let properties else {
+            return [:]
+        }
+
+        return properties.properties.reduce(into: [:]) {
+            $0["\(properties.type) \(properties.name) \($1.key)"] = $1.value
+        }
     }
 }
 

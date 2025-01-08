@@ -107,11 +107,15 @@ extension AWS.Cache: Linkable {
         [cache.arn]
     }
 
-    public var environmentVariables: [String: Output<String>] {
-        [
-            "cache \(cache.chosenName) hostname": self.hostname,
-            "cache \(cache.chosenName) port": self.port,
-            "cache \(cache.chosenName) url": self.url,
-        ]
+    public var properties: LinkProperties? {
+        return .init(
+            type: "cache",
+            name: cache.chosenName,
+            properties: [
+                "hostname": hostname,
+                "port": port,
+                "url": url,
+            ]
+        )
     }
 }

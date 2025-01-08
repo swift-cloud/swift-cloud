@@ -98,10 +98,14 @@ extension AWS.Queue: Linkable {
         [queue.arn]
     }
 
-    public var environmentVariables: [String: Output<String>] {
-        [
-            "queue \(queue.chosenName) name": name,
-            "queue \(queue.chosenName) url": url,
-        ]
+    public var properties: LinkProperties? {
+        return .init(
+            type: "queue",
+            name: queue.chosenName,
+            properties: [
+                "name": name,
+                "url": url,
+            ]
+        )
     }
 }

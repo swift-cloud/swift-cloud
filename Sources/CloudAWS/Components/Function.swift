@@ -144,10 +144,14 @@ extension AWS.Function: Linkable {
         [function.arn]
     }
 
-    public var environmentVariables: [String: Output<String>] {
-        [
-            "function \(function.chosenName) name": name,
-            "function \(function.chosenName) url": url,
-        ]
+    public var properties: LinkProperties? {
+        return .init(
+            type: "function",
+            name: function.chosenName,
+            properties: [
+                "name": name,
+                "url": url,
+            ]
+        )
     }
 }

@@ -72,11 +72,15 @@ extension AWS.Bucket: Linkable {
         ]
     }
 
-    public var environmentVariables: [String: Output<String>] {
-        [
-            "bucket \(bucket.chosenName) name": name,
-            "bucket \(bucket.chosenName) hostname": hostname,
-            "bucket \(bucket.chosenName) url": "https://\(hostname)",
-        ]
+    public var properties: LinkProperties? {
+        return .init(
+            type: "bucket",
+            name: bucket.chosenName,
+            properties: [
+                "name": name,
+                "hostname": hostname,
+                "url": "https://\(hostname)",
+            ]
+        )
     }
 }

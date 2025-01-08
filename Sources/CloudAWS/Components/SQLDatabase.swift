@@ -165,14 +165,18 @@ extension AWS.SQLDatabase: Linkable {
         [cluster.arn]
     }
 
-    public var environmentVariables: [String: Output<String>] {
-        [
-            "sqldb \(cluster.chosenName) hostname": self.hostname,
-            "sqldb \(cluster.chosenName) port": self.port,
-            "sqldb \(cluster.chosenName) database name": "\(self.databaseName)",
-            "sqldb \(cluster.chosenName) username": "\(self.masterUsername)",
-            "sqldb \(cluster.chosenName) password": self.masterPassword,
-            "sqldb \(cluster.chosenName) url": self.url,
-        ]
+    public var properties: LinkProperties? {
+        return .init(
+            type: "sqldb",
+            name: cluster.chosenName,
+            properties: [
+                "hostname": hostname,
+                "port": port,
+                "databaseName": "\(databaseName)",
+                "username": "\(masterUsername)",
+                "password": masterPassword,
+                "url": url,
+            ]
+        )
     }
 }

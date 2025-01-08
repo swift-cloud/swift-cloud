@@ -80,9 +80,13 @@ extension AWS.DynamoDB: Linkable {
         [table.arn]
     }
 
-    public var environmentVariables: [String: Output<String>] {
-        [
-            "dynamodb \(table.chosenName) name": name
-        ]
+    public var properties: LinkProperties? {
+        return .init(
+            type: "dynamodb",
+            name: table.chosenName,
+            properties: [
+                "name": name
+            ]
+        )
     }
 }

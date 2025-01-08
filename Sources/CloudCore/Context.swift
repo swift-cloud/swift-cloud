@@ -45,6 +45,8 @@ extension Context {
 
     public static let userCloudDirectory = "\(userHomeDirectoryPath())/.cloud"
 
+    public static let cloudKitResourcesDirectory = "\(buildDirectory)/checkouts/swift-cloud/Sources/CloudKit/Resources"
+
     public static let environment = currentEnvironment()
 }
 
