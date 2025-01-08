@@ -53,7 +53,7 @@ extension Builder {
 }
 
 extension Builder {
-    public func buildWasm(targetName: String) async throws {
+    public func buildWasm(targetName: String, architecture: Architecture = .current) async throws {
         let swiftVersion = try await currentSwiftVersion()
         let imageName: String
         let flags: String
@@ -77,6 +77,8 @@ extension Builder {
             flags: flags,
             pre: pre
         )
+        let binaryPath = "\(Context.buildDirectory)/\(architecture.swiftBuildWasmDirectory)/release/\(targetName).wasm"
+        try await Binaryen.Client().optimize(input: binaryPath, output: binaryPath)
     }
 }
 

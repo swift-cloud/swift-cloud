@@ -62,4 +62,13 @@ extension Architecture {
             return "x64"
         }
     }
+
+    public var binaryenArchitecture: String {
+        switch self {
+        case .arm64:
+            return Platform.current == .macOS ? "arm64" : "aarch64"
+        case .x86:
+            return "x86_64"
+        }
+    }
 }
