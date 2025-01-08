@@ -1,3 +1,3 @@
-import Cloud
+import CloudCore
 
 public protocol FastlyComponent: Component {}

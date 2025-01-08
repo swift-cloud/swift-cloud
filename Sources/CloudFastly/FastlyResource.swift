@@ -1,4 +1,4 @@
-import Cloud
+import CloudCore
 
 public protocol FastlyResourceProvider: ResourceProvider {}
 

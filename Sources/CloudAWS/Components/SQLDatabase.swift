@@ -1,4 +1,4 @@
-import Cloud
+import CloudCore
 
 extension AWS {
     public struct SQLDatabase: AWSComponent {

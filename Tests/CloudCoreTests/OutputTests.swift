@@ -1,6 +1,7 @@
-import Testing
 import Foundation
-@testable import Cloud
+import Testing
+
+@testable import CloudCore
 
 @Suite("Output Tests")
 struct OutputTests {

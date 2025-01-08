@@ -9,9 +9,11 @@ let package = Package(
     ],
     products: [
         .library(name: "Cloud", targets: ["Cloud"]),
-        .library(name: "AWSCloud", targets: ["AWSCloud"]),
-        .library(name: "CloudflareCloud", targets: ["CloudflareCloud"]),
-        .library(name: "FastlyCloud", targets: ["FastlyCloud"]),
+        .library(name: "CloudAWS", targets: ["CloudAWS"]),
+        .library(name: "CloudCloudflare", targets: ["CloudCloudflare"]),
+        .library(name: "CloudCore", targets: ["CloudCore"]),
+        .library(name: "CloudFastly", targets: ["CloudFastly"]),
+        .library(name: "CloudKit", targets: ["CloudKit"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
@@ -26,6 +28,23 @@ let package = Package(
         .target(
             name: "Cloud",
             dependencies: [
+                "CloudAWS",
+                "CloudCloudflare",
+                "CloudCore",
+                "CloudFastly",
+            ]
+        ),
+        .target(
+            name: "CloudAWS",
+            dependencies: ["CloudCore"]
+        ),
+        .target(
+            name: "CloudCloudflare",
+            dependencies: ["CloudCore"]
+        ),
+        .target(
+            name: "CloudCore",
+            dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Command", package: "Command"),
@@ -36,20 +55,16 @@ let package = Package(
             ]
         ),
         .target(
-            name: "AWSCloud",
-            dependencies: ["Cloud"]
+            name: "CloudFastly",
+            dependencies: ["CloudCore"]
         ),
         .target(
-            name: "CloudflareCloud",
-            dependencies: ["Cloud"]
-        ),
-        .target(
-            name: "FastlyCloud",
-            dependencies: ["Cloud"]
+            name: "CloudKit",
+            dependencies: []
         ),
         .testTarget(
-            name: "CloudTests",
-            dependencies: ["Cloud"]
+            name: "CloudCoreTests",
+            dependencies: ["CloudCore"]
         ),
     ]
 )

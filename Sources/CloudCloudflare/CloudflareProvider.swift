@@ -1,4 +1,4 @@
-import Cloud
+import CloudCore
 
 extension Provider {
     public static func cloudflare(

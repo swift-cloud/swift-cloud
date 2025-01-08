@@ -1,4 +1,4 @@
-import Cloud
+import CloudCore
 
 public protocol AWSProject: Project {
     var region: String { get }

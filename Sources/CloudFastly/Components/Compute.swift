@@ -1,4 +1,4 @@
-import Cloud
+import CloudCore
 import Foundation
 
 extension Fastly {

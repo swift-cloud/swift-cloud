@@ -103,7 +103,7 @@ targets: [
     .executableTarget(
         name: "Infra",
         dependencies: [
-            .product(name: "AWSCloud", package: "swift-cloud")
+            .product(name: "Cloud", package: "swift-cloud")
         ]
     )
 ]
@@ -114,7 +114,7 @@ Next, inside your `Sources` directory create a new folder called `Infra`.
 Finally, add a new Swift file called `Project.swift`:
 
 ```swift
-import AWSCloud
+import Cloud
 
 @main
 struct SwiftCloudDemo: AWSProject {
@@ -205,7 +205,7 @@ configuration in a local file. This is great for testing and development, but
 it's not recommended for production use.
 
 ```swift
-import AWSCloud
+import Cloud
 
 @main
 struct SwiftCloudDemo: AWSProject {

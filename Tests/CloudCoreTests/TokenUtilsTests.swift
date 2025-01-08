@@ -1,5 +1,6 @@
 import Testing
-@testable import Cloud
+
+@testable import CloudCore
 
 @Suite("Token Utils Tests")
 struct TokenUtilsTests {
