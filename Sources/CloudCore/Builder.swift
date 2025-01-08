@@ -64,10 +64,10 @@ extension Builder {
             flags = "--triple wasm32-unknown-wasi"
             pre = ":"
         case "6.0":
-            imageName = "swift:6.0"
+            imageName = "swift:6.0.2"
             flags = "--swift-sdk wasm32-unknown-wasi"
             pre =
-                "swift sdk list | grep -q 6.0.2-RELEASE-wasm32 || swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.0.2-RELEASE/swift-wasm-6.0.2-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 6ffedb055cb9956395d9f435d03d53ebe9f6a8d45106b979d1b7f53358e1dcb4"
+                "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.0.2-RELEASE/swift-wasm-6.0.2-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 6ffedb055cb9956395d9f435d03d53ebe9f6a8d45106b979d1b7f53358e1dcb4"
         default:
             fatalError("Unsupported Swift version: \(swiftVersion)")
         }
