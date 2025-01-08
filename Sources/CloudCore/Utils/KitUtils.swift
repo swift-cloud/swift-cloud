@@ -36,9 +36,9 @@ private func writeKitResource(_ link: LinkProperties) throws {
 
     let resourceFileProperties = link.properties.map { key, _ in
         """
-        public let \(key): env("\(link.environmentKey(key))")
+        public let \(key): String = env("\(link.environmentKey(key))")
         """
-    }.joined(separator: "\n\t")
+    }.joined(separator: "\n\t\t")
 
     try createFile(
         atPath: resourceFilename,
