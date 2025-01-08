@@ -96,7 +96,7 @@ extension Command.RunCommand {
         }
 
         // Update gitignore
-        try? updateGitignore()
+        try? Git.updateGitignore()
 
         return Command.Prepared(
             context: context,
