@@ -56,59 +56,26 @@ extension Builder {
         let binaryPath = "\(releaseDirectory)/\(targetName)"
         let lambdaDirectory = "\(Context.buildDirectory)/lambda/\(targetName)"
         let bootstrapPath = "\(lambdaDirectory)/bootstrap"
-        try? removeDirectory(atPath: lambdaDirectory)
-        try? createDirectory(atPath: lambdaDirectory)
-        try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
+        try? Files.removeDirectory(atPath: lambdaDirectory)
+        try? Files.createDirectory(atPath: lambdaDirectory)
+        try Files.copyFile(fromPath: binaryPath, toPath: bootstrapPath)
         var zipArguments = [
             "--recurse-paths",
             "--symlinks",
             "package.zip",
             "bootstrap",
         ]
-        for (fileName, filePath) in try scanDirectory(atPath: releaseDirectory) {
+        for (fileName, filePath) in try Files.scanDirectory(atPath: releaseDirectory) {
             guard fileName.hasSuffix("resources") else {
                 continue
             }
-            try copyFile(fromPath: filePath, toPath: "\(lambdaDirectory)/\(fileName)")
+            try Files.copyFile(fromPath: filePath, toPath: "\(lambdaDirectory)/\(fileName)")
             zipArguments.append(fileName)
         }
         try await shellOut(
             to: "zip",
             arguments: zipArguments,
             workingDirectory: lambdaDirectory
-        )
-    }
-}
-
-extension Builder {
-    public func packageForFastly(targetName: String, architecture: Architecture = .current) async throws {
-        let releaseDirectory = "\(Context.buildDirectory)/\(architecture.swiftBuildWasmDirectory)/release"
-        let binaryPath = "\(releaseDirectory)/\(targetName).wasm"
-        let fastlyDirectory = "\(Context.buildDirectory)/fastly/\(targetName)"
-        let bootstrapPath = "\(fastlyDirectory)/package/bin/main.wasm"
-        let configPath = "\(fastlyDirectory)/package/fastly.toml"
-        try? removeDirectory(atPath: fastlyDirectory)
-        try? createDirectory(atPath: "\(fastlyDirectory)/package/bin")
-        try createFile(
-            atPath: configPath,
-            contents:
-                """
-                manifest_version = 2
-                description = "Managed by Swift Cloud"
-                language = "swift"
-                """
-        )
-        try copyFile(fromPath: binaryPath, toPath: bootstrapPath)
-        let zipArguments = [
-            "-czf",
-            "package.tar.gz",
-            "package/bin/main.wasm",
-            "package/fastly.toml",
-        ]
-        try await shellOut(
-            to: "tar",
-            arguments: zipArguments,
-            workingDirectory: fastlyDirectory
         )
     }
 }
@@ -160,7 +127,7 @@ extension Builder {
                 "run",
                 "--platform", "linux/\(Architecture.current.dockerPlatform)",
                 "--rm",
-                "-v", "\(currentDirectoryPath()):/workspace",
+                "-v", "\(Files.currentDirectoryPath()):/workspace",
                 "-w", "/workspace",
                 imageName,
                 "bash", "-cl", "swift build -c release --product \(targetName) \(flags)",
@@ -173,7 +140,7 @@ extension Builder {
 extension Builder {
     private func isAmazonLinux() -> Bool {
         do {
-            let data = try readFile(atPath: "/etc/system-release")
+            let data = try Files.readFile(atPath: "/etc/system-release")
             let text = String(data: data, encoding: .utf8)
             return text?.hasPrefix("Amazon Linux") ?? false
         } catch {

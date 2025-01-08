@@ -1,6 +1,6 @@
 func writeSDKResources(_ links: [LinkProperties]) throws {
-    try? removeDirectory(atPath: Context.cloudKitResourcesDirectory)
-    try createDirectory(atPath: Context.cloudKitResourcesDirectory)
+    try? Files.removeDirectory(atPath: Context.cloudKitResourcesDirectory)
+    try Files.createDirectory(atPath: Context.cloudKitResourcesDirectory)
     for link in links {
         try writeSDKResource(link)
     }
@@ -27,5 +27,5 @@ private func writeSDKResource(_ link: LinkProperties) throws {
 
     let fileContents = fileTemplate.replacingOccurrences(of: "{{props}}", with: fileTemplateProperties)
 
-    try createFile(atPath: filename, contents: fileContents)
+    try Files.createFile(atPath: filename, contents: fileContents)
 }

@@ -56,11 +56,11 @@ extension HomeProvider {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let data = try encoder.encode(state)
-        try createFile(atPath: localStatePath(context: context), contents: data)
+        try Files.createFile(atPath: localStatePath(context: context), contents: data)
     }
 
     internal func pushState(context: Context) async throws {
-        let data = try readFile(atPath: localStatePath(context: context))
+        let data = try Files.readFile(atPath: localStatePath(context: context))
         let state = try JSONDecoder().decode(AnyCodable.self, from: data)
         try await putItem(state, fileName: "state", with: context)
     }

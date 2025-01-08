@@ -3,7 +3,7 @@ func updateGitignore() throws {
     let entryToFind = ".cloud"
     let entryToAdd = ".cloud/"
 
-    guard fileExists(atPath: gitignorePath) else {
+    guard Files.fileExists(atPath: gitignorePath) else {
         return
     }
 

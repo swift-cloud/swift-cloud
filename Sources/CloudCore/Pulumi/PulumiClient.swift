@@ -16,7 +16,7 @@ extension Pulumi {
         private let passphrase: String
 
         public var isSetup: Bool {
-            fileExists(atPath: executablePath)
+            Files.fileExists(atPath: executablePath)
         }
 
         public init(version: String = PulumiClientVersion, passphrase: String = "passphrase") {
@@ -54,7 +54,7 @@ extension Pulumi.Client {
         let url = "https://get.pulumi.com/releases/sdk/pulumi-\(version)-\(platform)-\(arch).tar.gz"
 
         // Create cli directory if it doesn't exist
-        try createDirectory(atPath: pulumiPath)
+        try Files.createDirectory(atPath: pulumiPath)
 
         // Download Pulumi CLI
         let downloadPath = "\(Context.cloudAssetsDirectory)/pulumi-\(version)-\(platform).tar.gz"
@@ -75,7 +75,7 @@ extension Pulumi.Client {
         let body = try await response.body.collect(upTo: contentLength)
         let data = Data(body.readableBytesView)
 
-        try createFile(atPath: downloadPath, contents: data)
+        try Files.createFile(atPath: downloadPath, contents: data)
 
         // Extract the archive
         if Platform.current == .windows {
@@ -95,10 +95,10 @@ extension Pulumi.Client {
         }
 
         // Clean up the downloaded archive
-        try removeFile(atPath: downloadPath)
+        try Files.removeFile(atPath: downloadPath)
 
         // Verify that the Pulumi CLI was successfully installed
-        guard fileExists(atPath: executablePath) else {
+        guard Files.fileExists(atPath: executablePath) else {
             throw SetupError.extractionFailed
         }
     }
@@ -115,7 +115,7 @@ extension Pulumi.Client {
             try await setup()
         }
 
-        var environment = currentEnvironment()
+        var environment = Files.currentEnvironment()
         environment["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         environment["PULUMI_CONFIG_PASSPHRASE"] = self.passphrase
         environment["PULUMI_SKIP_UPDATE_CHECK"] = "true"
@@ -187,13 +187,13 @@ extension Pulumi.Client {
         encoder.keyEncodingStrategy = .useDefaultKeys
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(project)
-        try createFile(atPath: configFilePath, contents: data)
+        try Files.createFile(atPath: configFilePath, contents: data)
     }
 }
 
 extension Pulumi.Client {
     public func upsertStack(stage: String) async throws {
-        try createDirectory(atPath: statePath)
+        try Files.createDirectory(atPath: statePath)
         do {
             try await invoke(command: "stack", arguments: ["select", stage])
         } catch {

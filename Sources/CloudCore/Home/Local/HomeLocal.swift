@@ -9,12 +9,12 @@ extension Home {
         public func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws {
             let path = dataFilePath(fileName, with: context)
             let data = try JSONEncoder().encode(item)
-            try createFile(atPath: path, contents: data)
+            try Files.createFile(atPath: path, contents: data)
         }
 
         public func getItem<T: HomeProviderItem>(fileName: String, with context: Context) async throws -> T {
             let path = dataFilePath(fileName, with: context)
-            let data = try readFile(atPath: path)
+            let data = try Files.readFile(atPath: path)
             return try JSONDecoder().decode(T.self, from: data)
         }
 

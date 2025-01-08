@@ -3,18 +3,18 @@ import Foundation
 
 private let shell = CommandRunner()
 
-enum ShellError: Error {
+public enum ShellError: Error {
     case terminated(errorCode: Int32, stderr: String)
 }
 
 public typealias ShellEventHandler = (CommandEvent) -> Void
 
 @discardableResult
-func shellOut(
+public func shellOut(
     to command: String,
     arguments: [String],
     workingDirectory: String? = nil,
-    environment: [String: String] = currentEnvironment(),
+    environment: [String: String] = Files.currentEnvironment(),
     onEvent: ShellEventHandler? = nil
 ) async throws -> (stdout: String, stderr: String) {
     var stdout = ""
@@ -43,7 +43,7 @@ func shellOut(
     }
 }
 
-func shellStream(
+public func shellStream(
     to command: String,
     arguments: [String],
     workingDirectory: String? = nil,

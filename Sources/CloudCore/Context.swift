@@ -33,7 +33,7 @@ extension Context {
 }
 
 extension Context {
-    public static let projectDirectory = currentDirectoryPath()
+    public static let projectDirectory = Files.currentDirectoryPath()
 
     public static let buildDirectory = "\(projectDirectory)/.build"
 
@@ -43,11 +43,11 @@ extension Context {
 
     public static let cloudBinDirectory = "\(cloudDirectory)/bin"
 
-    public static let userCloudDirectory = "\(userHomeDirectoryPath())/.cloud"
+    public static let userCloudDirectory = "\(Files.userHomeDirectoryPath())/.cloud"
 
     public static let cloudKitResourcesDirectory = "\(buildDirectory)/checkouts/swift-cloud/Sources/CloudSDK/_Resources"
 
-    public static let environment = currentEnvironment()
+    public static let environment = Files.currentEnvironment()
 }
 
 extension Context {
