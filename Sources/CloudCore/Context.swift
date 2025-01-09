@@ -15,7 +15,7 @@ public final class Context: Sendable {
     }
 
     public var isProduction: Bool {
-        stage == "production" || stage == "prod"
+        stage == "production" || stage == "prod" || stage == "main" || stage == "master"
     }
 
     init(stage: String, project: any Project, package: Package, store: Store, builder: Builder) {
