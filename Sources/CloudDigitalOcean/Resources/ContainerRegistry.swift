@@ -35,3 +35,13 @@ extension DigitalOcean.ContainerRegistry {
         case professional
     }
 }
+
+extension DigitalOcean.ContainerRegistry {
+    public static func shared(options: Resource.Options? = nil) -> Self {
+        let suffix = options?.provider.map { $0.resource.chosenName } ?? ""
+        return .init(
+            "shared-image-repository-\(suffix)",
+            options: .provider(options?.provider)
+        )
+    }
+}

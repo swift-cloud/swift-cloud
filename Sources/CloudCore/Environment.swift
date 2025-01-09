@@ -7,11 +7,17 @@ public protocol EnvironmentProvider {
 public final class Environment: Encodable, @unchecked Sendable {
     public enum EncodingShape: String, Codable {
         case keyValue
-        case keyValuePairs
+        case nameValueList
+        case keyValueList
+    }
+
+    private struct NameValuePair: Codable {
+        let name: String
+        let value: String
     }
 
     private struct KeyValuePair: Codable {
-        let name: String
+        let key: String
         let value: String
     }
 
@@ -39,8 +45,11 @@ public final class Environment: Encodable, @unchecked Sendable {
         switch shape {
         case .keyValue:
             try container.encode(store.reduce(into: [:]) { $0[$1.key] = "\($1.value)" })
-        case .keyValuePairs:
-            let pairs = store.map { KeyValuePair(name: $0.key, value: "\($0)") }
+        case .keyValueList:
+            let pairs = store.map { KeyValuePair(key: $0.key, value: "\($0)") }
+            try container.encode(pairs)
+        case .nameValueList:
+            let pairs = store.map { NameValuePair(name: $0.key, value: "\($0)") }
             try container.encode(pairs)
         }
     }
