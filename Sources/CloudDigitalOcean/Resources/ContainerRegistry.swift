@@ -11,7 +11,7 @@ extension DigitalOcean {
         public init(
             _ name: String,
             subscriptionTier: SubscriptionTier = .starter,
-            region: String = "nyc3",
+            region: Region = .nyc3,
             options: Resource.Options? = nil
         ) {
             self.resource = .init(
@@ -20,7 +20,7 @@ extension DigitalOcean {
                 properties: [
                     "name": tokenize(Context.current.stage, name),
                     "subscriptionTierSlug": subscriptionTier.rawValue,
-                    "region": region,
+                    "region": region.rawValue,
                 ],
                 options: options
             )
