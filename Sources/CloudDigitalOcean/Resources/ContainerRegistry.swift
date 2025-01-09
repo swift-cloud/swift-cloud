@@ -1,3 +1,5 @@
+import CloudCore
+
 extension DigitalOcean {
     public struct ContainerRegistry: DigitalOceanResourceProvider {
         public let resource: Resource
@@ -9,13 +11,16 @@ extension DigitalOcean {
         public init(
             _ name: String,
             subscriptionTier: SubscriptionTier = .starter,
+            region: String = "nyc3",
             options: Resource.Options? = nil
         ) {
             self.resource = .init(
                 name: name,
                 type: "digitalocean:ContainerRegistry",
                 properties: [
-                    "subscriptionTierSlug": subscriptionTier.rawValue
+                    "name": tokenize(Context.current.stage, name),
+                    "subscriptionTierSlug": subscriptionTier.rawValue,
+                    "region": region,
                 ],
                 options: options
             )
