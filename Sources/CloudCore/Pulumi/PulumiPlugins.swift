@@ -38,6 +38,13 @@ extension Pulumi.Plugin {
         repo: "pulumi/pulumi-cloudflare"
     )
 
+    // https://github.com/pulumi/pulumi-digitalocean
+    public static let digitalocean = Pulumi.Plugin(
+        name: "digitalocean",
+        version: "4.38.0",
+        repo: "pulumi/pulumi-digitalocean"
+    )
+
     // https://github.com/pulumi/pulumi-fastly
     public static let fastly = Pulumi.Plugin(
         name: "fastly",
