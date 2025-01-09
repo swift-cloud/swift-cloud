@@ -13,7 +13,7 @@ extension DigitalOcean {
         ) {
             self.resource = .init(
                 name: "\(name)-docker-credentials",
-                type: "digitalocean:ContainerRegistry",
+                type: "digitalocean:ContainerRegistryDockerCredentials",
                 properties: [
                     "registryName": registryName
                 ],
