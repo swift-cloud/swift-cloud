@@ -2,7 +2,7 @@ extension DigitalOcean {
     public struct ContainerRegistryDockerCredentials: DigitalOceanResourceProvider {
         public let resource: Resource
 
-        var dockerCredentials: Output<String> {
+        public var dockerCredentials: Output<String> {
             resource.output.keyPath("dockerCredentials")
         }
 
