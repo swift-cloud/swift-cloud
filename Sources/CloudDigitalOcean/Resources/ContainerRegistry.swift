@@ -2,7 +2,7 @@ extension DigitalOcean {
     public struct ContainerRegistry: DigitalOceanResourceProvider {
         public let resource: Resource
 
-        var credentials: ContainerRegistryDockerCredentials {
+        public var credentials: ContainerRegistryDockerCredentials {
             .init(resource.chosenName, registryName: resource.name, options: resource.options)
         }
 
