@@ -11,6 +11,7 @@ extension DigitalOcean {
                 name: name,
                 type: "digitalocean:Project",
                 properties: [
+                    "name": tokenize(Context.current.stage, name),
                     "environment": environment.rawValue,
                     "description": "Managed by Swift Cloud",
                 ],
