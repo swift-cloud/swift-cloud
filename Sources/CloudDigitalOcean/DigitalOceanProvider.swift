@@ -2,12 +2,12 @@ import CloudCore
 
 extension Provider {
     public static func digitalocean(
-        apiKey: String? = nil
+        token: String? = nil
     ) -> Self {
         return .init(
             plugin: .digitalocean,
             configuration: [
-                "apiKey": apiKey
+                "token": token
             ],
             dependencies: []
         )
@@ -20,13 +20,13 @@ extension DigitalOcean {
 
         public init(
             _ name: String,
-            apiKey: String? = nil
+            token: String? = nil
         ) {
             resource = Resource(
                 name: name,
                 type: "pulumi:providers:digitalocean",
                 properties: [
-                    "apiKey": apiKey
+                    "token": token
                 ]
             )
         }
