@@ -37,9 +37,8 @@ extension DigitalOcean {
                                 "name": tokenize(Context.current.stage, name, "service-0"),
                                 "dockerfilePath": dockerFilePath,
                                 "image": [
-                                    "registryType": "DOCR"
-                                        // "repository": tokenize(Context.current.stage, name, "repo"),
-                                        // "registryCredentials": ContainerRegistry.shared().credentials.dockerCredentials,
+                                    "registryType": "DOCR",
+                                    "repository": tokenize(Context.current.stage, name, "repo"),
                                 ],
                                 "httpPort": instancePort,
                             ]
