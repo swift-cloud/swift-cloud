@@ -14,7 +14,7 @@ extension DigitalOcean {
             _ name: String,
             project: Project,
             targetName: String,
-            registry: ContainerRegistry,
+            registryName: String,
             region: Region = .nyc3,
             instancePort: Int = 8080,
             environment: [String: CustomStringConvertible]? = nil,
@@ -38,10 +38,10 @@ extension DigitalOcean {
                     "dockerfile": ["location": dockerFilePath],
                     "context": ["location": Context.projectDirectory],
                     "platforms": ["linux/\(architecture.dockerPlatform)"],
-                    "tags": ["\(registry.endpoint)/\(repository):latest"],
+                    "tags": ["registry.digitalocean.com/\(registryName)/\(repository):latest"],
                     "registries": [
                         [
-                            "address": registry.hostname,
+                            "address": "registry.digitalocean.com",
                             "username": digitalOceanToken,
                             "password": digitalOceanToken,
                         ]
