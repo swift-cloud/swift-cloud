@@ -84,7 +84,7 @@ extension DigitalOcean {
                                     [
                                         "minInstanceCount": $0.minimumConcurrency,
                                         "maxInstanceCount": $0.maximumConcurrency,
-                                        "metrics": ["cpu": $0.cpuTarget],
+                                        "metrics": ["cpu": ["percent": $0.cpuTarget]],
                                     ]
                                 } as Any?,
                             ]
