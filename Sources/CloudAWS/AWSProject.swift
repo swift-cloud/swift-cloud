@@ -9,8 +9,8 @@ extension AWSProject {
         "us-east-1"
     }
 
-    public var home: Home.AWS {
-        .init(region: region)
+    public var home: any HomeProvider {
+        Home.AWS(region: region)
     }
 
     public var providers: [Provider] {

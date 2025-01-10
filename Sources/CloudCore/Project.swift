@@ -13,12 +13,12 @@ public protocol Project: Sendable {
 }
 
 extension Project {
-    var providers: [Provider] {
+    public var providers: [Provider] {
         []
     }
 
-    var home: Home.Local {
-        .init()
+    public var home: any HomeProvider {
+        Home.Local()
     }
 }
 
