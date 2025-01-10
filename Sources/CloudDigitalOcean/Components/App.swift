@@ -26,7 +26,6 @@ extension DigitalOcean {
             region: Region = .nyc3,
             instanceSize: InstanceSize = .shared_1vCPU_512mb,
             instancePort: Int = 8080,
-            autoScaling: AutoScalingConfiguration? = nil,
             environment: [String: CustomStringConvertible]? = nil,
             options: Resource.Options? = nil
         ) {
@@ -80,11 +79,13 @@ extension DigitalOcean {
                                 ],
                                 "httpPort": instancePort,
                                 "instanceSizeSlug": instanceSize.slug,
-                                "autoscaling": autoScaling.map {
+                                "autoscaling": instanceSize.autoScalingConfiguration.map {
                                     [
                                         "minInstanceCount": $0.minimumConcurrency,
                                         "maxInstanceCount": $0.maximumConcurrency,
-                                        "metrics": ["cpu": ["percent": $0.cpuTarget]],
+                                        "metrics": [
+                                            "cpu": ["percent": $0.cpuTarget.value]
+                                        ],
                                     ]
                                 } as Any?,
                             ]
@@ -110,14 +111,23 @@ extension DigitalOcean {
 extension DigitalOcean.App {
     public enum InstanceSize: Sendable {
         case shared(vCPU: Int, memory: Double)
-        case dedicated(vCPU: Int, memory: Double)
+        case dedicated(vCPU: Int, memory: Double, autoScaling: AutoScalingConfiguration?)
 
         public var slug: String {
             switch self {
             case let .shared(vCPU, memory):
-                return "apps-s-\(vCPU)vcpu-\(memory)gb"
-            case let .dedicated(vCPU, memory):
-                return "apps-d-\(vCPU)vcpu-\(memory)gb"
+                return "apps-s-\(vCPU)vcpu-\(memory.formatted())gb"
+            case let .dedicated(vCPU, memory, _):
+                return "apps-d-\(vCPU)vcpu-\(memory.formatted())gb"
+            }
+        }
+
+        public var autoScalingConfiguration: AutoScalingConfiguration? {
+            switch self {
+            case let .dedicated(_, _, autoScaling):
+                return autoScaling
+            default:
+                return nil
             }
         }
     }
@@ -131,15 +141,26 @@ extension DigitalOcean.App.InstanceSize {
 }
 
 extension DigitalOcean.App {
-    public struct AutoScalingConfiguration {
+    public struct AutoScalingConfiguration: Sendable {
+        public enum CPUTarget: Sendable {
+            case percent(Int)
+
+            public var value: Int {
+                switch self {
+                case let .percent(value):
+                    return value
+                }
+            }
+        }
+
         public let minimumConcurrency: Int
         public let maximumConcurrency: Int
-        public let cpuTarget: Int
+        public let cpuTarget: CPUTarget
 
         public init(
             minimumConcurrency: Int = 1,
             maximumConcurrency: Int,
-            cpuTarget: Int
+            cpuTarget: CPUTarget
         ) {
             self.minimumConcurrency = minimumConcurrency
             self.maximumConcurrency = maximumConcurrency
