@@ -25,6 +25,7 @@ extension DigitalOcean {
             registryName: String,
             region: Region = .nyc3,
             instancePort: Int = 8080,
+            autoScaling: AutoScalingConfiguration? = nil,
             environment: [String: CustomStringConvertible]? = nil,
             options: Resource.Options? = nil
         ) {
@@ -77,6 +78,13 @@ extension DigitalOcean {
                                     "digest": image.output.keyPath("digest"),
                                 ],
                                 "httpPort": instancePort,
+                                "autoscaling": autoScaling.map {
+                                    [
+                                        "minInstanceCount": $0.minimumConcurrency,
+                                        "maxInstanceCount": $0.maximumConcurrency,
+                                        "metrics": ["cpu": $0.cpuTarget],
+                                    ]
+                                } as Any?,
                             ]
                         ],
                     ],
@@ -93,6 +101,24 @@ extension DigitalOcean {
                 try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
                 try await $0.builder.buildUbuntu(targetName: targetName, architecture: architecture)
             }
+        }
+    }
+}
+
+extension DigitalOcean.App {
+    public struct AutoScalingConfiguration {
+        public let minimumConcurrency: Int
+        public let maximumConcurrency: Int
+        public let cpuTarget: Int
+
+        public init(
+            minimumConcurrency: Int = 1,
+            maximumConcurrency: Int,
+            cpuTarget: Int
+        ) {
+            self.minimumConcurrency = minimumConcurrency
+            self.maximumConcurrency = maximumConcurrency
+            self.cpuTarget = cpuTarget
         }
     }
 }
