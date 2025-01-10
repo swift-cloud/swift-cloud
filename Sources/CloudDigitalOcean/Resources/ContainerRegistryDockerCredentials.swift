@@ -15,7 +15,8 @@ extension DigitalOcean {
                 name: "\(name)-docker-credentials",
                 type: "digitalocean:ContainerRegistryDockerCredentials",
                 properties: [
-                    "registryName": registryName
+                    "registryName": registryName,
+                    "write": true,
                 ],
                 options: options
             )
