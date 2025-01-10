@@ -10,6 +10,14 @@ extension DigitalOcean {
             app.name
         }
 
+        public var hostname: Output<String> {
+            app.output.keyPath("liveDomain")
+        }
+
+        public var url: Output<String> {
+            app.output.keyPath("liveUrl")
+        }
+
         public init(
             _ name: String,
             project: Project,
