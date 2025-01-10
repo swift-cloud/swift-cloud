@@ -12,6 +12,7 @@ let package = Package(
         .library(name: "CloudAWS", targets: ["CloudAWS"]),
         .library(name: "CloudCloudflare", targets: ["CloudCloudflare"]),
         .library(name: "CloudCore", targets: ["CloudCore"]),
+        .library(name: "CloudDigitalOcean", targets: ["CloudDigitalOcean"]),
         .library(name: "CloudFastly", targets: ["CloudFastly"]),
         .library(name: "CloudSDK", targets: ["CloudSDK"]),
     ],
@@ -30,6 +31,7 @@ let package = Package(
                 "CloudAWS",
                 "CloudCloudflare",
                 "CloudCore",
+                "CloudDigitalOcean",
                 "CloudFastly",
             ]
         ),
@@ -51,6 +53,10 @@ let package = Package(
                 .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "SotoCore", package: "soto-core"),
             ]
+        ),
+        .target(
+            name: "CloudDigitalOcean",
+            dependencies: ["CloudCore"]
         ),
         .target(
             name: "CloudFastly",

@@ -32,7 +32,7 @@ extension Builder {
 }
 
 extension Builder {
-    public func buildAmazonLinux(targetName: String) async throws {
+    public func buildAmazonLinux(targetName: String, architecture: Architecture = .current) async throws {
         if isAmazonLinux() {
             try await buildNative(
                 targetName: targetName,
@@ -51,10 +51,32 @@ extension Builder {
             }
             try await buildDocker(
                 targetName: targetName,
+                architecture: architecture,
                 imageName: imageName,
                 flags: ["--static-swift-stdlib"]
             )
         }
+    }
+}
+
+extension Builder {
+    public func buildUbuntu(targetName: String, architecture: Architecture = .current) async throws {
+        let swiftVersion = try await currentSwiftVersion()
+        let imageName: String
+        switch swiftVersion {
+        case "5.10":
+            imageName = "swift:5.10-noble"
+        case "6.0":
+            imageName = "swift:6.0-noble"
+        default:
+            fatalError("Unsupported Swift version: \(swiftVersion)")
+        }
+        try await buildDocker(
+            targetName: targetName,
+            architecture: architecture,
+            imageName: imageName,
+            flags: ["--static-swift-stdlib"]
+        )
     }
 }
 
@@ -106,6 +128,7 @@ extension Builder {
 
     private func buildDocker(
         targetName: String,
+        architecture: Architecture = .current,
         imageName: String,
         flags: [String],
         pre: String = ":"
@@ -113,17 +136,20 @@ extension Builder {
         let spinner = UI.spinner(label: #"Building target "\#(targetName)""#)
         defer { spinner.stop() }
 
+        let buildCommand = "swift build -c release --product \(targetName) \(flags.joined(separator: " "))"
+        spinner.push(buildCommand)
+
         try await shellOut(
             to: "docker",
             arguments: [
                 "run",
-                "--platform", "linux/\(Architecture.current.dockerPlatform)",
+                "--platform", "linux/\(architecture.dockerPlatform)",
                 "--rm",
                 "-v", "\(Files.currentDirectoryPath()):/workspace",
                 "-w", "/workspace",
                 imageName,
                 "bash", "-cl",
-                "\(pre) && swift build -c release --product \(targetName) \(flags.joined(separator: " "))",
+                "\(pre) && \(buildCommand)",
             ],
             onEvent: { spinner.push($0.string()) }
         )
