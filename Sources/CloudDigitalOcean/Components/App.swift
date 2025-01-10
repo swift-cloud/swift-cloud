@@ -24,6 +24,7 @@ extension DigitalOcean {
             targetName: String,
             registryName: String,
             region: Region = .nyc3,
+            instanceSize: InstanceSize = .shared_1vCPU_512mb,
             instancePort: Int = 8080,
             autoScaling: AutoScalingConfiguration? = nil,
             environment: [String: CustomStringConvertible]? = nil,
@@ -78,6 +79,7 @@ extension DigitalOcean {
                                     "digest": image.output.keyPath("digest"),
                                 ],
                                 "httpPort": instancePort,
+                                "instanceSizeSlug": instanceSize.slug,
                                 "autoscaling": autoScaling.map {
                                     [
                                         "minInstanceCount": $0.minimumConcurrency,
@@ -103,6 +105,29 @@ extension DigitalOcean {
             }
         }
     }
+}
+
+extension DigitalOcean.App {
+    public enum InstanceSize: Sendable {
+        case shared(vCPU: Int, memory: Double)
+        case dedicated(vCPU: Int, memory: Double)
+
+        public var slug: String {
+            switch self {
+            case let .shared(vCPU, memory):
+                return "apps-s-\(vCPU)vcpu-\(memory)gb"
+            case let .dedicated(vCPU, memory):
+                return "apps-d-\(vCPU)vcpu-\(memory)gb"
+            }
+        }
+    }
+}
+
+extension DigitalOcean.App.InstanceSize {
+    public static let shared_1vCPU_512mb = Self.shared(vCPU: 1, memory: 0.5)
+    public static let shared_1vCPU_1gb = Self.shared(vCPU: 1, memory: 1)
+    public static let shared_1vCPU_2gb = Self.shared(vCPU: 1, memory: 2)
+    public static let shared_2vCPU_4gb = Self.shared(vCPU: 2, memory: 4)
 }
 
 extension DigitalOcean.App {
