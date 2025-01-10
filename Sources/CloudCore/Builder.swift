@@ -75,7 +75,7 @@ extension Builder {
             targetName: targetName,
             architecture: architecture,
             imageName: imageName,
-            flags: ["--static-swift-stdlib", "-Xlinker", "-ljemalloc"]
+            flags: ["--static-swift-stdlib"]
         )
     }
 }
