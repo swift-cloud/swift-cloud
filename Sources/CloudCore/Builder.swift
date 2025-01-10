@@ -136,6 +136,9 @@ extension Builder {
         let spinner = UI.spinner(label: #"Building target "\#(targetName)""#)
         defer { spinner.stop() }
 
+        let buildCommand = "swift build -c release --product \(targetName) \(flags.joined(separator: " "))"
+        spinner.push(buildCommand)
+
         try await shellOut(
             to: "docker",
             arguments: [
@@ -146,7 +149,7 @@ extension Builder {
                 "-w", "/workspace",
                 imageName,
                 "bash", "-cl",
-                "\(pre) && swift build -c release --product \(targetName) \(flags.joined(separator: " "))",
+                "\(pre) && \(buildCommand)",
             ],
             onEvent: { spinner.push($0.string()) }
         )
