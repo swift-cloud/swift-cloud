@@ -4,13 +4,21 @@ extension DigitalOcean {
     public struct ContainerRegistry: DigitalOceanResourceProvider {
         public let resource: Resource
 
+        public var endpoint: Output<String> {
+            resource.output.keyPath("endpoint")
+        }
+
+        public var hostname: Output<String> {
+            resource.output.keyPath("serverUrl")
+        }
+
         public var credentials: ContainerRegistryDockerCredentials {
             .init(resource.chosenName, registryName: resource.name, options: resource.options)
         }
 
         public init(
             _ name: String,
-            subscriptionTier: SubscriptionTier = .starter,
+            subscriptionTier: SubscriptionTier = .basic,
             region: Region = .nyc3,
             options: Resource.Options? = nil
         ) {

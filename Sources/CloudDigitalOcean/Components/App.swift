@@ -14,6 +14,7 @@ extension DigitalOcean {
             _ name: String,
             project: Project,
             targetName: String,
+            registry: ContainerRegistry,
             region: Region = .nyc3,
             instancePort: Int = 8080,
             environment: [String: CustomStringConvertible]? = nil,
@@ -27,6 +28,8 @@ extension DigitalOcean {
 
             let repository = tokenize(Context.current.stage, name)
 
+            let digitalOceanToken = Context.current.project.digitalOceanToken()
+
             let image = Resource(
                 name: tokenize(Context.current.stage, name, "repo"),
                 type: "docker-build:Image",
@@ -35,12 +38,12 @@ extension DigitalOcean {
                     "dockerfile": ["location": dockerFilePath],
                     "context": ["location": Context.projectDirectory],
                     "platforms": ["linux/\(architecture.dockerPlatform)"],
-                    "tags": ["\(repository):latest"],
+                    "tags": ["\(registry.endpoint)/\(repository):latest"],
                     "registries": [
                         [
-                            "address": "registry.digitalocean.com",
-                            "username": Context.current.project.digitalOceanToken(),
-                            "password": Context.current.project.digitalOceanToken(),
+                            "address": registry.hostname,
+                            "username": digitalOceanToken,
+                            "password": digitalOceanToken,
                         ]
                     ],
                 ],
@@ -53,12 +56,12 @@ extension DigitalOcean {
                 properties: [
                     "projectId": project.id,
                     "spec": [
-                        "name": tokenize(Context.current.stage, name, "spec"),
+                        "name": repository,
                         "region": region.rawValue,
                         "envs": self.environment,
                         "services": [
                             [
-                                "name": tokenize(Context.current.stage, name, "service-0"),
+                                "name": tokenize(repository, "service-0"),
                                 "dockerfilePath": dockerFilePath,
                                 "image": [
                                     "registryType": "DOCR",
