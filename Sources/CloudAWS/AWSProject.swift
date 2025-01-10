@@ -10,7 +10,7 @@ extension AWSProject {
     }
 
     public var home: Home.AWS {
-        Home.AWS(region: region)
+        .init(region: region)
     }
 
     public var providers: [Provider] {

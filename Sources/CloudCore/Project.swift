@@ -3,15 +3,23 @@ import Command
 import ConsoleKitTerminal
 
 public protocol Project: Sendable {
-    associatedtype ProjectHomeProvider: HomeProvider
-
     init()
 
-    var home: ProjectHomeProvider { get }
+    var home: any HomeProvider { get }
 
     var providers: [Provider] { get }
 
     func build() async throws -> Outputs
+}
+
+extension Project {
+    var providers: [Provider] {
+        []
+    }
+
+    var home: Home.Local {
+        .init()
+    }
 }
 
 extension Project {
