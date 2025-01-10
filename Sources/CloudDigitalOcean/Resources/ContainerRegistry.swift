@@ -26,7 +26,6 @@ extension DigitalOcean {
                 name: name,
                 type: "digitalocean:ContainerRegistry",
                 properties: [
-                    "name": tokenize(Context.current.stage, name),
                     "subscriptionTierSlug": subscriptionTier.rawValue,
                     "region": region.rawValue,
                 ],
