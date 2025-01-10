@@ -32,7 +32,7 @@ extension Builder {
 }
 
 extension Builder {
-    public func buildAmazonLinux(targetName: String) async throws {
+    public func buildAmazonLinux(targetName: String, architecture: Architecture = .current) async throws {
         if isAmazonLinux() {
             try await buildNative(
                 targetName: targetName,
@@ -51,6 +51,7 @@ extension Builder {
             }
             try await buildDocker(
                 targetName: targetName,
+                architecture: architecture,
                 imageName: imageName,
                 flags: ["--static-swift-stdlib"]
             )
@@ -106,6 +107,7 @@ extension Builder {
 
     private func buildDocker(
         targetName: String,
+        architecture: Architecture = .current,
         imageName: String,
         flags: [String],
         pre: String = ":"
@@ -117,7 +119,7 @@ extension Builder {
             to: "docker",
             arguments: [
                 "run",
-                "--platform", "linux/\(Architecture.current.dockerPlatform)",
+                "--platform", "linux/\(architecture.dockerPlatform)",
                 "--rm",
                 "-v", "\(Files.currentDirectoryPath()):/workspace",
                 "-w", "/workspace",

@@ -23,6 +23,30 @@ extension DigitalOcean {
 
             let dockerFilePath = Docker.Dockerfile.filePath(name)
 
+            let architecture = Architecture.x86
+
+            let repository = tokenize(Context.current.stage, name)
+
+            let image = Resource(
+                name: tokenize(Context.current.stage, name, "repo"),
+                type: "docker-build:Image",
+                properties: [
+                    "push": true,
+                    "dockerfile": ["location": dockerFilePath],
+                    "context": ["location": Context.projectDirectory],
+                    "platforms": ["linux/\(architecture.dockerPlatform)"],
+                    "tags": ["\(repository):latest"],
+                    "registries": [
+                        [
+                            "address": "registry.digitalocean.com",
+                            "username": Context.current.project.digitalOceanToken(),
+                            "password": Context.current.project.digitalOceanToken(),
+                        ]
+                    ],
+                ],
+                options: options
+            )
+
             app = Resource(
                 name: name,
                 type: "digitalocean:App",
@@ -38,7 +62,8 @@ extension DigitalOcean {
                                 "dockerfilePath": dockerFilePath,
                                 "image": [
                                     "registryType": "DOCR",
-                                    "repository": tokenize(Context.current.stage, name, "repo"),
+                                    "repository": repository,
+                                    "digest": image.output.keyPath("digest"),
                                 ],
                                 "httpPort": instancePort,
                             ]
@@ -51,7 +76,7 @@ extension DigitalOcean {
             Context.current.store.build {
                 let dockerFile = Docker.Dockerfile.amazonLinux(targetName: targetName, port: instancePort)
                 try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
-                try await $0.builder.buildAmazonLinux(targetName: targetName)
+                try await $0.builder.buildAmazonLinux(targetName: targetName, architecture: architecture)
             }
         }
     }

@@ -12,8 +12,8 @@ extension AWS {
             _ name: String,
             imageRepository: ImageRepository,
             dockerFilePath: String,
-            context: String? = nil,
-            platform: String? = nil,
+            context: String = Context.projectDirectory,
+            platform: String = Architecture.current.dockerPlatform,
             options: Resource.Options? = nil
         ) {
             resource = Resource(
@@ -21,9 +21,9 @@ extension AWS {
                 type: "awsx:ecr:Image",
                 properties: [
                     "repositoryUrl": "\(imageRepository.url)",
-                    "context": "\(context ?? Context.projectDirectory)",
+                    "context": "\(context)",
                     "dockerfile": "\(dockerFilePath)",
-                    "platform": "\(platform ?? Architecture.current.dockerPlatform)",
+                    "platform": "\(platform)",
                     "args": ["DOCKER_BUILDKIT": "1"],
                 ],
                 options: options
