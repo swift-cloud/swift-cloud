@@ -42,4 +42,21 @@ extension Docker.Dockerfile {
         CMD ["--hostname", "0.0.0.0", "--port", "\(port)"]
         """
     }
+
+    public static func ubuntu(targetName: String, architecture: Architecture = .current, port: Int) -> String {
+        """
+        FROM ubuntu:noble
+
+        WORKDIR /app/
+
+        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
+
+        ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
+
+        EXPOSE \(port)
+
+        ENTRYPOINT [ "./\(targetName)" ]
+        CMD ["--hostname", "0.0.0.0", "--port", "\(port)"]
+        """
+    }
 }

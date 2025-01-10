@@ -60,6 +60,27 @@ extension Builder {
 }
 
 extension Builder {
+    public func buildUbuntu(targetName: String, architecture: Architecture = .current) async throws {
+        let swiftVersion = try await currentSwiftVersion()
+        let imageName: String
+        switch swiftVersion {
+        case "5.10":
+            imageName = "swift:5.10-noble"
+        case "6.0":
+            imageName = "swift:6.0-noble"
+        default:
+            fatalError("Unsupported Swift version: \(swiftVersion)")
+        }
+        try await buildDocker(
+            targetName: targetName,
+            architecture: architecture,
+            imageName: imageName,
+            flags: ["--static-swift-stdlib", "-Xlinker", "-ljemalloc"]
+        )
+    }
+}
+
+extension Builder {
     public func buildWasm(targetName: String, architecture: Architecture = .current) async throws {
         let swiftVersion = try await currentSwiftVersion()
         let imageName: String
