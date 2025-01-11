@@ -12,7 +12,7 @@ extension Fastly {
         public init(
             _ name: String,
             targetName: String,
-            domains: [CustomStringConvertible],
+            domains: [any Input<String>],
             backends: [Backend] = [],
             features: Features = .init(),
             options: Resource.Options? = nil

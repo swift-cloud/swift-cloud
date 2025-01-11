@@ -6,5 +6,6 @@ builder:
         - CloudAWS
         - CloudCore
         - CloudCloudflare
+        - CloudDigitalOcean
         - CloudFastly
         - CloudVercel

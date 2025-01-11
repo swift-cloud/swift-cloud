@@ -9,7 +9,7 @@ extension AWSProject {
         "us-east-1"
     }
 
-    public var home: Home.AWS {
+    public var home: any HomeProvider {
         Home.AWS(region: region)
     }
 

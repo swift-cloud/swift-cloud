@@ -4,7 +4,7 @@ extension AWS {
 
         public var name: Output<String>
 
-        public let availabilityZoneId: Output<String>
+        public let availabilityZoneId: any Input<String>
 
         public var region: Output<String> {
             getARN(bucket).region
@@ -16,7 +16,7 @@ extension AWS {
 
         public init(
             _ chosenName: String,
-            availabilityZoneId azId: Output<String>? = nil,
+            availabilityZoneId azId: (any Input<String>)? = nil,
             vpc: VPC? = nil,
             forceDestroy: Bool = true,
             options: Resource.Options? = nil

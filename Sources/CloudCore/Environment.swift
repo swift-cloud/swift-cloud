@@ -7,11 +7,17 @@ public protocol EnvironmentProvider {
 public final class Environment: Encodable, @unchecked Sendable {
     public enum EncodingShape: String, Codable {
         case keyValue
-        case keyValuePairs
+        case nameValueList
+        case keyValueList
+    }
+
+    private struct NameValuePair: Codable {
+        let name: String
+        let value: String
     }
 
     private struct KeyValuePair: Codable {
-        let name: String
+        let key: String
         let value: String
     }
 
@@ -19,13 +25,13 @@ public final class Environment: Encodable, @unchecked Sendable {
 
     private let shape: EncodingShape
 
-    private var _store: [String: CustomStringConvertible]
-    private var store: [String: CustomStringConvertible] {
+    private var _store: [String: any Input<String>]
+    private var store: [String: any Input<String>] {
         get { queue.sync { _store } }
         set { queue.sync { _store = newValue } }
     }
 
-    public init(_ initial: [String: CustomStringConvertible]? = nil, shape: EncodingShape) {
+    public init(_ initial: [String: any Input<String>]? = nil, shape: EncodingShape) {
         self._store = [:]
         self.shape = shape
         Context.current.store.track(self)
@@ -39,18 +45,21 @@ public final class Environment: Encodable, @unchecked Sendable {
         switch shape {
         case .keyValue:
             try container.encode(store.reduce(into: [:]) { $0[$1.key] = "\($1.value)" })
-        case .keyValuePairs:
-            let pairs = store.map { KeyValuePair(name: $0.key, value: "\($0)") }
+        case .keyValueList:
+            let pairs = store.map { KeyValuePair(key: $0.key, value: "\($0)") }
+            try container.encode(pairs)
+        case .nameValueList:
+            let pairs = store.map { NameValuePair(name: $0.key, value: "\($0)") }
             try container.encode(pairs)
         }
     }
 
-    public subscript(key: String) -> CustomStringConvertible? {
+    public subscript(key: String) -> (any Input<String>)? {
         get { store[Self.toKey(key)] }
         set { store[Self.toKey(key)] = newValue }
     }
 
-    public func merge(_ other: [String: CustomStringConvertible]) {
+    public func merge(_ other: [String: any Input<String>]) {
         for (key, value) in other {
             store[Self.toKey(key)] = value
         }

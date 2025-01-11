@@ -1,25 +1,27 @@
 public protocol Linkable {
-    var name: Output<String> { get }
+    associatedtype NameType: Input<String>
+    var name: NameType { get }
 
     var effect: String { get }
 
     var actions: [String] { get }
 
-    var resources: [Output<String>] { get }
+    associatedtype ResourceType: Input<String>
+    var resources: [ResourceType] { get }
 
     var properties: LinkProperties? { get }
 }
 
 public struct LinkProperties: Sendable {
-    public let type: String
+    public let type: any Input<String>
 
-    public let name: String
+    public let name: any Input<String>
 
-    public let properties: [String: Output<String>]
+    public let properties: [String: any Input<String>]
 
-    public init(type: String, name: CustomStringConvertible, properties: [String: Output<String>]) {
+    public init(type: any Input<String>, name: any Input<String>, properties: [String: any Input<String>]) {
         self.type = type
-        self.name = name.description
+        self.name = name
         self.properties = properties
     }
 
@@ -41,7 +43,7 @@ extension Linkable {
         nil
     }
 
-    public var environmentVariables: [String: CustomStringConvertible] {
+    public var environmentVariables: [String: any Input<String>] {
         guard let properties else {
             return [:]
         }
@@ -75,7 +77,7 @@ public protocol RoleProvider {
 
 extension RoleProvider {
     @discardableResult
-    public func link(_ linkable: Linkable) -> Self {
+    public func link(_ linkable: any Linkable) -> Self {
         let _ = Resource(
             name: "\(name)-\(linkable.name)-role-policy",
             type: "aws:iam:RolePolicy",
@@ -96,7 +98,7 @@ extension RoleProvider {
     }
 
     @discardableResult
-    public func link(_ linkables: [Linkable]) -> Self {
+    public func link(_ linkables: [any Linkable]) -> Self {
         for linkable in linkables {
             link(linkable)
         }
@@ -104,7 +106,7 @@ extension RoleProvider {
     }
 
     @discardableResult
-    public func link(_ linkables: Linkable...) -> Self {
+    public func link(_ linkables: any Linkable...) -> Self {
         return link(linkables)
     }
 }
@@ -133,7 +135,7 @@ extension Linkable {
     /// ensuring it is written to the CloudSDK resources.
     @discardableResult
     public func linked() -> Self {
-        Context.current.store.track(linkable)
+        Context.current.store.track(self)
         return self
     }
 }

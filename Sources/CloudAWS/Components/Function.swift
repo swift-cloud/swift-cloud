@@ -35,7 +35,7 @@ extension AWS {
             memory: Int = 1769,
             timeout: Duration = .seconds(10),
             reservedConcurrency: Int? = nil,
-            environment: [String: CustomStringConvertible]? = nil,
+            environment: [String: any Input<String>]? = nil,
             vpc: VPC.Configuration? = nil,
             options: Resource.Options? = nil
         ) {

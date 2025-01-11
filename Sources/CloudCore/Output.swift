@@ -1,4 +1,6 @@
-public enum OutputPathComponent: Sendable, CustomStringConvertible {
+public enum OutputPathComponent: Sendable, Input {
+    public typealias ValueType = String
+
     case property(String)
     case arrayIndex(Int)
     case dictionaryKey(String)

@@ -7,7 +7,7 @@ extension AWS {
         public let vpcId: String
     }
 
-    public static func getSubnet(_ id: Output<String>) -> Output<GetSubnet> {
+    public static func getSubnet(_ id: any Input<String>) -> Output<GetSubnet> {
         let variable = Variable<GetSubnet>.invoke(
             name: "get-subnet-\(id)",
             function: "aws:ec2:getSubnet",
