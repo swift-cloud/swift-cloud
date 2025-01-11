@@ -32,3 +32,9 @@ extension AWS {
         .init(zoneName: zoneName)
     }
 }
+
+extension DNSProvider where Self == AWS.DNS {
+    public static func aws(zoneName: String) -> AWS.DNS {
+        .init(zoneName: zoneName)
+    }
+}

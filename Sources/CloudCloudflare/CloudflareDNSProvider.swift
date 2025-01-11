@@ -23,8 +23,10 @@ extension Cloudflare {
             )
         }
     }
+}
 
-    public static func dns(zoneName: String) -> DNS {
+extension DNSProvider where Self == Cloudflare.DNS {
+    public static func cloudflare(zoneName: String) -> Cloudflare.DNS {
         .init(zoneName: zoneName)
     }
 }
