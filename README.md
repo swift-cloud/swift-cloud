@@ -65,13 +65,16 @@ installer.
 
 #### Setup AWS
 
-Today, Swift Cloud only supports AWS. You will need to have an AWS account and
-AWS credentials loaded on your machine or in the typical environment variables.
+You will need to have an AWS account and AWS credentials loaded on your machine
+or in the typical environment variables.
 
 ```bash
 export AWS_ACCESS_KEY_ID=...
 export AWS_SECRET_ACCESS_KEY=...
 ```
+
+You can also provide a `.env` file in the root of your project with the same
+relevant variables.
 
 If you're on a Mac the easiest way to manage your AWS credentials is
 [Leapp](https://www.leapp.cloud).
