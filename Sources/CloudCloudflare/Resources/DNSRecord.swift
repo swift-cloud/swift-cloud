@@ -7,10 +7,10 @@ extension Cloudflare {
         }
 
         public init(
-            zoneId: CustomStringConvertible,
+            zoneId: any Input<String>,
             type: RecordType,
-            name: CustomStringConvertible,
-            value: CustomStringConvertible,
+            name: any Input<String>,
+            value: any Input<String>,
             proxied: Bool = false,
             ttl: Duration = .seconds(60),
             options: Resource.Options? = nil

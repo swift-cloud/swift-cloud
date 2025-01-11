@@ -9,11 +9,11 @@ extension AWS {
         }
 
         public init(
-            zoneId: CustomStringConvertible,
-            type: CustomStringConvertible,
-            name: CustomStringConvertible,
+            zoneId: any Input<String>,
+            type: any Input<String>,
+            name: any Input<String>,
             ttl: Duration = .seconds(60),
-            records: [CustomStringConvertible],
+            records: [any Input<String>],
             options: Resource.Options? = nil
         ) {
             resource = Resource(

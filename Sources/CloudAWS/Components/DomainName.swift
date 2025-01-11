@@ -10,7 +10,7 @@ extension AWS {
         }
 
         public var hostname: Output<String> {
-            domainName.hostname
+            "\(domainName.hostname)"
         }
 
         public init(

@@ -13,7 +13,7 @@ extension AWS {
         }
 
         public init(
-            hostname: CustomStringConvertible,
+            hostname: any Input<String>,
             keyAlgorithm: KeyAlgorithm = .ecdsa,
             options: Resource.Options? = nil
         ) {

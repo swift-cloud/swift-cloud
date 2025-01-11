@@ -13,9 +13,9 @@ extension AWS {
         }
 
         public func createRecord(
-            type: Output<String>,
-            name: Output<String>,
-            target: Output<String>,
+            type: any Input<String>,
+            name: any Input<String>,
+            target: any Input<String>,
             ttl: Duration
         ) -> DNSProviderRecord {
             return AWS.DNSRecord(

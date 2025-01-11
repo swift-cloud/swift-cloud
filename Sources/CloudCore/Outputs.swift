@@ -1,29 +1,22 @@
 public struct Outputs: Sendable {
 
-    private(set) var outputs: [String: Output<String>]
+    private(set) var outputs: [String: any Input<String>]
 
-    public init(_ outputs: [String: Output<String>] = [:]) {
+    public init(_ outputs: [String: any Input<String>] = [:]) {
         self.outputs = outputs
     }
 
-    mutating func merge(_ outputs: [String: Output<String>]) {
+    mutating func merge(_ outputs: [String: any Input<String>]) {
         self.outputs.merge(outputs) { $1 }
     }
 
     func pulumiProjectOutputs() -> Pulumi.Project.Outputs {
-        return outputs
+        return outputs.mapValues { .init($0) }
     }
 }
 
 extension Outputs: ExpressibleByDictionaryLiteral {
-    public init(dictionaryLiteral elements: (String, Output<String>)...) {
-        let dict = elements.reduce(into: [:]) {
-            $0[$1.0] = $1.1
-        }
-        self.init(dict)
-    }
-
-    public init(dictionaryLiteral elements: (String, CustomStringConvertible)...) {
+    public init(dictionaryLiteral elements: (String, any Input<String>)...) {
         let dict = elements.reduce(into: [:]) {
             $0[$1.0] = Output<String>(stringLiteral: "\($1.1)")
         }

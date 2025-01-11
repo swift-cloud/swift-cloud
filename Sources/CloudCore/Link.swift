@@ -1,25 +1,25 @@
 public struct Link: Sendable, Linkable {
-    public var name: Output<String>
+    public var name: String
 
     public var effect: String
 
     public var actions: [String]
 
-    public var resources: [Output<String>]
+    public var resources: [String]
 
     public var properties: LinkProperties?
 
     public init(
-        name: Output<String>,
-        effect: String = "Allow",
-        actions: [String] = ["*"],
-        resources: [Output<String>] = [],
+        name: any Input<String>,
+        effect: any Input<String> = "Allow",
+        actions: [any Input<String>] = ["*"],
+        resources: [any Input<String>] = [],
         properties: LinkProperties? = nil
     ) {
-        self.name = name
-        self.effect = effect
-        self.actions = actions
-        self.resources = resources
+        self.name = name.description
+        self.effect = effect.description
+        self.actions = actions.map(\.description)
+        self.resources = resources.map(\.description)
         self.properties = properties
     }
 }

@@ -73,7 +73,7 @@ extension Pulumi {
 
         public typealias Config = [String: ConfigValue]
 
-        public typealias Outputs = [String: Output<String>]
+        public typealias Outputs = [String: AnyEncodable]
 
         public var name: String
         public var runtime: Runtime

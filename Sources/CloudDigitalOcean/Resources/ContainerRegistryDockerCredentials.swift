@@ -8,7 +8,7 @@ extension DigitalOcean {
 
         public init(
             _ name: String,
-            registryName: Output<String>,
+            registryName: any Input<String>,
             options: Resource.Options? = nil
         ) {
             self.resource = .init(

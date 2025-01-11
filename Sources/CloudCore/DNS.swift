@@ -1,31 +1,31 @@
 public protocol DNSProvider: Sendable {
     func createRecord(
-        type: Output<String>,
-        name: Output<String>,
-        target: Output<String>,
+        type: any Input<String>,
+        name: any Input<String>,
+        target: any Input<String>,
         ttl: Duration
     ) -> DNSProviderRecord
 
     func createAlias(
-        name: Output<String>,
-        target: Output<String>,
+        name: any Input<String>,
+        target: any Input<String>,
         ttl: Duration
     ) -> DNSProviderRecord
 }
 
 extension DNSProvider {
     public func createRecord(
-        type: Output<String>,
-        name: Output<String>,
-        target: Output<String>,
+        type: any Input<String>,
+        name: any Input<String>,
+        target: any Input<String>,
         ttl: Duration = .seconds(60)
     ) -> DNSProviderRecord {
         createRecord(type: type, name: name, target: target, ttl: ttl)
     }
 
     public func createAlias(
-        name: Output<String>,
-        target: Output<String>,
+        name: any Input<String>,
+        target: any Input<String>,
         ttl: Duration = .seconds(60)
     ) -> DNSProviderRecord {
         createRecord(type: "CNAME", name: name, target: target, ttl: ttl)
@@ -37,21 +37,16 @@ public protocol DNSProviderRecord: Sendable {
 }
 
 public struct DomainName: Sendable {
-    public let hostname: Output<String>
+    public let hostname: any Input<String>
     public let dns: any DNSProvider
 
-    public init(hostname: Output<String>, dns: any DNSProvider) {
+    public init(hostname: any Input<String>, dns: any DNSProvider) {
         self.hostname = hostname
         self.dns = dns
     }
 
-    public init(hostname: String, dns: any DNSProvider) {
-        self.hostname = "\(hostname)"
-        self.dns = dns
-    }
-
     @discardableResult
-    public func aliasTo(_ target: Output<String>) -> DNSProviderRecord {
+    public func aliasTo(_ target: any Input<String>) -> DNSProviderRecord {
         dns.createAlias(name: hostname, target: target)
     }
 }

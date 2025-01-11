@@ -25,13 +25,13 @@ public final class Environment: Encodable, @unchecked Sendable {
 
     private let shape: EncodingShape
 
-    private var _store: [String: CustomStringConvertible]
-    private var store: [String: CustomStringConvertible] {
+    private var _store: [String: any Input<String>]
+    private var store: [String: any Input<String>] {
         get { queue.sync { _store } }
         set { queue.sync { _store = newValue } }
     }
 
-    public init(_ initial: [String: CustomStringConvertible]? = nil, shape: EncodingShape) {
+    public init(_ initial: [String: any Input<String>]? = nil, shape: EncodingShape) {
         self._store = [:]
         self.shape = shape
         Context.current.store.track(self)
@@ -54,12 +54,12 @@ public final class Environment: Encodable, @unchecked Sendable {
         }
     }
 
-    public subscript(key: String) -> CustomStringConvertible? {
+    public subscript(key: String) -> (any Input<String>)? {
         get { store[Self.toKey(key)] }
         set { store[Self.toKey(key)] = newValue }
     }
 
-    public func merge(_ other: [String: CustomStringConvertible]) {
+    public func merge(_ other: [String: any Input<String>]) {
         for (key, value) in other {
             store[Self.toKey(key)] = value
         }

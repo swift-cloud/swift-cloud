@@ -193,9 +193,9 @@ extension AWS.CDN {
         }
 
         public init(
-            url: CustomStringConvertible,
-            path: CustomStringConvertible,
-            shieldRegion: CustomStringConvertible? = nil
+            url: any Input<String>,
+            path: any Input<String>,
+            shieldRegion: (any Input<String>)? = nil
         ) {
             self.url = url.description
             self.path = path.description
@@ -206,34 +206,34 @@ extension AWS.CDN {
 
 extension AWS.CDN.Origin {
     public static func function(
-        _ function: AWS.Function, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil
+        _ function: AWS.Function, path: any Input<String>, shieldRegion: (any Input<String>)? = nil
     ) -> Self {
         .init(url: function.url, path: path, shieldRegion: shieldRegion)
     }
 
     public static func webServer(
-        _ server: AWS.WebServer, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil
+        _ server: AWS.WebServer, path: any Input<String>, shieldRegion: (any Input<String>)? = nil
     ) -> Self {
         .init(url: server.url, path: path, shieldRegion: shieldRegion)
     }
 
     public static func url(
-        _ url: CustomStringConvertible, path: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil
+        _ url: any Input<String>, path: any Input<String>, shieldRegion: (any Input<String>)? = nil
     ) -> Self {
         .init(url: url, path: path, shieldRegion: shieldRegion)
     }
 }
 
 extension [AWS.CDN.Origin] {
-    public static func function(_ function: AWS.Function, shieldRegion: CustomStringConvertible? = nil) -> Self {
+    public static func function(_ function: AWS.Function, shieldRegion: (any Input<String>)? = nil) -> Self {
         [.function(function, path: "*", shieldRegion: shieldRegion)]
     }
 
-    public static func webServer(_ server: AWS.WebServer, shieldRegion: CustomStringConvertible? = nil) -> Self {
+    public static func webServer(_ server: AWS.WebServer, shieldRegion: (any Input<String>)? = nil) -> Self {
         [.webServer(server, path: "*", shieldRegion: shieldRegion)]
     }
 
-    public static func url(_ url: CustomStringConvertible, shieldRegion: CustomStringConvertible? = nil) -> Self {
+    public static func url(_ url: any Input<String>, shieldRegion: (any Input<String>)? = nil) -> Self {
         [.url(url, path: "*", shieldRegion: shieldRegion)]
     }
 

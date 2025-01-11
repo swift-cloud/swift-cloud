@@ -26,7 +26,7 @@ extension DigitalOcean {
             region: Region = .nyc3,
             instanceSize: InstanceSize = .shared_1vCPU_512mb,
             instancePort: Int = 8080,
-            environment: [String: CustomStringConvertible]? = nil,
+            environment: [String: any Input<String>]? = nil,
             options: Resource.Options? = nil
         ) {
             self.environment = Environment(environment, shape: .keyValueList)
