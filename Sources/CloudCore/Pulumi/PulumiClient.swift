@@ -2,7 +2,7 @@ import AsyncHTTPClient
 import Foundation
 
 // https://www.pulumi.com/docs/iac/download-install/versions/
-public let PulumiClientVersion = "v3.143.0"
+public let PulumiClientVersion = "v3.145.0"
 
 extension Pulumi {
     public struct Client: Sendable {
