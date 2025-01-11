@@ -13,5 +13,14 @@ extension AWS {
             )
             return variable.output
         }
+
+        public static func getZone(id: String) -> Output<GetZone> {
+            let variable = Variable<GetZone>.invoke(
+                name: "\(id)-zone",
+                function: "aws:route53:getZone",
+                arguments: ["zoneId": id]
+            )
+            return variable.output
+        }
     }
 }

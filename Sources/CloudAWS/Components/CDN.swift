@@ -1,7 +1,9 @@
+import CloudCore
+
 extension AWS {
     public struct CDN: AWSComponent {
         public let distribution: Resource
-        public let domainName: AWS.DomainName?
+        public let secureDomainName: AWS.SecureDomainName?
 
         public var name: Output<String> {
             distribution.name
@@ -12,8 +14,8 @@ extension AWS {
         }
 
         public var url: Output<String> {
-            if let domainName {
-                return "https://\(domainName.domainName)"
+            if let secureDomainName {
+                return "https://\(secureDomainName.hostname)"
             } else {
                 return "https://\(hostname)"
             }
@@ -26,15 +28,14 @@ extension AWS {
         public init(
             _ name: String,
             origins: [Origin],
-            domainName: AWS.DomainName? = nil,
+            domainName: DomainName? = nil,
             options: Resource.Options? = nil
         ) {
             let cfProvider = AWS.Provider("cf", region: "us-east-1")
 
-            self.domainName = domainName.map {
-                AWS.DomainName(
-                    $0.domainName,
-                    zoneName: $0.zoneName,
+            secureDomainName = domainName.map {
+                AWS.SecureDomainName(
+                    domainName: $0,
                     options: .provider(cfProvider)
                 )
             }
@@ -85,7 +86,7 @@ extension AWS {
                         ]
                     ],
                     "aliases": domainName.map {
-                        [$0.domainName]
+                        [$0.hostname]
                     },
                     "origins": origins.map { origin in
                         [
@@ -151,19 +152,16 @@ extension AWS {
                     },
                     "viewerCertificate": [
                         "cloudfrontDefaultCertificate": domainName == nil ? true : nil,
-                        "acmCertificateArn": domainName.map { $0.certificate.arn },
-                        "sslSupportMethod": domainName.map { _ in "sni-only" },
+                        "acmCertificateArn": secureDomainName.map { $0.certificate.arn },
+                        "sslSupportMethod": secureDomainName.map { _ in "sni-only" },
                         "minimumProtocolVersion": "TLSv1.2_2021",
                     ],
                 ],
-                dependsOn: domainName.map { [$0.validation] },
+                dependsOn: secureDomainName.map { [$0.validation] },
                 options: .provider(cfProvider)
             )
 
-            domainName?.aliasTo(
-                hostname: hostname,
-                zoneId: zoneId
-            )
+            domainName?.aliasTo(self.hostname)
         }
     }
 }

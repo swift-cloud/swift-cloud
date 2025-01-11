@@ -1,3 +1,5 @@
+import CloudCore
+
 extension AWS {
     public struct WebServer: AWSComponent, EnvironmentProvider {
         public let cluster: AWS.Cluster
@@ -5,7 +7,7 @@ extension AWS {
         public let role: Role
         public let loadBalancerSecurityGroup: AWS.SecurityGroup
         public let instanceSecurityGroup: AWS.SecurityGroup
-        public let domainName: AWS.DomainName?
+        public let secureDomainName: AWS.SecureDomainName?
         public let applicationLoadBalancer: Resource
         public let service: Resource
         public let concurrency: Int
@@ -40,8 +42,8 @@ extension AWS {
         }
 
         public var url: Output<String> {
-            if let domainName {
-                return "https://\(domainName.domainName)"
+            if let secureDomainName {
+                return "https://\(secureDomainName.hostname)"
             } else {
                 return "http://\(hostname)"
             }
@@ -50,7 +52,7 @@ extension AWS {
         public init(
             _ name: String,
             targetName: String,
-            domainName: AWS.DomainName? = nil,
+            domainName: DomainName? = nil,
             concurrency: Int = 1,
             cpu: Int = 1024,
             memory: Int = 2048,
@@ -99,14 +101,16 @@ extension AWS {
                 options: options
             )
 
-            self.domainName = domainName
+            secureDomainName = domainName.map {
+                AWS.SecureDomainName(domainName: $0)
+            }
 
             applicationLoadBalancer = Resource(
                 name: "\(name)-alb",
                 type: "awsx:lb:ApplicationLoadBalancer",
                 properties: [
                     "listeners": [
-                        domainName
+                        secureDomainName
                             .map { ["port": 443, "protocol": "HTTPS", "certificateArn": $0.certificate.arn] }
                             ?? ["port": 80, "protocol": "HTTP"]
                     ],
@@ -118,7 +122,7 @@ extension AWS {
                         "securityGroupId": loadBalancerSecurityGroup.id
                     ],
                 ],
-                dependsOn: domainName.map { [$0.validation] },
+                dependsOn: secureDomainName.map { [$0.validation] },
                 options: options
             )
 
@@ -172,10 +176,7 @@ extension AWS {
                 )
             }
 
-            domainName?.aliasTo(
-                hostname: hostname,
-                zoneId: zoneId
-            )
+            domainName?.aliasTo(hostname)
 
             Context.current.store.build {
                 let dockerFile = Docker.Dockerfile.amazonLinux(targetName: targetName, port: instancePort)

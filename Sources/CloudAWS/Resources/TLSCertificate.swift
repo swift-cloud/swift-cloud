@@ -13,15 +13,15 @@ extension AWS {
         }
 
         public init(
-            domainName: String,
+            hostname: CustomStringConvertible,
             keyAlgorithm: KeyAlgorithm = .ecdsa,
             options: Resource.Options? = nil
         ) {
             resource = Resource(
-                name: "\(domainName)-cert",
+                name: "\(hostname)-cert",
                 type: "aws:acm:Certificate",
                 properties: [
-                    "domainName": domainName,
+                    "domainName": hostname,
                     "keyAlgorithm": keyAlgorithm.rawValue,
                     "validationMethod": "DNS",
                 ],
@@ -42,15 +42,13 @@ extension AWS.TLSCertificate {
     public struct Validation: ResourceProvider {
         public let resource: Resource
 
-        public init(certificate: AWS.TLSCertificate, validationRecord: Resource) {
+        public init(certificate: AWS.TLSCertificate, validationRecord: any DNSProviderRecord) {
             resource = Resource(
                 name: "\(certificate.resource.chosenName)-validation",
                 type: "aws:acm:CertificateValidation",
                 properties: [
                     "certificateArn": certificate.arn,
-                    "validationRecordFqdns": [
-                        validationRecord.output.keyPath("fqdn")
-                    ],
+                    "validationRecordFqdns": [validationRecord.fqdn],
                 ],
                 options: certificate.resource.options
             )

@@ -1,17 +1,13 @@
 extension Cloudflare {
-    public struct Record: CloudflareResourceProvider {
+    public struct DNSRecord: CloudflareResourceProvider, DNSProviderRecord {
         public let resource: Resource
 
-        public var hostname: Output<String> {
+        public var fqdn: Output<String> {
             resource.output.keyPath("hostname")
         }
 
-        public var url: Output<String> {
-            "https://\(hostname)"
-        }
-
         public init(
-            domain: String,
+            zoneId: CustomStringConvertible,
             type: RecordType,
             name: CustomStringConvertible,
             value: CustomStringConvertible,
@@ -20,10 +16,10 @@ extension Cloudflare {
             options: Resource.Options? = nil
         ) {
             resource = Resource(
-                name: "\(domain)-\(name)-record",
+                name: "\(zoneId)-\(name)-record",
                 type: "cloudflare:Record",
                 properties: [
-                    "zoneId": getZone(name: domain).zoneId,
+                    "zoneId": zoneId,
                     "type": type.rawValue,
                     "name": name,
                     "content": value,
@@ -38,7 +34,7 @@ extension Cloudflare {
     }
 }
 
-extension Cloudflare.Record {
+extension Cloudflare.DNSRecord {
     public enum RecordType: String {
         case a = "A"
         case aaaa = "AAAA"
