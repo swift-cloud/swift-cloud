@@ -9,14 +9,14 @@ extension Cloudflare {
         }
 
         public func createRecord(
-            type: any Input<String>,
+            type: DNSRecordType,
             name: any Input<String>,
             target: any Input<String>,
             ttl: Duration
         ) -> DNSProviderRecord {
             return DNSRecord(
                 zoneId: zone.id,
-                type: .init(rawValue: type.description)!,
+                type: .input(type),
                 name: name,
                 value: target,
                 ttl: ttl

@@ -8,7 +8,7 @@ extension Cloudflare {
 
         public init(
             zoneId: any Input<String>,
-            type: RecordType,
+            type: DNSRecordType,
             name: any Input<String>,
             value: any Input<String>,
             proxied: Bool = false,
@@ -20,7 +20,7 @@ extension Cloudflare {
                 type: "cloudflare:Record",
                 properties: [
                     "zoneId": zoneId,
-                    "type": type.rawValue,
+                    "type": type,
                     "name": name,
                     "content": value,
                     "proxied": proxied,
@@ -31,31 +31,5 @@ extension Cloudflare {
                 options: options
             )
         }
-    }
-}
-
-extension Cloudflare.DNSRecord {
-    public enum RecordType: String {
-        case a = "A"
-        case aaaa = "AAAA"
-        case caa = "CAA"
-        case cname = "CNAME"
-        case txt = "TXT"
-        case srv = "SRV"
-        case loc = "LOC"
-        case mx = "MX"
-        case ns = "NS"
-        case spf = "SPF"
-        case cert = "CERT"
-        case dnskey = "DNSKEY"
-        case ds = "DS"
-        case naptr = "NAPTR"
-        case smimea = "SMIMEA"
-        case sshfp = "SSHFP"
-        case tlsa = "TLSA"
-        case uri = "URI"
-        case ptr = "PTR"
-        case https = "HTTPS"
-        case svcb = "SVCB"
     }
 }

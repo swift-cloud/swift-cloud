@@ -13,7 +13,7 @@ extension AWS {
         }
 
         public func createRecord(
-            type: any Input<String>,
+            type: DNSRecordType,
             name: any Input<String>,
             target: any Input<String>,
             ttl: Duration
