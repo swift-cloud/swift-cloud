@@ -18,7 +18,7 @@ extension Project {
     }
 
     public var home: any HomeProvider {
-        Home.Local()
+        .local()
     }
 }
 

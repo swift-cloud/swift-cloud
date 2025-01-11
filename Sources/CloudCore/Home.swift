@@ -1,7 +1,5 @@
 import Foundation
 
-public enum Home {}
-
 public protocol HomeProviderItem: Codable, Sendable {}
 
 public struct HomeProviderPassphrase: HomeProviderItem {

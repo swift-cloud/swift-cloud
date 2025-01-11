@@ -18,9 +18,9 @@ let package = Package(
         .library(name: "CloudVercel", targets: ["CloudVercel"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/awslabs/aws-sdk-swift.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-crypto", "1.0.0"..<"4.0.0"),
-        .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.0.0"),
         .package(url: "https://github.com/tuist/Command", from: "0.9.0"),
         .package(url: "https://github.com/vapor/console-kit", from: "4.0.0"),
@@ -48,12 +48,13 @@ let package = Package(
         .target(
             name: "CloudCore",
             dependencies: [
+                .product(name: "AWSS3", package: "aws-sdk-swift"),
+                .product(name: "AWSSTS", package: "aws-sdk-swift"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Command", package: "Command"),
                 .product(name: "ConsoleKitTerminal", package: "console-kit"),
                 .product(name: "Crypto", package: "swift-crypto"),
-                .product(name: "SotoCore", package: "soto-core"),
             ]
         ),
         .target(
