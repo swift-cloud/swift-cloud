@@ -1,31 +1,31 @@
-extension Cloudflare {
-    public struct DNSRecord: CloudflareResourceProvider, DNSProviderRecord {
+extension Vercel {
+    public struct DNSRecord: VercelResourceProvider, DNSProviderRecord {
         public let resource: Resource
 
+        private let initialName: any Input<String>
+
         public var fqdn: Output<String> {
-            resource.output.keyPath("hostname")
+            "\(initialName)"
         }
 
         public init(
-            zoneId: any Input<String>,
+            domain: any Input<String>,
             type: DNSRecordType,
             name: any Input<String>,
             value: any Input<String>,
-            proxied: Bool = false,
             ttl: Duration = .seconds(60),
             options: Resource.Options? = nil
         ) {
+            self.initialName = name
             resource = Resource(
-                name: "\(zoneId)-\(name)-\(type)-record",
-                type: "cloudflare:Record",
+                name: "\(domain)-\(name)-\(type)-record",
+                type: "vercel:DnsRecord",
                 properties: [
-                    "zoneId": zoneId,
+                    "domain": domain,
                     "type": type,
                     "name": name,
-                    "content": value,
-                    "proxied": proxied,
-                    "ttl": proxied ? 1 : ttl.components.seconds,
-                    "allowOverwrite": true,
+                    "value": value,
+                    "ttl": ttl.components.seconds,
                     "comment": "Managed by Swift Cloud",
                 ],
                 options: options
