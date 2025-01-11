@@ -26,6 +26,14 @@ extension AWS {
                 records: [target]
             )
         }
+
+        public func createAlias(
+            name: any Input<String>,
+            target: any Input<String>,
+            ttl: Duration
+        ) -> DNSProviderRecord {
+            return createRecord(type: .cname, name: name, target: target, ttl: ttl)
+        }
     }
 
     public static func dns(zoneName: String) -> DNS {

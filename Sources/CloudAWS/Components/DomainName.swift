@@ -27,7 +27,8 @@ extension AWS {
             validationRecord = domainName.dns.createRecord(
                 type: .input(certificate.domainValidationOptions[0].resourceRecordType),
                 name: certificate.domainValidationOptions[0].resourceRecordName,
-                target: certificate.domainValidationOptions[0].resourceRecordValue
+                target: certificate.domainValidationOptions[0].resourceRecordValue,
+                ttl: .seconds(60)
             )
 
             validation = AWS.TLSCertificate.Validation(
