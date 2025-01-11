@@ -71,10 +71,11 @@ extension UI {
             UI.writeBlock("No outputs")
             return
         }
-        for (key, value) in outputs {
+        for key in outputs.keys.sorted() {
             guard !Outputs.isInternalKey(key) else {
                 continue
             }
+            let value = outputs[key]!
             UI.writeBlock(key: key, value: "\(value)")
         }
     }

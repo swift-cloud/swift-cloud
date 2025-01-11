@@ -9,19 +9,20 @@ extension AWS {
         }
 
         public init(
-            zoneId: any Input<String>,
+            zoneName: any Input<String>,
             type: any Input<String>,
             name: any Input<String>,
             ttl: Duration = .seconds(60),
             records: [any Input<String>],
             options: Resource.Options? = nil
         ) {
+            let hostedZone = Route53.getZone(name: zoneName)
             resource = Resource(
-                name: "\(zoneId)-\(name)-\(type)-record",
+                name: "\(zoneName)-\(name)-\(type)-record",
                 type: "aws:route53:Record",
                 properties: [
-                    "zoneId": zoneId,
-                    "name": name,
+                    "zoneId": hostedZone.id,
+                    "name": Strings.trimSuffix(name, suffix: ".\(zoneName)").result,
                     "type": type,
                     "ttl": ttl.components.seconds,
                     "records": records,
