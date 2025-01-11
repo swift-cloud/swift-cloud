@@ -28,15 +28,15 @@ extension Cloudflare {
 
         public func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws {
             let namespace = try await upsertNamespace().id
-            let data = try JSONEncoder().encode(item)
+            let value = NamespaceValue(value: item)
             let key = contextualFileName(fileName, with: context)
             var request = HTTPClientRequest(
                 url: "\(baseURL)/storage/kv/namespaces/\(namespace)/values/\(key)"
             )
             request.method = .PUT
-            request.headers.add(name: "Content-Type", value: "multipart/form-data")
+            request.headers.add(name: "Content-Type", value: "application/json")
             request.headers.add(name: "Authorization", value: "Bearer \(apiToken)")
-            request.body = try .bytes(JSONEncoder().encode(data))
+            request.body = try .bytes(try JSONEncoder().encode(value))
             _ = try await client.execute(request, timeout: .seconds(10))
         }
 
@@ -50,7 +50,7 @@ extension Cloudflare {
             request.headers.add(name: "Authorization", value: "Bearer \(apiToken)")
             let response = try await client.execute(request, timeout: .seconds(10))
             let bytes = try await response.body.collect(upTo: 1024 * 1024)
-            return try JSONDecoder().decode(T.self, from: bytes)
+            return try JSONDecoder().decode(NamespaceValue<T>.self, from: bytes).value
         }
     }
 }
@@ -66,6 +66,10 @@ extension Cloudflare.Home {
     private struct Namespace: Decodable {
         let id: String
         let title: String
+    }
+
+    private struct NamespaceValue<T: Codable>: Codable {
+        let value: T
     }
 
     private func upsertNamespace() async throws -> Namespace {
@@ -95,9 +99,7 @@ extension Cloudflare.Home {
             url: "\(baseURL)/storage/kv/namespaces"
         )
         request.method = .GET
-        request.headers.add(name: "Content-Type", value: "application/json")
         request.headers.add(name: "Authorization", value: "Bearer \(apiToken)")
-        request.body = try .bytes(JSONEncoder().encode(["title": namespaceName]))
         let response = try await client.execute(request, timeout: .seconds(10))
         let bytes = try await response.body.collect(upTo: 1024 * 1024)
         return try JSONDecoder().decode(APIResponse<[Namespace]>.self, from: bytes)
