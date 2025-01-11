@@ -2,10 +2,10 @@ extension Vercel {
     public struct DNSRecord: VercelResourceProvider, DNSProviderRecord {
         public let resource: Resource
 
-        private let initialName: any Input<String>
+        public let domain: any Input<String>
 
         public var fqdn: Output<String> {
-            "\(initialName)"
+            "\(resource.name).\(domain)"
         }
 
         public init(
@@ -16,14 +16,14 @@ extension Vercel {
             ttl: Duration = .seconds(60),
             options: Resource.Options? = nil
         ) {
-            self.initialName = name
+            self.domain = domain
             resource = Resource(
                 name: "\(domain)-\(name)-\(type)-record",
                 type: "vercel:DnsRecord",
                 properties: [
                     "domain": domain,
                     "type": type,
-                    "name": name,
+                    "name": Strings.trimSuffix(name, suffix: ".\(domain)").result,
                     "value": value,
                     "ttl": ttl.components.seconds,
                     "comment": "Managed by Swift Cloud",

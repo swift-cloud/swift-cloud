@@ -3,7 +3,7 @@ public enum Strings {}
 extension Strings {
     public static func split(
         _ input: any Input<String>,
-        pattern: String
+        pattern: any Input<String>
     ) -> Output<[String]> {
         let variable = Variable<[String]>(
             name: "\(input)-\(pattern)-split",
@@ -46,7 +46,7 @@ extension Strings {
 extension Strings {
     public static func joined(
         _ input: [any Input<String>],
-        separator: String
+        separator: any Input<String>
     ) -> Output<String> {
         let variable = Variable<String>(
             name: "\(input.map(\.description).joined(separator: "-"))-\(separator)-split",
@@ -59,7 +59,7 @@ extension Strings {
 
     public static func joined(
         _ input: Output<[String]>,
-        separator: String
+        separator: any Input<String>
     ) -> Output<String> {
         let variable = Variable<String>(
             name: "\(input)-\(separator)-split",
@@ -78,8 +78,8 @@ extension Strings {
 
     public static func replace(
         _ input: any Input<String>,
-        pattern: String,
-        with value: String
+        pattern: any Input<String>,
+        with value: any Input<String>
     ) -> Output<Replacement> {
         let variable = Variable<Replacement>.invoke(
             name: "\(input)-\(pattern)-\(value)-replace",
@@ -101,8 +101,8 @@ extension Strings {
 
     public static func regexReplace(
         _ input: any Input<String>,
-        pattern: String,
-        with value: String
+        pattern: any Input<String>,
+        with value: any Input<String>
     ) -> Output<Replacement> {
         let variable = Variable<Replacement>.invoke(
             name: "\(input)-\(pattern)-\(value)-regexreplace",
@@ -124,7 +124,7 @@ extension Strings {
 
     public static func trimPrefix(
         _ input: any Input<String>,
-        prefix: String
+        prefix: any Input<String>
     ) -> Output<Trimmed> {
         let variable = Variable<Trimmed>.invoke(
             name: "\(input)-\(prefix)-trimprefix",
@@ -139,7 +139,7 @@ extension Strings {
 
     public static func trimSuffix(
         _ input: any Input<String>,
-        suffix: String
+        suffix: any Input<String>
     ) -> Output<Trimmed> {
         let variable = Variable<Trimmed>.invoke(
             name: "\(input)-\(suffix)-trimsuffix",
