@@ -6,10 +6,6 @@ import Foundation
 
 extension AWS {
     public final class Home: HomeProvider {
-        public enum Error: Swift.Error {
-            case invalidAccount
-        }
-
         public let region: String
 
         private let sts: STSClient
@@ -52,6 +48,10 @@ extension AWS.Home {
 }
 
 extension AWS.Home {
+    public enum Error: Swift.Error {
+        case invalidAccount
+    }
+
     private func awsAccountId() async throws -> String {
         let response = try await sts.getCallerIdentity(input: .init())
         guard let account = response.account else {
