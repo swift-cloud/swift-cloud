@@ -7,7 +7,7 @@ extension Cloudflare {
         }
 
         public init(
-            zoneId: any Input<String>,
+            zoneName: any Input<String>,
             type: DNSRecordType,
             name: any Input<String>,
             value: any Input<String>,
@@ -15,13 +15,14 @@ extension Cloudflare {
             ttl: Duration = .seconds(60),
             options: Resource.Options? = nil
         ) {
+            let zone = getZone(name: zoneName)
             resource = Resource(
-                name: "\(zoneId)-\(name)-\(type)-record",
+                name: "\(zoneName)-\(name)-\(type)-record",
                 type: "cloudflare:Record",
                 properties: [
-                    "zoneId": zoneId,
+                    "zoneId": zone.id,
                     "type": type,
-                    "name": name,
+                    "name": Strings.trimSuffix(name, suffix: ".\(zoneName)").result,
                     "content": value,
                     "proxied": proxied,
                     "ttl": proxied ? 1 : ttl.components.seconds,

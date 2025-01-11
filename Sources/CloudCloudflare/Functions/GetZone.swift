@@ -11,7 +11,7 @@ extension Cloudflare {
         public let zoneId: String
     }
 
-    public static func getZone(name: String) -> Output<GetZone> {
+    public static func getZone(name: any Input<String>) -> Output<GetZone> {
         let variable = Variable<GetZone>.invoke(
             name: "\(name)-zone",
             function: "cloudflare:getZone",
@@ -20,7 +20,7 @@ extension Cloudflare {
         return variable.output
     }
 
-    public static func getZone(zoneId: String) -> Output<GetZone> {
+    public static func getZone(zoneId: any Input<String>) -> Output<GetZone> {
         let variable = Variable<GetZone>.invoke(
             name: "\(zoneId)-zone",
             function: "cloudflare:getZone",

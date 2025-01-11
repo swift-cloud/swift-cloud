@@ -2,14 +2,10 @@ import CloudCore
 
 extension AWS {
     public struct DNS: DNSProvider {
-        public let hostedZone: Output<Route53.GetZone>
+        public let zoneName: any Input<String>
 
-        public init(zoneName: String) {
-            self.hostedZone = AWS.Route53.getZone(name: zoneName)
-        }
-
-        public init(zoneId: String) {
-            self.hostedZone = AWS.Route53.getZone(id: zoneId)
+        public init(zoneName: any Input<String>) {
+            self.zoneName = zoneName
         }
 
         public func createRecord(
@@ -19,7 +15,7 @@ extension AWS {
             ttl: Duration
         ) -> DNSProviderRecord {
             return AWS.DNSRecord(
-                zoneId: hostedZone.id,
+                zoneName: zoneName,
                 type: type,
                 name: name,
                 ttl: ttl,
@@ -38,7 +34,7 @@ extension AWS {
 }
 
 extension DNSProvider where Self == AWS.DNS {
-    public static func aws(zoneName: String) -> AWS.DNS {
+    public static func aws(zoneName: any Input<String>) -> AWS.DNS {
         .init(zoneName: zoneName)
     }
 }
