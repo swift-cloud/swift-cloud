@@ -1,15 +1,11 @@
 import CloudCore
 
-extension AWS {
+extension Vercel {
     public struct DNS: DNSProvider {
-        public let hostedZone: Output<Route53.GetZone>
+        public let domain: String
 
-        public init(zoneName: String) {
-            self.hostedZone = AWS.Route53.getZone(name: zoneName)
-        }
-
-        public init(zoneId: String) {
-            self.hostedZone = AWS.Route53.getZone(id: zoneId)
+        public init(domain: String) {
+            self.domain = domain
         }
 
         public func createRecord(
@@ -18,12 +14,12 @@ extension AWS {
             target: any Input<String>,
             ttl: Duration
         ) -> DNSProviderRecord {
-            return AWS.DNSRecord(
-                zoneId: hostedZone.id,
+            return Vercel.DNSRecord(
+                domain: domain,
                 type: type,
                 name: name,
-                ttl: ttl,
-                records: [target]
+                value: target,
+                ttl: ttl
             )
         }
 
@@ -37,8 +33,8 @@ extension AWS {
     }
 }
 
-extension DNSProvider where Self == AWS.DNS {
-    public static func aws(zoneName: String) -> AWS.DNS {
-        .init(zoneName: zoneName)
+extension DNSProvider where Self == Vercel.DNS {
+    public static func vercel(domain: String) -> Vercel.DNS {
+        .init(domain: domain)
     }
 }

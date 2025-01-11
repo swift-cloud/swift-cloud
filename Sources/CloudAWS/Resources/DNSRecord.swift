@@ -17,7 +17,7 @@ extension AWS {
             options: Resource.Options? = nil
         ) {
             resource = Resource(
-                name: "\(name)-record",
+                name: "\(zoneId)-\(name)-\(type)-record",
                 type: "aws:route53:Record",
                 properties: [
                     "zoneId": zoneId,
