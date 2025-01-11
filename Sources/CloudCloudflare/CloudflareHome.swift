@@ -36,7 +36,7 @@ extension Cloudflare {
             request.method = .PUT
             request.headers.add(name: "Content-Type", value: "application/json")
             request.headers.add(name: "Authorization", value: "Bearer \(apiToken)")
-            request.body = try .bytes(try JSONEncoder().encode(value))
+            request.body = try .bytes(JSONEncoder().encode(value))
             _ = try await client.execute(request, timeout: .seconds(10))
         }
 
