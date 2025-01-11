@@ -91,3 +91,25 @@ public enum DNSRecordType: Sendable, Input {
         try container.encode(description)
     }
 }
+
+extension DomainName {
+    public static func inferredZoneName(hostname: String) -> String {
+        let parts = hostname.split(separator: ".")
+        let countThreshold =
+            switch hostname {
+            case _ where hostname.hasSuffix(".co.uk"): 3
+            case _ where hostname.hasSuffix(".com.au"): 3
+            case _ where hostname.hasSuffix(".co.jp"): 3
+            case _ where hostname.hasSuffix(".co.nz"): 3
+            case _ where hostname.hasSuffix(".co.za"): 3
+            case _ where hostname.hasSuffix(".com.br"): 3
+            case _ where hostname.hasSuffix(".com.mx"): 3
+            default: 2
+            }
+        if parts.count > countThreshold {
+            return parts.dropFirst().joined(separator: ".")
+        } else {
+            return parts.joined(separator: ".")
+        }
+    }
+}
