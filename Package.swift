@@ -18,7 +18,7 @@ let package = Package(
         .library(name: "CloudVercel", targets: ["CloudVercel"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/awslabs/aws-sdk-swift.git", from: "1.0.0"),
+        .package(url: "https://github.com/awslabs/aws-sdk-swift", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-crypto", "1.0.0"..<"4.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.0.0"),
