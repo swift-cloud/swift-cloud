@@ -1,11 +1,10 @@
 @preconcurrency import AWSS3
-@preconcurrency import AWSSDKIdentity
 @preconcurrency import AWSSTS
 import CloudCore
 import Foundation
 
 extension AWS {
-    public final class Home: HomeProvider {
+    public struct Home: HomeProvider {
         public let region: String
 
         private let sts: STSClient

@@ -3,7 +3,7 @@ import CloudCore
 import Foundation
 
 extension Cloudflare {
-    public final class Home: HomeProvider {
+    public struct Home: HomeProvider {
         public let accountId: String
 
         private let apiToken: String
