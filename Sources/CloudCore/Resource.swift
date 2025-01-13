@@ -15,10 +15,10 @@ public struct Resource: Sendable {
 
     fileprivate var internalName: String {
         let token = tokenize(Context.current.stage, chosenName)
-        if token.count <= 24 {
+        if token.count <= 32 {
             return token
         }
-        return token.prefix(19) + "-" + internalHashedName.prefix(4)
+        return token.prefix(27) + "-" + internalHashedName.prefix(4)
     }
 
     fileprivate var internalHashedName: String {
