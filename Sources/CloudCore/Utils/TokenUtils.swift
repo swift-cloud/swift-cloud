@@ -1,6 +1,11 @@
+import Crypto
 import Foundation
 
-public func tokenize(_ inputs: any Input<String>..., separator: String = "-") -> String {
+public func tokenize(
+    _ inputs: any Input<String>...,
+    separator: String = "-",
+    maxLength: Int = 512
+) -> String {
     // Step 1: Join inputs and trim leading and trailing whitespace
     let trimmedString =
         inputs
@@ -21,5 +26,16 @@ public func tokenize(_ inputs: any Input<String>..., separator: String = "-") ->
     let slug = components.joined(separator: separator)
 
     // Step 5: Remove any leading or trailing separators
-    return slug.trimmingCharacters(in: .init(charactersIn: separator))
+    let token = slug.trimmingCharacters(in: .init(charactersIn: separator))
+
+    // Step 6: Return the result if it's within the maxLength
+    if token.count <= maxLength {
+        return token
+    }
+
+    // Step 7: If the result is too long, hash it
+    let hashed = SHA256.hash(data: Data(token.utf8)).hexEncodedString().prefix(4)
+
+    // Step 8: Return the prefix of the token and the hashed value
+    return token.prefix(maxLength - 5) + "-" + hashed
 }

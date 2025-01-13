@@ -15,17 +15,7 @@ public struct Resource: Sendable {
     public let maxNameLength: Int
 
     fileprivate var internalName: String {
-        let token = tokenize(Context.current.stage, chosenName)
-        if token.count <= maxNameLength {
-            return token
-        }
-        return token.prefix(maxNameLength - 5) + "-" + internalHashedName.prefix(4)
-    }
-
-    fileprivate var internalHashedName: String {
-        let token = tokenize(chosenName)
-        let data = Data(token.utf8)
-        return SHA256.hash(data: data).hexEncodedString()
+        return tokenize(Context.current.stage, chosenName, maxLength: maxNameLength)
     }
 
     public init(
@@ -52,14 +42,13 @@ public struct Resource: Sendable {
             internalName: .init(
                 type: type,
                 properties: properties,
-                options: .init(
-                    dependsOn: (dependsOn ?? options?.dependsOn)?.map { $0.output },
-                    protect: options?.protect,
-                    provider: options?.provider?.output
-                ),
-                get: existingId.map {
-                    .init(id: $0)
-                }
+                options: dependsOn == nil && options == nil
+                    ? nil
+                    : .init(
+                        dependsOn: (dependsOn ?? options?.dependsOn)?.map { $0.output },
+                        protect: options?.protect,
+                        provider: options?.provider?.output),
+                get: existingId.map { .init(id: $0) }
             )
         ]
     }

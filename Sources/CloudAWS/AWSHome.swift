@@ -5,7 +5,7 @@ import SotoS3
 import SotoSTS
 
 extension AWS {
-    public struct Home: HomeProvider {
+    public final class Home: HomeProvider {
         private let client: AWSClient
         private let sts: STS
         private let s3: S3
@@ -14,6 +14,10 @@ extension AWS {
             self.client = .init(credentialProvider: Self.credentialProvider())
             self.s3 = .init(client: client, region: .init(rawValue: region))
             self.sts = .init(client: client)
+        }
+
+        deinit {
+            try? client.syncShutdown()
         }
 
         public func bootstrap(with context: Context) async throws {
