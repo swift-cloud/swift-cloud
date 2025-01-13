@@ -1,7 +1,9 @@
 @preconcurrency import AWSS3
+@preconcurrency import AWSSDKIdentity
 @preconcurrency import AWSSTS
 import CloudCore
 import Foundation
+import SmithyIdentity
 
 extension AWS {
     public struct Home: HomeProvider {
@@ -13,8 +15,18 @@ extension AWS {
 
         public init(region: String = "us-east-1") {
             self.region = region
-            self.s3 = try! .init(region: region)
-            self.sts = try! .init(region: region)
+            self.s3 = try! .init(
+                config: .init(
+                    awsCredentialIdentityResolver: Self.credentialIdentityResolver(),
+                    region: region
+                )
+            )
+            self.sts = try! .init(
+                config: .init(
+                    awsCredentialIdentityResolver: Self.credentialIdentityResolver(),
+                    region: region
+                )
+            )
         }
 
         public func bootstrap(with context: Context) async throws {
@@ -57,6 +69,17 @@ extension AWS.Home {
             throw Error.invalidAccount
         }
         return account
+    }
+
+    private static func credentialIdentityResolver() throws -> (any SmithyIdentity.AWSCredentialIdentityResolver)? {
+        let env = Context.environment
+        if let accessKey = env["AWS_ACCESS_KEY_ID"], let secret = env["AWS_SECRET_ACCESS_KEY"] {
+            let sessionToken = env["AWS_SESSION_TOKEN"]
+            return try StaticAWSCredentialIdentityResolver(
+                .init(accessKey: accessKey, secret: secret, sessionToken: sessionToken)
+            )
+        }
+        return nil
     }
 }
 
