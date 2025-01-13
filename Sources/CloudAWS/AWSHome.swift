@@ -1,8 +1,6 @@
 import CloudCore
 import Foundation
 import SotoCore
-import SotoS3
-import SotoSTS
 
 extension AWS {
     public final class Home: HomeProvider {
