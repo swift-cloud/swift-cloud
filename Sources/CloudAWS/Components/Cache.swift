@@ -38,7 +38,8 @@ extension AWS {
                     "securityGroupIds": vpc.securityGroupIds,
                     "subnetIds": vpc.subnetIds,
                 ],
-                options: options
+                options: options,
+                maxNameLength: 32
             )
         }
     }

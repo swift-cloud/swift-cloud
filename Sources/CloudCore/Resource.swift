@@ -12,13 +12,14 @@ public struct Resource: Sendable {
     public let dependsOn: [any ResourceProvider]?
     public let options: Options?
     public let existingId: String?
+    public let maxNameLength: Int
 
     fileprivate var internalName: String {
         let token = tokenize(Context.current.stage, chosenName)
-        if token.count <= 32 {
+        if token.count <= maxNameLength {
             return token
         }
-        return token.prefix(27) + "-" + internalHashedName.prefix(4)
+        return token.prefix(maxNameLength - 5) + "-" + internalHashedName.prefix(4)
     }
 
     fileprivate var internalHashedName: String {
@@ -33,7 +34,8 @@ public struct Resource: Sendable {
         properties: AnyEncodable? = nil,
         dependsOn: [any ResourceProvider]? = nil,
         options: Options? = nil,
-        existingId: String? = nil
+        existingId: String? = nil,
+        maxNameLength: Int = 55
     ) {
         self.chosenName = name
         self.type = type
@@ -41,6 +43,7 @@ public struct Resource: Sendable {
         self.dependsOn = dependsOn
         self.options = options
         self.existingId = existingId
+        self.maxNameLength = maxNameLength
         Context.current.store.track(self)
     }
 

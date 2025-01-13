@@ -123,7 +123,8 @@ extension AWS {
                     ],
                 ],
                 dependsOn: secureDomainName.map { [$0.validation] },
-                options: options
+                options: options,
+                maxNameLength: 24
             )
 
             let vpc = vpc ?? AWS.VPC.default(options: options)
