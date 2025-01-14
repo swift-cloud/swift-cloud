@@ -3,7 +3,7 @@ import CloudCore
 import Foundation
 
 extension Cloudflare {
-    public struct Home: HomeProvider {
+    public final class Home: HomeProvider, @unchecked Sendable {
         public let accountId: String
 
         private let apiToken: String
@@ -11,6 +11,9 @@ extension Cloudflare {
         private let client: HTTPClient
 
         private let namespaceName = "swift-cloud-assets"
+
+        private var namespace: Namespace?
+        private let namespaceQueue = DispatchQueue(label: "cloudflare-namespace")
 
         private var baseURL: String {
             "https://api.cloudflare.com/client/v4/accounts/\(accountId)"
@@ -73,11 +76,25 @@ extension Cloudflare.Home {
     }
 
     private func upsertNamespace() async throws -> Namespace {
+        // Safely return cached namespace if available
+        if let namespace = namespaceQueue.sync(execute: { self.namespace }) {
+            return namespace
+        }
+
+        // Safely lookup an existing namespace
         let namespaces = try await listNamespaces().result
         if let namespace = namespaces.first(where: { $0.title == namespaceName }) {
+            return namespaceQueue.sync {
+                self.namespace = namespace
+                return namespace
+            }
+        }
+
+        // Safely create a new namespace
+        let namespace = try await createNamespace().result
+        return namespaceQueue.sync {
+            self.namespace = namespace
             return namespace
-        } else {
-            return try await createNamespace().result
         }
     }
 
