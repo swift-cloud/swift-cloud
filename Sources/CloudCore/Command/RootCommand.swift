@@ -51,6 +51,7 @@ extension Command.RunCommand {
 
         // Create pulumi client with passphrase
         let client = Pulumi.Client(
+            context: context,
             passphrase: try await context.home.passphrase(with: context)
         )
 

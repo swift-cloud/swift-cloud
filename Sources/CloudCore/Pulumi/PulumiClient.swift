@@ -11,6 +11,8 @@ extension Pulumi {
             case extractionFailed
         }
 
+        public let context: Context
+
         public let version: String
 
         private let passphrase: String
@@ -19,7 +21,12 @@ extension Pulumi {
             Files.fileExists(atPath: executablePath)
         }
 
-        public init(version: String = PulumiClientVersion, passphrase: String = "passphrase") {
+        public init(
+            context: Context,
+            version: String = PulumiClientVersion,
+            passphrase: String = "passphrase"
+        ) {
+            self.context = context
             self.version = version
             self.passphrase = passphrase
         }
@@ -31,8 +38,12 @@ extension Pulumi.Client {
         "\(Context.cloudDirectory)"
     }
 
+    private var workingDirectory: String {
+        "\(Context.cloudDirectory)/\(context.name)"
+    }
+
     private var configFilePath: String {
-        "\(Context.cloudDirectory)/Pulumi.yaml"
+        "\(workingDirectory)/Pulumi.yaml"
     }
 
     private var pulumiPath: String {
@@ -114,7 +125,7 @@ extension Pulumi.Client {
         let (stdout, _) = try await shellOut(
             to: executablePath,
             arguments: [command] + arguments + ["--non-interactive"],
-            workingDirectory: Context.cloudDirectory,
+            workingDirectory: workingDirectory,
             environment: environment,
             onEvent: onEvent
         )
