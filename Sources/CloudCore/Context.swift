@@ -10,8 +10,8 @@ public final class Context: Sendable {
     public let home: HomeProvider
     public let startDate = Date()
 
-    public var packageName: String {
-        tokenize(package.name)
+    public var name: String {
+        tokenize(project.name ?? package.name)
     }
 
     public var isProduction: Bool {

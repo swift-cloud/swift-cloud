@@ -62,7 +62,7 @@ extension Command.RunCommand {
 
         // Build the pulumi project
         let pulumiProject = Pulumi.Project(
-            name: context.packageName,
+            name: context.name,
             runtime: .yaml,
             backend: client.localProjectBackend(),
             resources: context.store.resources.reduce(into: [:]) {

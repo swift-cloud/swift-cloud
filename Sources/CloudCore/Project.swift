@@ -5,6 +5,8 @@ import ConsoleKitTerminal
 public protocol Project: Sendable {
     init()
 
+    var name: String? { get }
+
     var home: any HomeProvider { get }
 
     var providers: [Provider] { get }
@@ -13,6 +15,10 @@ public protocol Project: Sendable {
 }
 
 extension Project {
+    public var name: String? {
+        nil
+    }
+
     public var providers: [Provider] {
         []
     }

@@ -7,8 +7,8 @@ extension UI {
         UI.newLine()
 
         UI.write("➜", width: .small, color: .cyan, bold: true)
-        UI.write("Package", width: .medium, bold: true)
-        UI.write(Context.current.packageName, newLine: true)
+        UI.write("Project", width: .medium, bold: true)
+        UI.write(Context.current.name, newLine: true)
 
         UI.write("", width: .small)
         UI.write("Stage", width: .medium, bold: true)
