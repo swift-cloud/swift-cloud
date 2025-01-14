@@ -25,7 +25,7 @@ public enum Files {
     ) throws {
         if withIntermediateDirectories {
             let directoryPath = path.components(separatedBy: "/").dropLast().joined(separator: "/")
-            try createDirectory(atPath: directoryPath, withIntermediateDirectories: true)
+            try? createDirectory(atPath: directoryPath, withIntermediateDirectories: true)
         }
         let url = URL(fileURLWithPath: path)
         try contents?.write(to: url)
