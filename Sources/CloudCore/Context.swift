@@ -11,7 +11,10 @@ public final class Context: Sendable {
     public let startDate = Date()
 
     public var name: String {
-        tokenize(project.name ?? package.name)
+        guard !project.name.isEmpty else {
+            return tokenize(package.name)
+        }
+        return tokenize(project.name)
     }
 
     public var isProduction: Bool {

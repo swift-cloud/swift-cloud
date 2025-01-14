@@ -5,7 +5,7 @@ import ConsoleKitTerminal
 public protocol Project: Sendable {
     init()
 
-    var name: String? { get }
+    var name: String { get }
 
     var home: any HomeProvider { get }
 
@@ -15,8 +15,8 @@ public protocol Project: Sendable {
 }
 
 extension Project {
-    public var name: String? {
-        nil
+    public var name: String {
+        ""
     }
 
     public var providers: [Provider] {
