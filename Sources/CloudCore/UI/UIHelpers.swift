@@ -132,16 +132,19 @@ extension UI {
                 return
             }
 
-            let lines =
+            var lines =
                 line
-                .split { $0.isNewline }
+                .split(separator: .newlineSequence)
                 .map { sanitizeLine($0.description) }
                 .map { $0.prefix(cli.size.width - 10) }
                 .filter { !$0.isEmpty }
-                .suffix(from: 3)
 
             guard !lines.isEmpty else {
                 return
+            }
+
+            if lines.count > 3 {
+                lines = Array(lines.suffix(3))
             }
 
             spinner?.succeed()
@@ -191,8 +194,11 @@ extension UI {
         }
 
         private func sanitizeLine(_ input: String?) -> String {
+            guard let input, !input.isEmpty else {
+                return ""
+            }
             let regex = try! Regex("[^0-9A-Za-z+-_.,:;!? ]")
-            return input?.replacing(regex, with: "").trimmingCharacters(in: .whitespaces) ?? ""
+            return input.replacing(regex, with: "").trimmingCharacters(in: .whitespaces)
         }
     }
 
