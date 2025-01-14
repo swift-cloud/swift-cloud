@@ -7,11 +7,12 @@ struct Command: ParsableCommand {
         abstract: "A utility to deploy Swift applications to the cloud.",
         subcommands: [
             BuildCommand.self,
-            DeployCommand.self,
-            PreviewCommand.self,
             CancelCommand.self,
-            RemoveCommand.self,
+            DeployCommand.self,
             OutputsCommand.self,
+            PreviewCommand.self,
+            RefreshCommand.self,
+            RemoveCommand.self,
         ]
     )
 }
