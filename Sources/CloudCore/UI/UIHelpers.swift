@@ -138,6 +138,7 @@ extension UI {
                 .map { sanitizeLine($0.description) }
                 .map { $0.prefix(cli.size.width - 10) }
                 .filter { !$0.isEmpty }
+                .suffix(from: 3)
 
             guard !lines.isEmpty else {
                 return
