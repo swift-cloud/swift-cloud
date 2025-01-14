@@ -128,27 +128,46 @@ extension UI {
         }
 
         public func push(_ line: String?) {
-            guard let label = labels.last else {
+            guard let label = labels.last, let line = line else {
                 return
             }
 
-            let lastLine =
-                line?
+            let lines =
+                line
                 .split { $0.isNewline }
                 .map { sanitizeLine($0.description) }
-                .filter { !["", "."].contains($0) }
-                .filter { !$0.hasPrefix("@") }
-                .last ?? ""
+                .map { $0.prefix(cli.size.width - 10) }
+                .filter { !$0.isEmpty }
 
-            let trimmedLine = lastLine.prefix(cli.size.width - 10)
-
-            guard !trimmedLine.isEmpty else {
+            guard !lines.isEmpty else {
                 return
             }
 
             spinner?.succeed()
             spinner = cli.customActivity(
-                frames: frames.map { "\($0) \(label)\n  └─ \(trimmedLine)" },
+                frames: frames.map { frame in
+                    var fragments: [ConsoleTextFragment] = [
+                        .init(
+                            string: "\(frame) \(label)\n",
+                            style: .init(color: .cyan, isBold: false)
+                        )
+                    ]
+                    for line in lines {
+                        fragments.append(
+                            .init(
+                                string: "  └─  ",
+                                style: .init(color: .yellow, isBold: false)
+                            )
+                        )
+                        fragments.append(
+                            .init(
+                                string: "\(line)\n",
+                                style: .init(color: nil, isBold: false)
+                            )
+                        )
+                    }
+                    return ConsoleText(fragments: fragments)
+                },
                 success: "",
                 failure: ""
             )
@@ -172,7 +191,7 @@ extension UI {
 
         private func sanitizeLine(_ input: String?) -> String {
             let regex = try! Regex("[^0-9A-Za-z+-_.,:;!? ]")
-            return input?.replacing(regex, with: "") ?? ""
+            return input?.replacing(regex, with: "").trimmingCharacters(in: .whitespaces) ?? ""
         }
     }
 
