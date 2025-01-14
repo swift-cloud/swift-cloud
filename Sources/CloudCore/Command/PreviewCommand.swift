@@ -14,7 +14,10 @@ extension Command {
             let spinner = UI.spinner(label: "Generating preview")
             do {
                 let prepared = try await prepare(with: context)
-                let output = try await prepared.client.invoke(command: "preview")
+                let output = try await prepared.client.invoke(
+                    command: "preview",
+                    onEvent: { spinner.push($0.string()) }
+                )
                 spinner.stop()
                 UI.writeBlock(output)
             } catch {

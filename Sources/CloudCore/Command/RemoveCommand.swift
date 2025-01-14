@@ -15,7 +15,10 @@ extension Command {
             do {
                 let prepared = try await prepare(with: context)
                 let output = try await prepared.client.invoke(
-                    command: "destroy", arguments: ["--continue-on-error", "--skip-preview", "--yes"])
+                    command: "destroy",
+                    arguments: ["--continue-on-error", "--skip-preview", "--yes"],
+                    onEvent: { spinner.push($0.string()) }
+                )
                 spinner.stop()
                 UI.writeBlock(output)
             } catch {
