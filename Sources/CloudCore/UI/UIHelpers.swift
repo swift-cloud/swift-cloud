@@ -59,7 +59,7 @@ extension UI {
 
     public static func writeBlock(key: String, value: String) {
         UI.write("|", width: .small, color: .yellow, bold: true)
-        UI.write("\(key)", width: .medium, bold: true)
+        UI.write("\(key) ", width: .medium, bold: true)
         UI.write("\(value)")
         UI.newLine()
     }
