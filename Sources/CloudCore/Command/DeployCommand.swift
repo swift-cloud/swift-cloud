@@ -14,7 +14,11 @@ extension Command {
             let spinner = UI.spinner(label: "Deploying changes")
             do {
                 let prepared = try await prepare(with: context, buildTargets: true)
-                try await prepared.client.invoke(command: "up", arguments: ["--skip-preview", "--yes"])
+                try await prepared.client.invoke(
+                    command: "up",
+                    arguments: ["--skip-preview", "--yes"],
+                    onEvent: { spinner.push($0.string()) }
+                )
                 let outputs = try await prepared.client.stackOutputs()
                 spinner.stop()
                 UI.writeOutputs(outputs)

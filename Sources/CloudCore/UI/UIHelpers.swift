@@ -128,14 +128,24 @@ extension UI {
         }
 
         public func push(_ line: String?) {
-            guard
-                let label = labels.last,
-                let lines = line?.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n"),
-                let trimmedLine = lines.last?.trimmingCharacters(in: .whitespacesAndNewlines),
-                !trimmedLine.isEmpty,
-                trimmedLine != ".",
-                trimmedLine != "@ updating...."
-            else { return }
+            guard let label = labels.last else {
+                return
+            }
+
+            let lastLine =
+                line?
+                .split { $0.isNewline }
+                .map { sanitizeLine($0.description) }
+                .filter { !["", "."].contains($0) }
+                .filter { !$0.hasPrefix("@") }
+                .last ?? ""
+
+            let trimmedLine = lastLine.prefix(cli.size.width - 10)
+
+            guard !trimmedLine.isEmpty else {
+                return
+            }
+
             spinner?.succeed()
             spinner = cli.customActivity(
                 frames: frames.map { "\($0) \(label)\n  └─ \(trimmedLine)" },
@@ -158,6 +168,11 @@ extension UI {
                 )
                 spinner?.start()
             }
+        }
+
+        private func sanitizeLine(_ input: String?) -> String {
+            let regex = try! Regex("[^0-9A-Za-z+-_.,:;!? ]")
+            return input?.replacing(regex, with: "") ?? ""
         }
     }
 
