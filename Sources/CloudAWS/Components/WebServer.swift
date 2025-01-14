@@ -33,12 +33,20 @@ extension AWS {
             cluster.name
         }
 
-        public var hostname: Output<String> {
+        public var internalHostname: Output<String> {
             applicationLoadBalancer.output.keyPath("loadBalancer", "dnsName")
         }
 
         public var zoneId: Output<String> {
             applicationLoadBalancer.output.keyPath("loadBalancer", "zoneId")
+        }
+
+        public var hostname: Output<String> {
+            if let secureDomainName {
+                return secureDomainName.hostname
+            } else {
+                return internalHostname
+            }
         }
 
         public var url: Output<String> {
@@ -177,7 +185,7 @@ extension AWS {
                 )
             }
 
-            domainName?.aliasTo(hostname)
+            domainName?.aliasTo(internalHostname)
 
             Context.current.store.build {
                 let dockerFile = Docker.Dockerfile.ubuntu(targetName: targetName, port: instancePort)
