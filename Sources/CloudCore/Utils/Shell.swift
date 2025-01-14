@@ -17,6 +17,7 @@ public func shellOut(
     environment: [String: String] = Files.currentEnvironment(),
     onEvent: ShellEventHandler? = nil
 ) async throws -> (stdout: String, stderr: String) {
+    var std = ""
     var stdout = ""
     var stderr = ""
     let stream = try shellStream(
@@ -27,6 +28,7 @@ public func shellOut(
     )
     do {
         for try await line in stream {
+            std += line.string() ?? ""
             switch line {
             case .standardOutput:
                 stdout += line.string() ?? ""
@@ -37,9 +39,9 @@ public func shellOut(
         }
         return (stdout, stderr)
     } catch let CommandError.terminated(errorCode, _) {
-        throw ShellError.terminated(errorCode: errorCode, stderr: stderr.count > 0 ? stderr : stdout)
+        throw ShellError.terminated(errorCode: errorCode, stderr: std)
     } catch {
-        throw ShellError.terminated(errorCode: 255, stderr: stderr.count > 0 ? stderr : stdout)
+        throw ShellError.terminated(errorCode: 255, stderr: std)
     }
 }
 

@@ -42,8 +42,8 @@ extension Project {
                 do {
                     try await command.invoke(with: context)
                     try await command.complete(with: context)
-                } catch let ShellError.terminated(errorCode, stderr) {
-                    UI.error("Command terminated with error \(errorCode): \(stderr)")
+                } catch let ShellError.terminated(_, stderr) {
+                    UI.error(stderr)
                 } catch {
                     UI.error(error)
                 }

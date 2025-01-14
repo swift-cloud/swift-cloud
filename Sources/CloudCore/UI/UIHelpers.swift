@@ -48,10 +48,10 @@ extension UI {
 }
 
 extension UI {
-    public static func writeBlock(_ text: String, bold: Bool = false) {
+    public static func writeBlock(_ text: String, color: ConsoleColor = .yellow, bold: Bool = false) {
         let lines = text.split(separator: .newlineSequence)
         for line in lines {
-            UI.write("|", width: .small, color: .yellow, bold: true)
+            UI.write("|", width: .small, color: color, bold: true)
             UI.write("\(line)", bold: bold)
             UI.newLine()
         }
@@ -83,11 +83,11 @@ extension UI {
 
 extension UI {
     public static func error(_ error: Error) {
-        cli.error("\(error)")
+        Self.error("\(error)")
     }
 
     public static func error(_ error: String) {
-        cli.error("\(error)")
+        writeBlock(error, color: .red, bold: false)
     }
 }
 

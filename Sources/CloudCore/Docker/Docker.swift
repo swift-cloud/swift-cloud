@@ -21,6 +21,7 @@ extension Docker.Dockerfile {
         FROM public.ecr.aws/lambda/provided:al2
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) /var/runtime/bootstrap
+        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources /var/runtime/
 
         CMD [ "\(targetName)" ]
         """
@@ -33,6 +34,7 @@ extension Docker.Dockerfile {
         WORKDIR /app/
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
+        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
@@ -47,9 +49,19 @@ extension Docker.Dockerfile {
         """
         FROM ubuntu:noble
 
+        RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+            && apt-get -q update \
+            && apt-get -q dist-upgrade -y \
+            && apt-get -q install -y \
+            libjemalloc2 \
+            ca-certificates \
+            tzdata \
+            libcurl4
+
         WORKDIR /app/
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
+        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 

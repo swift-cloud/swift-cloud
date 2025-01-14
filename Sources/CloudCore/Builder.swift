@@ -75,7 +75,8 @@ extension Builder {
             targetName: targetName,
             architecture: architecture,
             imageName: imageName,
-            flags: ["--static-swift-stdlib"]
+            flags: ["--static-swift-stdlib"],
+            pre: "apt-get -q update && apt-get install -y libjemalloc-dev"
         )
     }
 }

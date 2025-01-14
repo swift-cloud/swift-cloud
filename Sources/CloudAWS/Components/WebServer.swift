@@ -180,9 +180,9 @@ extension AWS {
             domainName?.aliasTo(hostname)
 
             Context.current.store.build {
-                let dockerFile = Docker.Dockerfile.amazonLinux(targetName: targetName, port: instancePort)
+                let dockerFile = Docker.Dockerfile.ubuntu(targetName: targetName, port: instancePort)
                 try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
-                try await $0.builder.buildAmazonLinux(targetName: targetName)
+                try await $0.builder.buildUbuntu(targetName: targetName)
             }
         }
     }
