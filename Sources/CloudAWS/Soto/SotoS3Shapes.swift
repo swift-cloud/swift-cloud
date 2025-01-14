@@ -15,15 +15,12 @@
 @_spi(SotoInternal) import SotoCore
 
 #if os(Linux) && compiler(<5.10)
-    // swift-corelibs-foundation hasn't been updated with Sendable conformances
     @preconcurrency import Foundation
 #else
     import Foundation
 #endif
 
 extension S3 {
-    // MARK: Enums
-
     internal enum AnalyticsS3ExportFileFormat: String, CustomStringConvertible, Codable, Sendable,
         CodingKeyRepresentable
     {
@@ -716,8 +713,6 @@ extension S3 {
             case stats = "Stats"
         }
     }
-
-    // MARK: Shapes
 
     internal struct AbortIncompleteMultipartUpload: AWSEncodableShape & AWSDecodableShape {
         /// Specifies the number of days after which Amazon S3 aborts an incomplete multipart upload.
@@ -10636,8 +10631,6 @@ extension S3 {
         private enum CodingKeys: CodingKey {}
     }
 }
-
-// MARK: - Errors
 
 /// Error enum for S3
 internal struct S3ErrorType: AWSErrorType {

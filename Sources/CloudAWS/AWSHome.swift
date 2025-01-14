@@ -20,7 +20,7 @@ extension AWS {
 
         public func bootstrap(with context: Context) async throws {
             let bucketName = try await s3BucketName()
-            _ = try await s3.createBucket(bucket: bucketName)
+            _ = try await s3.createBucket(.init(bucket: bucketName))
         }
 
         public func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws {
@@ -28,13 +28,13 @@ extension AWS {
             let bytes = ByteBuffer(data: data)
             let bucketName = try await s3BucketName()
             let key = contextualFileName(fileName, with: context)
-            _ = try await s3.putObject(body: .init(buffer: bytes), bucket: bucketName, key: key)
+            _ = try await s3.putObject(.init(body: .init(buffer: bytes), bucket: bucketName, key: key))
         }
 
         public func getItem<T: HomeProviderItem>(fileName: String, with context: Context) async throws -> T {
             let bucketName = try await s3BucketName()
             let key = contextualFileName(fileName, with: context)
-            let response = try await s3.getObject(bucket: bucketName, key: key)
+            let response = try await s3.getObject(.init(bucket: bucketName, key: key))
             let data = try await response.body.collect(upTo: 1024 * 1024)
             return try JSONDecoder().decode(T.self, from: data)
         }

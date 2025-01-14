@@ -15,7 +15,6 @@
 import SotoCore
 
 #if os(Linux) && compiler(<5.10)
-    // swift-corelibs-foundation hasn't been updated with Sendable conformances
     @preconcurrency import Foundation
 #else
     import Foundation
@@ -25,14 +24,10 @@ import SotoCore
 ///
 /// Security Token Service Security Token Service (STS) enables you to request temporary, limited-privilege  credentials for users. This guide provides descriptions of the STS API. For  more information about using this service, see Temporary Security Credentials.
 internal struct STS: AWSService {
-    // MARK: Member variables
-
     /// Client used for communication with AWS
     internal let client: AWSClient
     /// Service configuration
     internal let config: AWSServiceConfig
-
-    // MARK: Initialization
 
     /// Initialize the STS client
     /// - parameters:
@@ -136,7 +131,7 @@ internal struct STS: AWSService {
     /// Returns details about the IAM user or role whose credentials are used to call the operation.  No permissions are required to perform this operation. If an administrator attaches a policy to your identity that explicitly denies access to the sts:GetCallerIdentity action, you can still perform this operation. Permissions are not required because the same information is returned when access is denied. To view an example response, see I Am Not Authorized to Perform: iam:DeleteVirtualMFADevice in the IAM User Guide.
     @Sendable
     @inlinable
-    internal func getCallerIdentity(_ input: GetCallerIdentityRequest, logger: Logger = AWSClient.loggingDisabled)
+    internal func getCallerIdentity(logger: Logger = AWSClient.loggingDisabled)
         async throws -> GetCallerIdentityResponse
     {
         try await self.client.execute(
@@ -144,21 +139,9 @@ internal struct STS: AWSService {
             path: "/",
             httpMethod: .POST,
             serviceConfig: self.config,
-            input: input,
+            input: GetCallerIdentityRequest(),
             logger: logger
         )
-    }
-
-    /// Returns details about the IAM user or role whose credentials are used to call the operation.  No permissions are required to perform this operation. If an administrator attaches a policy to your identity that explicitly denies access to the sts:GetCallerIdentity action, you can still perform this operation. Permissions are not required because the same information is returned when access is denied. To view an example response, see I Am Not Authorized to Perform: iam:DeleteVirtualMFADevice in the IAM User Guide.
-    ///
-    /// Parameters:
-    ///   - logger: Logger use during operation
-    @inlinable
-    internal func getCallerIdentity(
-        logger: Logger = AWSClient.loggingDisabled
-    ) async throws -> GetCallerIdentityResponse {
-        let input = GetCallerIdentityRequest()
-        return try await self.getCallerIdentity(input, logger: logger)
     }
 }
 
