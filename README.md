@@ -310,9 +310,10 @@ queue.subscribe(
 
 ```swift
 let table = AWS.DynamoDB(
-    "Users",
+    "MyTable",
     primaryIndex: .init(
-        partitionKey: ("id", .string)
+        partitionKey: ("type", .string),
+        sortKey: ("id", .string)
     )
 )
 
@@ -379,13 +380,14 @@ The `DomainName` construct manages a TLS certificate and the necessary
 validation, and can be linked to a `WebServer` to provide a fully managed domain
 name.
 
-> Important: You must host your domain in a Route53 hosted zone in your AWS
-> account to use this construct. In the future we will add support for domains
-> hosted on other providers.
+> Important: We support 3 providers for domains: `AWS`, `Cloudflare`, and
+> `Vercel`.
 
 ```swift
-// Optionally pass a `zoneName` if the domain is not simply inferred from the `domainName`
-let domainName = AWS.DomainName("www.example.com")
+let domainName = DomainName(
+    hostname: "www.example.com",
+    dns: .aws(zoneName: "example.com")
+)
 
 let server = AWS.WebServer(
     "my-vapor-web-server",
