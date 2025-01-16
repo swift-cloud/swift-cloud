@@ -52,7 +52,7 @@ extension Cloudflare {
             request.method = .GET
             request.headers.add(name: "Authorization", value: "Bearer \(apiToken)")
             let response = try await client.execute(request, timeout: .seconds(10))
-            let bytes = try await response.body.collect(upTo: 1024 * 1024)
+            let bytes = try await response.body.collect(upTo: 16 * 1024 * 1024)
             let data = Data(bytes.readableBytesView)
             return try JSONDecoder().decode(NamespaceValue<T>.self, from: data).value
         }
