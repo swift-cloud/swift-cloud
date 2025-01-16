@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -76,9 +76,5 @@ let package = Package(
             name: "CloudCoreTests",
             dependencies: ["CloudCore"]
         ),
-    ],
-    swiftLanguageVersions: [
-        .version("6"),
-        .v5,
     ]
 )

@@ -53,7 +53,8 @@ extension Cloudflare {
             request.headers.add(name: "Authorization", value: "Bearer \(apiToken)")
             let response = try await client.execute(request, timeout: .seconds(10))
             let bytes = try await response.body.collect(upTo: 1024 * 1024)
-            return try JSONDecoder().decode(NamespaceValue<T>.self, from: bytes).value
+            let data = Data(bytes.readableBytesView)
+            return try JSONDecoder().decode(NamespaceValue<T>.self, from: data).value
         }
     }
 }
@@ -108,7 +109,8 @@ extension Cloudflare.Home {
         request.body = try .bytes(JSONEncoder().encode(["title": namespaceName]))
         let response = try await client.execute(request, timeout: .seconds(10))
         let bytes = try await response.body.collect(upTo: 1024 * 1024)
-        return try JSONDecoder().decode(APIResponse<Namespace>.self, from: bytes)
+        let data = Data(bytes.readableBytesView)
+        return try JSONDecoder().decode(APIResponse<Namespace>.self, from: data)
     }
 
     private func listNamespaces() async throws -> APIResponse<[Namespace]> {
@@ -119,7 +121,8 @@ extension Cloudflare.Home {
         request.headers.add(name: "Authorization", value: "Bearer \(apiToken)")
         let response = try await client.execute(request, timeout: .seconds(10))
         let bytes = try await response.body.collect(upTo: 1024 * 1024)
-        return try JSONDecoder().decode(APIResponse<[Namespace]>.self, from: bytes)
+        let data = Data(bytes.readableBytesView)
+        return try JSONDecoder().decode(APIResponse<[Namespace]>.self, from: data)
     }
 }
 
