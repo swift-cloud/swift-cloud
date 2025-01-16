@@ -27,6 +27,13 @@ jobs:
       with:
         swift-version: ${{ matrix.swift }}
 
+    - uses: actions/cache@v4
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ matrix.swift }}-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-${{ matrix.swift }}-
+
     - run: swift --version
 
     - run: swift build
