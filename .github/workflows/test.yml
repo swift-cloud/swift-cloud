@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-noble-4vcpu-arm64, macos-latest-xlarge]
         swift: ["6.0"]
 
     steps:
