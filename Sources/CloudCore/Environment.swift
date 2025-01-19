@@ -31,10 +31,14 @@ public final class Environment: Encodable, @unchecked Sendable {
         set { queue.sync { _store = newValue } }
     }
 
-    public init(_ initial: [String: any Input<String>]? = nil, shape: EncodingShape) {
+    public init(
+        _ initial: [String: any Input<String>]? = nil,
+        shape: EncodingShape,
+        context: Context = .current
+    ) {
         self._store = [:]
         self.shape = shape
-        Context.current.store.track(self)
+        context.store.track(self)
         if let initial {
             self.merge(initial)
         }

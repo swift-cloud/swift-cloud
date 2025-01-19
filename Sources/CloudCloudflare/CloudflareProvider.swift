@@ -27,7 +27,8 @@ extension Cloudflare {
                 type: "pulumi:providers:cloudflare",
                 properties: [
                     "apiToken": apiToken
-                ]
+                ],
+                options: nil
             )
         }
     }

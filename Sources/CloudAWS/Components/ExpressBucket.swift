@@ -19,9 +19,10 @@ extension AWS {
             availabilityZoneId azId: (any Input<String>)? = nil,
             vpc: VPC? = nil,
             forceDestroy: Bool = true,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
-            self.availabilityZoneId = azId ?? Self.availabilityZones.output.keyPath(Context.current.region)[0]
+            self.availabilityZoneId = azId ?? Self.availabilityZones.output.keyPath(context.region)[0]
 
             let suffix = Random.Text(
                 "\(chosenName)-suffix",
@@ -30,7 +31,7 @@ extension AWS {
             )
 
             self.name =
-                "\(tokenize(Context.current.stage, chosenName))-\(suffix.value)--\(availabilityZoneId)--x-s3"
+                "\(tokenize(context.stage, chosenName))-\(suffix.value)--\(availabilityZoneId)--x-s3"
 
             bucket = Resource(
                 name: chosenName,

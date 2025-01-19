@@ -27,7 +27,8 @@ extension DigitalOcean {
             instanceSize: InstanceSize = .shared_1vCPU_512mb,
             instancePort: Int = 8080,
             environment: [String: any Input<String>]? = nil,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.environment = Environment(environment, shape: .keyValueList)
 
@@ -35,12 +36,12 @@ extension DigitalOcean {
 
             let architecture = Architecture.x86
 
-            let repository = tokenize(Context.current.stage, name)
+            let repository = tokenize(context.stage, name)
 
-            let digitalOceanToken = Context.current.project.digitalOceanToken()
+            let digitalOceanToken = context.project.digitalOceanToken()
 
             let image = Resource(
-                name: tokenize(Context.current.stage, name, "repo"),
+                name: tokenize(context.stage, name, "repo"),
                 type: "docker-build:Image",
                 properties: [
                     "push": true,
@@ -95,7 +96,7 @@ extension DigitalOcean {
                 options: options
             )
 
-            Context.current.store.build {
+            context.store.build {
                 let dockerFile = Docker.Dockerfile.ubuntu(
                     targetName: targetName,
                     architecture: architecture,

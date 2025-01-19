@@ -1,5 +1,5 @@
 extension UI {
-    public static func writeHeader() {
+    public static func writeHeader(context: Context = .current) {
         cli.clear(lines: 3)
         UI.newLine()
 
@@ -8,11 +8,11 @@ extension UI {
 
         UI.write("➜", width: .small, color: .cyan, bold: true)
         UI.write("Project", width: .medium, bold: true)
-        UI.write(Context.current.name, newLine: true)
+        UI.write(context.name, newLine: true)
 
         UI.write("", width: .small)
         UI.write("Stage", width: .medium, bold: true)
-        UI.write(Context.current.stage, newLine: true)
+        UI.write(context.stage, newLine: true)
 
         UI.newLine()
     }

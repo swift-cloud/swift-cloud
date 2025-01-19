@@ -4,14 +4,16 @@ extension DigitalOcean {
 
         public init(
             _ name: String,
-            environment: Environment = Context.current.isProduction ? .production : .development,
-            options: Resource.Options? = nil
+            environment: Environment? = nil,
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
+            let environment = environment ?? (context.isProduction ? .production : .development)
             self.resource = .init(
                 name: name,
                 type: "digitalocean:Project",
                 properties: [
-                    "name": tokenize(Context.current.stage, name),
+                    "name": tokenize(context.stage, name),
                     "environment": environment.rawValue,
                     "description": "Managed by Swift Cloud",
                 ],

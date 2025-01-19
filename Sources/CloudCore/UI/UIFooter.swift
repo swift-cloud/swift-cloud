@@ -1,8 +1,8 @@
 import Foundation
 
 extension UI {
-    public static func writeFooter() {
-        let diff = Date().timeIntervalSince(Context.current.startDate)
+    public static func writeFooter(context: Context = .current) {
+        let diff = Date().timeIntervalSince(context.startDate)
 
         UI.newLine()
         UI.write("➜", width: .small, color: .cyan, bold: true)

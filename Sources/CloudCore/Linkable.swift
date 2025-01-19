@@ -92,7 +92,7 @@ extension RoleProvider {
             self.environment.merge(linkable.environmentVariables)
         }
 
-        Context.current.store.track(linkable)
+        role.resource.context.store.track(linkable)
 
         return self
     }
@@ -134,8 +134,8 @@ extension Linkable {
     /// Links the current resource to the current context,
     /// ensuring it is written to the CloudSDK resources.
     @discardableResult
-    public func linked() -> Self {
-        Context.current.store.track(self)
+    public func linked(context: Context = .current) -> Self {
+        context.store.track(self)
         return self
     }
 }

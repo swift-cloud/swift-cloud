@@ -13,14 +13,17 @@ public struct Variable<Outputs>: Sendable {
 
     public let definition: AnyEncodable
 
+    public let context: Context
+
     var internalName: String {
-        tokenize(Context.current.stage, chosenName)
+        tokenize(context.stage, chosenName)
     }
 
-    public init(name: String, definition: AnyEncodable) {
+    public init(name: String, definition: AnyEncodable, context: Context = .current) {
         self.chosenName = name
         self.definition = definition
-        Context.current.store.track(self)
+        self.context = context
+        context.store.track(self)
     }
 }
 

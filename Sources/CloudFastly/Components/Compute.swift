@@ -15,7 +15,8 @@ extension Fastly {
             domains: [any Input<String>],
             backends: [Backend] = [],
             features: Features = .init(),
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             let filename = "\(Context.buildDirectory)/fastly/\(targetName)/package.tar.gz"
 
@@ -37,7 +38,7 @@ extension Fastly {
                 options: options
             )
 
-            Context.current.store.build {
+            context.store.build {
                 try await $0.builder.buildWasm(targetName: targetName)
                 try await $0.builder.packageForFastly(targetName: targetName)
             }

@@ -31,7 +31,8 @@ extension Vercel {
                 properties: [
                     "apiToken": apiToken,
                     "team": team,
-                ]
+                ],
+                options: nil
             )
         }
     }

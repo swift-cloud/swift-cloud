@@ -43,7 +43,8 @@ extension AWS {
                     "token": token,
                     "profile": profile,
                     "region": region,
-                ]
+                ],
+                options: nil
             )
         }
     }

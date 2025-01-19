@@ -91,6 +91,7 @@ extension AWS.VPC {
             resource: .init(
                 name: "default-vpc",
                 type: "awsx:ec2:DefaultVpc",
+                properties: nil,
                 options: options
             )
         )

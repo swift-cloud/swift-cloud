@@ -35,20 +35,21 @@ extension AWS {
         public init(
             _ name: String,
             engine: Engine = .postgres(),
-            databaseName: String = Context.current.stage,
+            databaseName: String? = nil,
             masterUsername: String = "swift",
             vpc: VPC.Configuration,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.engine = engine
 
-            self.databaseName = databaseName
+            self.databaseName = databaseName ?? context.stage
 
             self.masterUsername = masterUsername
 
             masterPassword = Random.Bytes("\(name)-master-password", length: 16).hex
 
-            let subnetGroupName = tokenize(Context.current.stage, name, "default")
+            let subnetGroupName = tokenize(context.stage, name, "default")
 
             subnetGroup = Resource(
                 name: "\(name)-sg",
@@ -60,7 +61,7 @@ extension AWS {
                 options: options
             )
 
-            let clusterIdentifier = tokenize(Context.current.stage, name)
+            let clusterIdentifier = tokenize(context.stage, name)
 
             cluster = Resource(
                 name: name,

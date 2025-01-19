@@ -27,7 +27,8 @@ extension Fastly {
                 type: "pulumi:providers:fastly",
                 properties: [
                     "apiKey": apiKey
-                ]
+                ],
+                options: nil
             )
         }
     }

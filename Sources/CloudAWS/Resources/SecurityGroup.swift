@@ -13,6 +13,7 @@ extension AWS {
             let resource = Resource(
                 name: name,
                 type: "aws:ec2:SecurityGroup",
+                properties: nil,
                 options: options
             )
 

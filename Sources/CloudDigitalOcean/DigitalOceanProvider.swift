@@ -31,7 +31,8 @@ extension DigitalOcean {
                 type: "pulumi:providers:digitalocean",
                 properties: [
                     "token": token
-                ]
+                ],
+                options: nil
             )
         }
     }

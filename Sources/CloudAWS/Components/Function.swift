@@ -37,7 +37,8 @@ extension AWS {
             reservedConcurrency: Int? = nil,
             environment: [String: any Input<String>]? = nil,
             vpc: VPC.Configuration? = nil,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.environment = Environment(environment, shape: .keyValue)
 
@@ -113,7 +114,7 @@ extension AWS {
                     )
                 }
 
-            Context.current.store.build {
+            context.store.build {
                 try await $0.builder.buildAmazonLinux(targetName: targetName)
                 try await $0.builder.packageForAwsLambda(targetName: targetName)
             }

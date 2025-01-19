@@ -7,6 +7,7 @@ extension AWS {
             resource = Resource(
                 name: name,
                 type: "aws:ecs:Cluster",
+                properties: nil,
                 options: options
             )
 

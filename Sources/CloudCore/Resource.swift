@@ -8,6 +8,7 @@ public protocol ResourceProvider: Sendable {
 public struct Resource: Sendable {
     public let chosenName: String
     public let type: String
+    public let context: Context
     public let properties: AnyEncodable?
     public let dependsOn: [any ResourceProvider]?
     public let options: Options?
@@ -15,26 +16,28 @@ public struct Resource: Sendable {
     public let maxNameLength: Int
 
     fileprivate var internalName: String {
-        return tokenize(Context.current.stage, chosenName, maxLength: maxNameLength)
+        return tokenize(context.stage, chosenName, maxLength: maxNameLength)
     }
 
     public init(
         name: String,
         type: String,
-        properties: AnyEncodable? = nil,
+        context: Context = .current,
+        properties: AnyEncodable?,
         dependsOn: [any ResourceProvider]? = nil,
-        options: Options? = nil,
+        options: Options?,
         existingId: String? = nil,
         maxNameLength: Int = 55
     ) {
         self.chosenName = name
         self.type = type
+        self.context = context
         self.properties = properties
         self.dependsOn = dependsOn
         self.options = options
         self.existingId = existingId
         self.maxNameLength = maxNameLength
-        Context.current.store.track(self)
+        context.store.track(self)
     }
 
     func pulumiProjectResources() -> Pulumi.Project.Resources {
@@ -55,10 +58,12 @@ public struct Resource: Sendable {
 }
 
 extension Resource {
-    public static func lookup(type: String, id: String) -> Resource {
+    public static func lookup(type: String, id: String, options: Options? = nil) -> Resource {
         .init(
             name: "\(type):\(id)",
             type: type,
+            properties: nil,
+            options: options,
             existingId: id
         )
     }

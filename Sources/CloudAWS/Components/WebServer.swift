@@ -70,7 +70,8 @@ extension AWS {
             instancePort: Int = 8080,
             vpc: AWS.VPC? = nil,
             environment: [String: String] = [:],
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.concurrency = concurrency
 
@@ -193,7 +194,7 @@ extension AWS {
 
             domainName?.aliasTo(internalHostname)
 
-            Context.current.store.build {
+            context.store.build {
                 let dockerFile = Docker.Dockerfile.ubuntu(targetName: targetName, port: instancePort)
                 try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
                 try await $0.builder.buildUbuntu(targetName: targetName)
