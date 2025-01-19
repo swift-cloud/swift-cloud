@@ -1,4 +1,5 @@
 import CloudCore
+import Foundation
 
 extension AWS {
     public struct WebServer: AWSComponent, EnvironmentProvider {
@@ -64,6 +65,7 @@ extension AWS {
             concurrency: Int = 1,
             cpu: Int = 256,
             memory: Int = 512,
+            architecture: Architecture = .current,
             autoScaling: AutoScalingConfiguration? = nil,
             instancePort: Int = 8080,
             vpc: AWS.VPC? = nil,
@@ -144,14 +146,18 @@ extension AWS {
                     "cluster": cluster.arn,
                     "desiredCount": concurrency,
                     "continueBeforeSteadyState": true,
+                    "forceNewDeployment": true,
                     "networkConfiguration": [
                         "assignPublicIp": true,
                         "securityGroups": [instanceSecurityGroup.id],
                         "subnets": vpc.publicSubnetIds,
                     ],
+                    "triggers": [
+                        "date": Date().formatted(.iso8601)
+                    ],
                     "taskDefinitionArgs": [
                         "runtimePlatform": [
-                            "cpuArchitecture": Architecture.current.ecsArchitecture
+                            "cpuArchitecture": architecture.ecsArchitecture
                         ],
                         "container": [
                             "name": "\(name)-container",
