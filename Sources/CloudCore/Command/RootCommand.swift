@@ -51,7 +51,7 @@ extension Command.RunCommand {
 
         // Create pulumi client with passphrase
         let client = Pulumi.Client(
-            context: context,
+            context: context.name,
             passphrase: try await context.home.passphrase(with: context)
         )
 
@@ -105,6 +105,23 @@ extension Command.RunCommand {
             client: client,
             outputs: outputs
         )
+    }
+}
+
+extension Command.RunCommand {
+    func execute(context: Context) async throws {
+        await Context.$current.withValue(context) {
+            UI.writeHeader()
+            do {
+                try await self.invoke(with: context)
+                try await self.complete(with: context)
+            } catch let ShellError.terminated(_, stderr) {
+                UI.error(stderr)
+            } catch {
+                UI.error(error)
+            }
+            UI.writeFooter()
+        }
     }
 }
 

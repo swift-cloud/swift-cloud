@@ -2,7 +2,7 @@ import AsyncHTTPClient
 import Foundation
 
 // https://www.pulumi.com/docs/iac/download-install/versions/
-public let PulumiClientVersion = "v3.145.0"
+public let PulumiClientVersion = "v3.146.0"
 
 extension Pulumi {
     public struct Client: Sendable {
@@ -11,7 +11,7 @@ extension Pulumi {
             case extractionFailed
         }
 
-        public let context: Context
+        public let context: String
 
         public let version: String
 
@@ -22,7 +22,7 @@ extension Pulumi {
         }
 
         public init(
-            context: Context,
+            context: String,
             version: String = PulumiClientVersion,
             passphrase: String = "passphrase"
         ) {
@@ -39,7 +39,7 @@ extension Pulumi.Client {
     }
 
     private var workingDirectory: String {
-        "\(Context.cloudDirectory)/\(context.name)"
+        "\(Context.cloudDirectory)/\(context)"
     }
 
     private var configFilePath: String {
