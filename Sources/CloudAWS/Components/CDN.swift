@@ -157,8 +157,8 @@ extension AWS {
                         "minimumProtocolVersion": "TLSv1.2_2021",
                     ],
                 ],
-                dependsOn: secureDomainName.map { [$0.validation] },
-                options: .provider(cfProvider)
+                options: .provider(cfProvider),
+                dependsOn: secureDomainName.map { [$0.validation] }
             )
 
             domainName?.aliasTo(self.hostname)

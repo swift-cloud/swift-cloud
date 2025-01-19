@@ -133,8 +133,8 @@ extension AWS {
                         "securityGroupId": loadBalancerSecurityGroup.id
                     ],
                 ],
-                dependsOn: secureDomainName.map { [$0.validation] },
                 options: options,
+                dependsOn: secureDomainName.map { [$0.validation] },
                 maxNameLength: 24
             )
 

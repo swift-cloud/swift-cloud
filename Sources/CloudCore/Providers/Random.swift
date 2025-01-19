@@ -44,7 +44,8 @@ extension Random {
             casing: [Casing] = [.lower, .upper],
             numerics: Bool = false,
             specialCharacters: Bool = false,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -56,7 +57,8 @@ extension Random {
                     "numeric": numerics,
                     "special": specialCharacters,
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

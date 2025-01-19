@@ -22,10 +22,10 @@ public struct Resource: Sendable {
     public init(
         name: String,
         type: String,
-        context: Context = .current,
         properties: AnyEncodable?,
-        dependsOn: [any ResourceProvider]? = nil,
         options: Options?,
+        context: Context = .current,
+        dependsOn: [any ResourceProvider]? = nil,
         existingId: String? = nil,
         maxNameLength: Int = 55
     ) {
@@ -58,12 +58,18 @@ public struct Resource: Sendable {
 }
 
 extension Resource {
-    public static func lookup(type: String, id: String, options: Options? = nil) -> Resource {
+    public static func lookup(
+        type: String,
+        id: String,
+        options: Options? = nil,
+        context: Context = .current
+    ) -> Resource {
         .init(
             name: "\(type):\(id)",
             type: type,
             properties: nil,
             options: options,
+            context: context,
             existingId: id
         )
     }
