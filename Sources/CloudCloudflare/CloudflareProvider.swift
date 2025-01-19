@@ -20,7 +20,8 @@ extension Cloudflare {
 
         public init(
             _ name: String,
-            apiToken: String? = nil
+            apiToken: String? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -28,7 +29,8 @@ extension Cloudflare {
                 properties: [
                     "apiToken": apiToken
                 ],
-                options: nil
+                options: nil,
+                context: context
             )
         }
     }

@@ -14,7 +14,8 @@ extension AWS {
             name: any Input<String>,
             ttl: Duration = .seconds(60),
             records: [any Input<String>],
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             let hostedZone = Route53.getZone(name: zoneName)
             resource = Resource(
@@ -27,7 +28,8 @@ extension AWS {
                     "ttl": ttl.components.seconds,
                     "records": records,
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

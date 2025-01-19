@@ -57,7 +57,8 @@ extension AWS {
                         ? "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
                         : "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             function = Resource(
@@ -85,7 +86,8 @@ extension AWS {
                         ]
                     },
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             functionUrl =
@@ -110,7 +112,8 @@ extension AWS {
                                 ]
                                 : nil,
                         ],
-                        options: options
+                        options: options,
+                        context: context
                     )
                 }
 

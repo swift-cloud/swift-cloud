@@ -57,7 +57,8 @@ extension DigitalOcean {
                         ]
                     ],
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             app = Resource(
@@ -93,7 +94,8 @@ extension DigitalOcean {
                         ],
                     ],
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             context.store.build {

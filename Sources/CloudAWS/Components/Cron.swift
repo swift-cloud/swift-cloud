@@ -14,7 +14,8 @@ extension AWS {
             _ name: String,
             schedule: Expression,
             enabled: Bool = true,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             eventRule = Resource(
                 name: name,
@@ -23,7 +24,8 @@ extension AWS {
                     "scheduleExpression": schedule.value,
                     "state": enabled ? "ENABLED" : "DISABLED",
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }
@@ -40,7 +42,8 @@ extension AWS.Cron {
                 "arn": function.function.arn,
                 "targetId": "\(tokenize(name))-\(function.function.chosenName)-target-id",
             ],
-            options: function.function.options
+            options: function.function.options,
+            context: function.function.context
         )
         return self
     }

@@ -85,7 +85,8 @@ extension RoleProvider {
                 "role": role.id,
                 "policy": linkable.policy,
             ],
-            options: role.resource.options
+            options: role.resource.options,
+            context: role.resource.context
         )
 
         if let self = self as? EnvironmentProvider {

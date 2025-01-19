@@ -15,13 +15,15 @@ extension AWS {
 
         public init(
             domainName: DomainName,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.domainName = domainName
 
             certificate = AWS.TLSCertificate(
                 hostname: domainName.hostname,
-                options: options
+                options: options,
+                context: context
             )
 
             validationRecord = domainName.dns.createRecord(

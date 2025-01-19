@@ -13,7 +13,8 @@ extension Cloudflare {
             value: any Input<String>,
             proxied: Bool = false,
             ttl: Duration = .seconds(60),
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             let zone = getZone(name: zoneName)
             resource = Resource(
@@ -29,7 +30,8 @@ extension Cloudflare {
                     "allowOverwrite": true,
                     "comment": "Managed by Swift Cloud",
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

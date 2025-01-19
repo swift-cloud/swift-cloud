@@ -43,7 +43,8 @@ extension AWS {
                         ]
                     ],
                 ],
-                options: resource.options
+                options: resource.options,
+                context: resource.context
             )
         }
 
@@ -53,7 +54,8 @@ extension AWS {
             natGatewatStrategy: NatGatewayStrategy = .disabled,
             enableDnsHostnames: Bool = true,
             enableDnsSupport: Bool = true,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             resource = .init(
                 name: name,
@@ -67,7 +69,8 @@ extension AWS {
                         "strategy": natGatewatStrategy
                     ],
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
 
@@ -86,13 +89,17 @@ extension AWS.VPC {
 }
 
 extension AWS.VPC {
-    public static func `default`(options: Resource.Options? = nil) -> AWS.VPC {
+    public static func `default`(
+        options: Resource.Options? = nil,
+        context: Context = .current
+    ) -> AWS.VPC {
         .init(
             resource: .init(
                 name: "default-vpc",
                 type: "awsx:ec2:DefaultVpc",
                 properties: nil,
-                options: options
+                options: options,
+                context: context
             )
         )
     }

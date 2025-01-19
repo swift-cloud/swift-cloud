@@ -46,7 +46,8 @@ extension AWS {
                         "type": "AvailabilityZone",
                     ],
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

@@ -20,7 +20,8 @@ extension DigitalOcean {
             _ name: String,
             subscriptionTier: SubscriptionTier = .basic,
             region: Region = .nyc3,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.resource = .init(
                 name: name,
@@ -29,7 +30,8 @@ extension DigitalOcean {
                     "subscriptionTierSlug": subscriptionTier.rawValue,
                     "region": region.rawValue,
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

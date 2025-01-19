@@ -20,7 +20,8 @@ extension Fastly {
 
         public init(
             _ name: String,
-            apiKey: String? = nil
+            apiKey: String? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -28,7 +29,8 @@ extension Fastly {
                 properties: [
                     "apiKey": apiKey
                 ],
-                options: nil
+                options: nil,
+                context: context
             )
         }
     }

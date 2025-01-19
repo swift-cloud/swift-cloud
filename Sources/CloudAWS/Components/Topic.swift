@@ -11,7 +11,8 @@ extension AWS {
         public init(
             _ name: String,
             fifo: Bool = false,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             topic = Resource(
                 name: name,
@@ -19,7 +20,8 @@ extension AWS {
                 properties: [
                     "fifoTopic": fifo
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }
@@ -38,7 +40,8 @@ extension AWS.Topic {
                 "protocol": "lambda",
                 "endpoint": function.function.arn,
             ],
-            options: function.function.options
+            options: function.function.options,
+            context: function.function.context
         )
 
         return self
@@ -56,7 +59,8 @@ extension AWS.Topic {
                 "protocol": "sqs",
                 "endpoint": queue.queue.arn,
             ],
-            options: queue.queue.options
+            options: queue.queue.options,
+            context: queue.queue.context
         )
 
         return self

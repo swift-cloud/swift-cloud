@@ -26,7 +26,8 @@ extension AWS {
             _ name: String,
             engine: Engine = .valkey(),
             vpc: VPC.Configuration,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.engine = engine
             cache = Resource(
@@ -39,6 +40,7 @@ extension AWS {
                     "subnetIds": vpc.subnetIds,
                 ],
                 options: options,
+                context: context,
                 maxNameLength: 32
             )
         }

@@ -12,21 +12,23 @@ extension AWS {
             _ name: String,
             imageRepository: ImageRepository,
             dockerFilePath: String,
-            context: String = Context.projectDirectory,
-            platform: String = Architecture.current.dockerPlatform,
-            options: Resource.Options? = nil
+            dockerContext: String = Context.projectDirectory,
+            dockerPlatform: String = Architecture.current.dockerPlatform,
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
                 type: "awsx:ecr:Image",
                 properties: [
                     "repositoryUrl": "\(imageRepository.url)",
-                    "context": "\(context)",
+                    "context": "\(dockerContext)",
                     "dockerfile": "\(dockerFilePath)",
-                    "platform": "\(platform)",
+                    "platform": "\(dockerPlatform)",
                     "args": ["DOCKER_BUILDKIT": "1"],
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

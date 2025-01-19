@@ -9,7 +9,8 @@ extension DigitalOcean {
         public init(
             _ name: String,
             registryName: any Input<String>,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.resource = .init(
                 name: "\(name)-docker-credentials",
@@ -18,7 +19,8 @@ extension DigitalOcean {
                     "registryName": registryName,
                     "write": true,
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

@@ -9,7 +9,8 @@ extension AWS {
         public init(
             _ name: String,
             forceDelete: Bool = true,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -17,7 +18,8 @@ extension AWS {
                 properties: [
                     "forceDelete": forceDelete
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

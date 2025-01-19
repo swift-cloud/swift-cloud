@@ -14,7 +14,8 @@ extension AWS {
             _ name: String,
             primaryIndex: Index,
             secondaryIndexes: [Index] = [],
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             table = Resource(
                 name: name,
@@ -36,7 +37,8 @@ extension AWS {
                         ]
                     },
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

@@ -7,8 +7,7 @@ extension AWS {
             _ webServer: AWS.WebServer,
             minimumConcurrency: Int,
             maximumConcurrency: Int,
-            metrics: [Metric],
-            options: Resource.Options? = nil
+            metrics: [Metric]
         ) {
             let resource = Resource(
                 name: "\(webServer.chosenName)-ast",
@@ -20,7 +19,8 @@ extension AWS {
                     "scalableDimension": "ecs:service:DesiredCount",
                     "serviceNamespace": "ecs",
                 ],
-                options: options
+                options: webServer.service.options,
+                context: webServer.service.context
             )
 
             let policies = metrics.map { metric in
@@ -39,7 +39,8 @@ extension AWS {
                             "targetValue": metric.targetValue,
                         ],
                     ],
-                    options: options
+                    options: webServer.service.options,
+                    context: webServer.service.context
                 )
             }
 

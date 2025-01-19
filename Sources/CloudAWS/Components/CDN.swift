@@ -29,7 +29,8 @@ extension AWS {
             _ name: String,
             origins: [Origin],
             domainName: DomainName? = nil,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             let cfProvider = AWS.Provider("cf", region: "us-east-1")
 
@@ -61,7 +62,8 @@ extension AWS {
                         "enableAcceptEncodingBrotli": true,
                     ],
                 ],
-                options: .provider(cfProvider)
+                options: .provider(cfProvider),
+                context: context
             )
 
             let originRequestPolicy = Cloudfront.getOriginRequestPolicy(name: "Managed-AllViewerExceptHostHeader")
@@ -158,6 +160,7 @@ extension AWS {
                     ],
                 ],
                 options: .provider(cfProvider),
+                context: context,
                 dependsOn: secureDomainName.map { [$0.validation] }
             )
 

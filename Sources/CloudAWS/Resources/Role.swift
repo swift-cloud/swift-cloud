@@ -7,7 +7,8 @@ extension AWS {
         public init(
             _ name: String,
             service: String,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -24,7 +25,8 @@ extension AWS {
                         ],
                     ])
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

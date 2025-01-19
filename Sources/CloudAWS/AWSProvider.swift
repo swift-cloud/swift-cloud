@@ -32,7 +32,8 @@ extension AWS {
             secretKey: String? = nil,
             token: String? = nil,
             profile: String? = nil,
-            region: String = "us-east-1"
+            region: String = "us-east-1",
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -44,7 +45,8 @@ extension AWS {
                     "profile": profile,
                     "region": region,
                 ],
-                options: nil
+                options: nil,
+                context: context
             )
         }
     }

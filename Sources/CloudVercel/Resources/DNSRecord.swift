@@ -14,7 +14,8 @@ extension Vercel {
             name: any Input<String>,
             value: any Input<String>,
             ttl: Duration = .seconds(60),
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             self.domain = domain
             resource = Resource(
@@ -28,7 +29,8 @@ extension Vercel {
                     "ttl": ttl.components.seconds,
                     "comment": "Managed by Swift Cloud",
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

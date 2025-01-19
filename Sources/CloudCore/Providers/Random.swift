@@ -11,7 +11,8 @@ extension Random {
         public init(
             _ name: String,
             length: Int,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -19,7 +20,8 @@ extension Random {
                 properties: [
                     "length": length
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

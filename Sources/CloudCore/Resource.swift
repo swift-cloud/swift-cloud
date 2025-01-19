@@ -24,7 +24,7 @@ public struct Resource: Sendable {
         type: String,
         properties: AnyEncodable?,
         options: Options?,
-        context: Context = .current,
+        context: Context,
         dependsOn: [any ResourceProvider]? = nil,
         existingId: String? = nil,
         maxNameLength: Int = 55

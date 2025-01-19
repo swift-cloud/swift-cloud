@@ -35,7 +35,8 @@ extension Fastly {
                     ],
                     "productEnablement": .init(features),
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             context.store.build {

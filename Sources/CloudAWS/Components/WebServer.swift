@@ -134,6 +134,7 @@ extension AWS {
                     ],
                 ],
                 options: options,
+                context: context,
                 dependsOn: secureDomainName.map { [$0.validation] },
                 maxNameLength: 24
             )
@@ -181,7 +182,8 @@ extension AWS {
                         "trackLatest": true,
                     ],
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             if let autoScaling {
@@ -232,8 +234,7 @@ extension AWS.WebServer {
             self,
             minimumConcurrency: minimumConcurrency ?? self.concurrency,
             maximumConcurrency: maximumConcurrency,
-            metrics: metrics,
-            options: self.service.options
+            metrics: metrics
         )
     }
 }

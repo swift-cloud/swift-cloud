@@ -15,7 +15,8 @@ extension AWS {
         public init(
             hostname: any Input<String>,
             keyAlgorithm: KeyAlgorithm = .ecdsa,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: "\(hostname)-cert",
@@ -25,7 +26,8 @@ extension AWS {
                     "keyAlgorithm": keyAlgorithm.rawValue,
                     "validationMethod": "DNS",
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }
@@ -50,7 +52,8 @@ extension AWS.TLSCertificate {
                     "certificateArn": certificate.arn,
                     "validationRecordFqdns": [validationRecord.fqdn],
                 ],
-                options: certificate.resource.options
+                options: certificate.resource.options,
+                context: certificate.resource.context
             )
         }
     }

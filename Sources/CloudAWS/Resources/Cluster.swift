@@ -3,12 +3,17 @@ extension AWS {
         public let resource: Resource
         private let capacityProviders: Resource
 
-        public init(_ name: String, options: Resource.Options? = nil) {
+        public init(
+            _ name: String,
+            options: Resource.Options? = nil,
+            context: Context = .current
+        ) {
             resource = Resource(
                 name: name,
                 type: "aws:ecs:Cluster",
                 properties: nil,
-                options: options
+                options: options,
+                context: context
             )
 
             capacityProviders = Resource(
@@ -29,7 +34,8 @@ extension AWS {
                         ],
                     ],
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

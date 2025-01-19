@@ -22,7 +22,8 @@ extension DigitalOcean {
 
         public init(
             _ name: String,
-            token: String? = nil
+            token: String? = nil,
+            context: Context = .current
         ) {
             self.token = token
 
@@ -32,7 +33,8 @@ extension DigitalOcean {
                 properties: [
                     "token": token
                 ],
-                options: nil
+                options: nil,
+                context: context
             )
         }
     }

@@ -8,13 +8,15 @@ extension AWS {
             _ name: String,
             ingress: [Rule],
             egress: [Rule],
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             let resource = Resource(
                 name: name,
                 type: "aws:ec2:SecurityGroup",
                 properties: nil,
-                options: options
+                options: options,
+                context: context
             )
 
             let ingressRules = ingress.enumerated().map { index, rule in
@@ -26,7 +28,8 @@ extension AWS {
                         "ipProtocol": "-1",
                         rule.propertyKey: rule.propertyValue,
                     ],
-                    options: options
+                    options: options,
+                    context: context
                 )
             }
 
@@ -39,7 +42,8 @@ extension AWS {
                         "ipProtocol": "-1",
                         rule.propertyKey: rule.propertyValue,
                     ],
-                    options: options
+                    options: options,
+                    context: context
                 )
             }
 

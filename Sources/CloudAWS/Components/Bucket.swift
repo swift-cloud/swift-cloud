@@ -19,7 +19,8 @@ extension AWS {
         public init(
             _ name: String,
             forceDestroy: Bool = true,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             bucket = Resource(
                 name: name,
@@ -27,7 +28,8 @@ extension AWS {
                 properties: [
                     "forceDestroy": forceDestroy
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             ownershipControls = Resource(
@@ -39,7 +41,8 @@ extension AWS {
                         "objectOwnership": "ObjectWriter"
                     ],
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             publicAccessBlock = Resource(
@@ -49,7 +52,8 @@ extension AWS {
                     "bucket": bucket.output,
                     "blockPublicAcls": false,
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

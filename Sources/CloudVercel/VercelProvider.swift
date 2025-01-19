@@ -23,7 +23,8 @@ extension Vercel {
         public init(
             _ name: String,
             apiToken: String? = nil,
-            team: String? = nil
+            team: String? = nil,
+            context: Context = .current
         ) {
             resource = Resource(
                 name: name,
@@ -32,7 +33,8 @@ extension Vercel {
                     "apiToken": apiToken,
                     "team": team,
                 ],
-                options: nil
+                options: nil,
+                context: context
             )
         }
     }

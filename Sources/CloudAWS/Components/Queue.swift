@@ -23,7 +23,8 @@ extension AWS {
             visibilityTimeout: Duration = .seconds(30),
             messageRetentionInterval: Duration = .seconds(345600),
             maxRetries: Int = 3,
-            options: Resource.Options? = nil
+            options: Resource.Options? = nil,
+            context: Context = .current
         ) {
             deadLetterQueue = Resource(
                 name: "\(name)-dlq",
@@ -34,7 +35,8 @@ extension AWS {
                     "visibilityTimeoutSeconds": visibilityTimeout.components.seconds,
                     "messageRetentionSeconds": 1_209_600,
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             queue = Resource(
@@ -50,7 +52,8 @@ extension AWS {
                         "maxReceiveCount": maxRetries + 1,
                     ]),
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }
@@ -76,7 +79,8 @@ extension AWS.Queue {
                     ["maximumConcurrency": $0]
                 },
             ],
-            options: function.function.options
+            options: function.function.options,
+            context: function.function.context
         )
 
         return self

@@ -17,7 +17,8 @@ extension DigitalOcean {
                     "environment": environment.rawValue,
                     "description": "Managed by Swift Cloud",
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }

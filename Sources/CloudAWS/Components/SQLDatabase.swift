@@ -58,7 +58,8 @@ extension AWS {
                     "name": subnetGroupName,
                     "subnetIds": vpc.subnetIds,
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             let clusterIdentifier = tokenize(context.stage, name)
@@ -83,7 +84,8 @@ extension AWS {
                     "dbSubnetGroupName": subnetGroupName,
                     "vpcSecurityGroupIds": vpc.securityGroupIds,
                 ],
-                options: options
+                options: options,
+                context: context
             )
 
             instance = Resource(
@@ -95,7 +97,8 @@ extension AWS {
                     "engine": engine.name,
                     "engineVersion": engine.version,
                 ],
-                options: options
+                options: options,
+                context: context
             )
         }
     }
