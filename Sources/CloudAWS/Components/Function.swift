@@ -141,7 +141,11 @@ extension AWS.Function: RoleProvider {}
 
 extension AWS.Function: Linkable {
     public var actions: [String] {
-        ["lambda:InvokeFunction"]
+        var permissions = ["lambda:InvokeFunction"]
+        if functionUrl != nil {
+            permissions.append("lambda:InvokeFunctionUrl")
+        }
+        return permissions
     }
 
     public var resources: [Output<String>] {
