@@ -12,7 +12,7 @@ extension AWS {
 
         public let masterUsername: String
 
-        public typealias MasterPasswordSecret = (kmsKeyId: String, secretArn: String, secretStatus: String)
+        public struct MasterPasswordSecret { public let kmsKeyId: String, secretArn: String, secretStatus: String }
         public var masterPasswordSecret: Output<MasterPasswordSecret> {
             cluster.output.keyPath("masterUserSecrets")[0]
         }
