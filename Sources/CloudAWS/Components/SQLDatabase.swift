@@ -10,6 +10,8 @@ extension AWS {
 
         public let subnetGroup: Resource
 
+        public let clusterParameterGroup: Resource
+
         public let masterUsername: String
 
         public struct MasterPasswordSecret { public let kmsKeyId: String, secretArn: String, secretStatus: String }
@@ -66,6 +68,17 @@ extension AWS {
                 context: context
             )
 
+            clusterParameterGroup = Resource(
+                name: "\(name)-cluster-pg",
+                type: "aws:rds:ClusterParameterGroup",
+                properties: [
+                    "family": engine.parameterGroupFamily,
+                    "parameters": [],
+                ],
+                options: options,
+                context: context
+            )
+
             let clusterIdentifier = tokenize(context.stage, name)
 
             cluster = Resource(
@@ -94,6 +107,7 @@ extension AWS {
                         "maxCapacity": scaling.maximumConcurrency,
                         "secondsUntilAutoPause": scaling.timeUntilAutoPause.components.seconds,
                     ],
+                    "dbClusterParameterGroupName": clusterParameterGroup.name,
                     "dbSubnetGroupName": subnetGroupName,
                     "vpcSecurityGroupIds": vpc.securityGroupIds,
                 ],
@@ -164,6 +178,15 @@ extension AWS.SQLDatabase {
             }
         }
 
+        public var parameterGroupFamily: String {
+            switch self {
+            case .mysql(let version):
+                return version.parameterGroupFamily
+            case .postgres(let version):
+                return version.parameterGroupFamily
+            }
+        }
+
         public var scheme: String {
             switch self {
             case .postgres:
@@ -188,11 +211,31 @@ extension AWS.SQLDatabase {
         case v16_6 = "16.6"
         case v15_8 = "15.8"
         case v14_13 = "14.13"
+
+        public var parameterGroupFamily: String {
+            switch self {
+            case .v16_4, .v16_6:
+                return "aurora-postgresql16"
+            case .v15_8:
+                return "aurora-postgresql15"
+            case .v14_13:
+                return "aurora-postgresql14"
+            }
+        }
     }
 
     public enum MySQLVersion: String, Sendable {
         case v8_0 = "8.0.mysql_aurora.3.08.0"
         case v5_7 = "5.7.mysql_aurora.2.12.4"
+
+        public var parameterGroupFamily: String {
+            switch self {
+            case .v8_0:
+                return "aurora-mysql8.0"
+            case .v5_7:
+                return "aurora-mysql5.7"
+            }
+        }
     }
 }
 
