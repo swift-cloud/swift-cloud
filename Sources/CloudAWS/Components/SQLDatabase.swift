@@ -109,7 +109,8 @@ extension AWS {
                         "publiclyAccessible": publiclyAccessible,
                     ],
                     options: options,
-                    context: context
+                    context: context,
+                    dependsOn: [cluster]
                 ),
                 Resource(
                     name: "\(name)-instance-2",
@@ -125,7 +126,8 @@ extension AWS {
                         "publiclyAccessible": publiclyAccessible,
                     ],
                     options: options,
-                    context: context
+                    context: context,
+                    dependsOn: [cluster]
                 ),
             ]
         }
