@@ -73,7 +73,13 @@ extension AWS {
                 type: "aws:rds:ClusterParameterGroup",
                 properties: [
                     "family": engine.parameterGroupFamily,
-                    "parameters": clusterParameters.map { ["name": $0.key, "value": $0.value] },
+                    "parameters": clusterParameters.map {
+                        [
+                            "name": $0.key,
+                            "value": $0.value,
+                            "applyMethod": "pending-reboot",
+                        ]
+                    },
                 ],
                 options: options,
                 context: context
