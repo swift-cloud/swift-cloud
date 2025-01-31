@@ -77,6 +77,7 @@ extension AWS {
                     "databaseName": databaseName,
                     "masterUsername": masterUsername,
                     "masterPassword": masterPassword,
+                    "applyImmediately": true,
                     "storageEncrypted": true,
                     "skipFinalSnapshot": false,
                     "finalSnapshotIdentifier": tokenize(context.stage, name, "final"),
