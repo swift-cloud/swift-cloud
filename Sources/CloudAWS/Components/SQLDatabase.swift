@@ -95,7 +95,7 @@ extension AWS {
                     "manageMasterUserPassword": true,
                     "iamDatabaseAuthenticationEnabled": true,
                     "applyImmediately": true,
-                    "allowMajorVersionUpgrade": true,
+                    "allowMajorVersionUpgrade": false,
                     "storageEncrypted": true,
                     "skipFinalSnapshot": false,
                     "enableHttpEndpoint": true,
@@ -125,7 +125,7 @@ extension AWS {
                         "engine": engine.name,
                         "engineVersion": engine.version,
                         "applyImmediately": true,
-                        "autoMinorVersionUpgrade": true,
+                        "autoMinorVersionUpgrade": false,
                         "promotionTier": 0,
                         "publiclyAccessible": publiclyAccessible,
                     ],
@@ -142,7 +142,7 @@ extension AWS {
                         "engine": engine.name,
                         "engineVersion": engine.version,
                         "applyImmediately": true,
-                        "autoMinorVersionUpgrade": true,
+                        "autoMinorVersionUpgrade": false,
                         "promotionTier": 0,
                         "publiclyAccessible": publiclyAccessible,
                     ],
@@ -157,7 +157,7 @@ extension AWS {
 
 extension AWS.SQLDatabase {
     public enum Engine: Sendable {
-        case postgres(_ version: PostgresVersion = .v16_4)
+        case postgres(_ version: PostgresVersion = .v16_6)
         case mysql(_ version: MySQLVersion = .v8_0)
 
         public var name: String {
@@ -207,8 +207,8 @@ extension AWS.SQLDatabase {
     }
 
     public enum PostgresVersion: String, Sendable {
-        case v16_4 = "16.4"
         case v16_6 = "16.6"
+        case v16_4 = "16.4"
         case v15_8 = "15.8"
         case v14_13 = "14.13"
 
