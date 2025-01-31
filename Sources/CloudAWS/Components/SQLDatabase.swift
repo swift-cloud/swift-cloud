@@ -185,6 +185,7 @@ extension AWS.SQLDatabase {
 
     public enum PostgresVersion: String, Sendable {
         case v16_4 = "16.4"
+        case v16_6 = "16.6"
         case v15_8 = "15.8"
         case v14_13 = "14.13"
     }
