@@ -36,6 +36,7 @@ extension AWS {
             _ name: String,
             engine: Engine = .postgres(),
             databaseName: String? = nil,
+            scaling: ScalingConfiguration = .init(minimumConcurrency: 1, maximumConcurrency: 64),
             masterUsername: String = "swift",
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
@@ -78,8 +79,8 @@ extension AWS {
                     "masterPassword": masterPassword,
                     "storageEncrypted": true,
                     "serverlessv2ScalingConfiguration": [
-                        "minCapacity": 0.5,
-                        "maxCapacity": 256,
+                        "minCapacity": scaling.minimumConcurrency,
+                        "maxCapacity": scaling.maximumConcurrency,
                     ],
                     "dbSubnetGroupName": subnetGroupName,
                     "vpcSecurityGroupIds": vpc.securityGroupIds,
@@ -155,6 +156,18 @@ extension AWS.SQLDatabase {
     public enum MySQLVersion: String, Sendable {
         case v8_0 = "8.0.mysql_aurora.3.08.0"
         case v5_7 = "5.7.mysql_aurora.2.12.4"
+    }
+}
+
+extension AWS.SQLDatabase {
+    public struct ScalingConfiguration: Sendable {
+        public let minimumConcurrency: Int
+        public let maximumConcurrency: Int
+
+        public init(minimumConcurrency: Int = 1, maximumConcurrency: Int) {
+            self.minimumConcurrency = minimumConcurrency
+            self.maximumConcurrency = maximumConcurrency
+        }
     }
 }
 
