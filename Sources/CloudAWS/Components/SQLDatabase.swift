@@ -36,7 +36,7 @@ extension AWS {
             _ name: String,
             engine: Engine = .postgres(),
             databaseName: String? = nil,
-            scaling: ScalingConfiguration = .init(minimumConcurrency: 1, maximumConcurrency: 64),
+            scaling: ScalingConfiguration = .init(maximumConcurrency: 64),
             masterUsername: String = "swift",
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
@@ -81,6 +81,7 @@ extension AWS {
                     "serverlessv2ScalingConfiguration": [
                         "minCapacity": scaling.minimumConcurrency,
                         "maxCapacity": scaling.maximumConcurrency,
+                        "secondsUntilAutoPause": scaling.timeUntilAutoPause.components.seconds,
                     ],
                     "dbSubnetGroupName": subnetGroupName,
                     "vpcSecurityGroupIds": vpc.securityGroupIds,
@@ -163,10 +164,16 @@ extension AWS.SQLDatabase {
     public struct ScalingConfiguration: Sendable {
         public let minimumConcurrency: Int
         public let maximumConcurrency: Int
+        public let timeUntilAutoPause: Duration
 
-        public init(minimumConcurrency: Int = 1, maximumConcurrency: Int) {
+        public init(
+            minimumConcurrency: Int = 0,
+            maximumConcurrency: Int,
+            timeUntilAutoPause: Duration = .seconds(300)
+        ) {
             self.minimumConcurrency = minimumConcurrency
             self.maximumConcurrency = maximumConcurrency
+            self.timeUntilAutoPause = timeUntilAutoPause
         }
     }
 }
