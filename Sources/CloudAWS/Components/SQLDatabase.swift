@@ -88,6 +88,7 @@ extension AWS {
                     "enableHttpEndpoint": true,
                     "finalSnapshotIdentifier": tokenize(context.stage, name, "final"),
                     "performanceInsightsEnabled": performanceInsightsEnabled,
+                    "storageType": "aurora-iopt1",
                     "serverlessv2ScalingConfiguration": [
                         "minCapacity": scaling.minimumConcurrency,
                         "maxCapacity": scaling.maximumConcurrency,
