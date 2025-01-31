@@ -37,6 +37,7 @@ extension AWS {
             scaling: ScalingConfiguration = .init(maximumConcurrency: 64),
             masterUsername: String = "swift",
             publiclyAccessible: Bool = false,
+            performanceInsightsEnabled: Bool = false,
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
             context: Context = .current
@@ -80,6 +81,7 @@ extension AWS {
                     "storageEncrypted": true,
                     "skipFinalSnapshot": false,
                     "finalSnapshotIdentifier": tokenize(context.stage, name, "final"),
+                    "performanceInsightsEnabled": performanceInsightsEnabled,
                     "serverlessv2ScalingConfiguration": [
                         "minCapacity": scaling.minimumConcurrency,
                         "maxCapacity": scaling.maximumConcurrency,
