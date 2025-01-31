@@ -80,6 +80,7 @@ extension AWS {
                     "allowMajorVersionUpgrade": true,
                     "storageEncrypted": true,
                     "skipFinalSnapshot": false,
+                    "enableHttpEndpoint": true,
                     "finalSnapshotIdentifier": tokenize(context.stage, name, "final"),
                     "performanceInsightsEnabled": performanceInsightsEnabled,
                     "serverlessv2ScalingConfiguration": [
