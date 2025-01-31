@@ -44,6 +44,7 @@ extension AWS {
             scaling: ScalingConfiguration = .init(maximumConcurrency: 64),
             masterUsername: String = "swift",
             performanceInsightsEnabled: Bool = false,
+            clusterParameters: [String: any Input<String>] = [:],
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
             context: Context = .current
@@ -72,7 +73,7 @@ extension AWS {
                 type: "aws:rds:ClusterParameterGroup",
                 properties: [
                     "family": engine.parameterGroupFamily,
-                    "parameters": [],
+                    "parameters": clusterParameters.map { ["name": $0.key, "value": $0.value] },
                 ],
                 options: options,
                 context: context
