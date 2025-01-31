@@ -43,7 +43,6 @@ extension AWS {
             databaseName: String? = nil,
             scaling: ScalingConfiguration = .init(maximumConcurrency: 64),
             masterUsername: String = "swift",
-            publiclyAccessible: Bool = false,
             performanceInsightsEnabled: Bool = false,
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
@@ -114,6 +113,12 @@ extension AWS {
                 options: options,
                 context: context
             )
+
+            let publiclyAccessible =
+                switch vpc {
+                case .public: true
+                case .private: false
+                }
 
             instances = [
                 Resource(
