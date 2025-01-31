@@ -6,7 +6,7 @@ extension AWS {
 
         public let cluster: Resource
 
-        public let instance: Resource
+        public let instances: [Resource]
 
         public let subnetGroup: Resource
 
@@ -36,6 +36,7 @@ extension AWS {
             databaseName: String? = nil,
             scaling: ScalingConfiguration = .init(maximumConcurrency: 64),
             masterUsername: String = "swift",
+            publiclyAccessible: Bool = false,
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
             context: Context = .current
@@ -75,6 +76,7 @@ extension AWS {
                     "manageMasterUserPassword": true,
                     "iamDatabaseAuthenticationEnabled": true,
                     "applyImmediately": true,
+                    "allowMajorVersionUpgrade": true,
                     "storageEncrypted": true,
                     "skipFinalSnapshot": false,
                     "finalSnapshotIdentifier": tokenize(context.stage, name, "final"),
@@ -90,18 +92,40 @@ extension AWS {
                 context: context
             )
 
-            instance = Resource(
-                name: "\(name)-instance",
-                type: "aws:rds:ClusterInstance",
-                properties: [
-                    "clusterIdentifier": clusterIdentifier,
-                    "instanceClass": "db.serverless",
-                    "engine": engine.name,
-                    "engineVersion": engine.version,
-                ],
-                options: options,
-                context: context
-            )
+            instances = [
+                Resource(
+                    name: "\(name)-instance-1",
+                    type: "aws:rds:ClusterInstance",
+                    properties: [
+                        "clusterIdentifier": clusterIdentifier,
+                        "instanceClass": "db.serverless",
+                        "engine": engine.name,
+                        "engineVersion": engine.version,
+                        "applyImmediately": true,
+                        "autoMinorVersionUpgrade": true,
+                        "promotionTier": 0,
+                        "publiclyAccessible": publiclyAccessible,
+                    ],
+                    options: options,
+                    context: context
+                ),
+                Resource(
+                    name: "\(name)-instance-2",
+                    type: "aws:rds:ClusterInstance",
+                    properties: [
+                        "clusterIdentifier": clusterIdentifier,
+                        "instanceClass": "db.serverless",
+                        "engine": engine.name,
+                        "engineVersion": engine.version,
+                        "applyImmediately": true,
+                        "autoMinorVersionUpgrade": true,
+                        "promotionTier": 0,
+                        "publiclyAccessible": publiclyAccessible,
+                    ],
+                    options: options,
+                    context: context
+                ),
+            ]
         }
     }
 }
