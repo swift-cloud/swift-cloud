@@ -39,7 +39,7 @@ extension AWS {
 
         public init(
             _ name: String,
-            engine: Engine = .postgres(),
+            engine: Engine,
             databaseName: String? = nil,
             scaling: ScalingConfiguration = .init(maximumConcurrency: 64),
             masterUsername: String = "swift",
