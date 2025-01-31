@@ -12,8 +12,6 @@ extension AWS {
 
         public let masterUsername: String
 
-        public let masterPassword: Output<String>
-
         public var name: Output<String> {
             cluster.name
         }
@@ -29,7 +27,7 @@ extension AWS {
         }
 
         public var url: Output<String> {
-            return "\(engine.scheme)://\(masterUsername):\(masterPassword)@\(hostname):\(port)/\(databaseName)"
+            return "\(engine.scheme)://\(masterUsername)@\(hostname):\(port)/\(databaseName)"
         }
 
         public init(
@@ -47,8 +45,6 @@ extension AWS {
             self.databaseName = databaseName ?? context.stage
 
             self.masterUsername = masterUsername
-
-            masterPassword = Random.Bytes("\(name)-master-password", length: 16).hex
 
             let subnetGroupName = tokenize(context.stage, name, "default")
 
@@ -76,7 +72,8 @@ extension AWS {
                     "engineMode": "provisioned",
                     "databaseName": databaseName,
                     "masterUsername": masterUsername,
-                    "masterPassword": masterPassword,
+                    "manageMasterUserPassword": true,
+                    "iamDatabaseAuthenticationEnabled": true,
                     "applyImmediately": true,
                     "storageEncrypted": true,
                     "skipFinalSnapshot": false,
@@ -189,7 +186,7 @@ extension AWS.SQLDatabase: Linkable {
     }
 
     public var resources: [Output<String>] {
-        [cluster.arn]
+        ["\(cluster.arn)/\(masterUsername)"]
     }
 
     public var properties: LinkProperties? {
@@ -199,9 +196,8 @@ extension AWS.SQLDatabase: Linkable {
             properties: [
                 "hostname": hostname,
                 "port": port,
-                "databaseName": "\(databaseName)",
-                "username": "\(masterUsername)",
-                "password": masterPassword,
+                "databaseName": databaseName,
+                "username": masterUsername,
                 "url": url,
             ]
         )
