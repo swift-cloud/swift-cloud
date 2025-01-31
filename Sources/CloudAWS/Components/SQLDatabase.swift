@@ -78,6 +78,8 @@ extension AWS {
                     "masterUsername": masterUsername,
                     "masterPassword": masterPassword,
                     "storageEncrypted": true,
+                    "skipFinalSnapshot": false,
+                    "finalSnapshotIdentifier": tokenize(context.stage, name, "final"),
                     "serverlessv2ScalingConfiguration": [
                         "minCapacity": scaling.minimumConcurrency,
                         "maxCapacity": scaling.maximumConcurrency,
