@@ -82,7 +82,7 @@ extension AWS {
                     "vpcConfig": vpc.map {
                         [
                             "subnetIds": $0.subnetIds,
-                            "securityGroupIds": $0.securityGroupIds,
+                            "securityGroupIds": [$0.securityGroupId],
                         ]
                     },
                 ],

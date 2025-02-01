@@ -119,8 +119,8 @@ extension AWS.VPC {
             }
         }
 
-        public var securityGroupIds: [Output<String>] {
-            return [vpc.defaultSecurityGroup.id]
+        public var securityGroupId: Output<String> {
+            return vpc.defaultSecurityGroup.id
         }
 
         public var subnetIds: Output<[String]> {

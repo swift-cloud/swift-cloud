@@ -55,7 +55,28 @@ extension AWS {
 
             self.masterUsername = masterUsername
 
+            let clusterIdentifier = tokenize(context.stage, name)
+
             let subnetGroupName = tokenize(context.stage, name, "default")
+
+            let publiclyAccessible =
+                switch vpc {
+                case .public: true
+                case .private: false
+                }
+
+            var securityGroupIds = [vpc.securityGroupId]
+
+            if publiclyAccessible {
+                let securityGroup = AWS.SecurityGroup(
+                    "\(name)-public-sg",
+                    ingress: .all,
+                    egress: .all,
+                    options: options,
+                    context: context
+                )
+                securityGroupIds.append(securityGroup.id)
+            }
 
             subnetGroup = Resource(
                 name: "\(name)-sg",
@@ -85,8 +106,6 @@ extension AWS {
                 context: context
             )
 
-            let clusterIdentifier = tokenize(context.stage, name)
-
             cluster = Resource(
                 name: name,
                 type: "aws:rds:Cluster",
@@ -115,17 +134,11 @@ extension AWS {
                     ],
                     "dbClusterParameterGroupName": clusterParameterGroup.name,
                     "dbSubnetGroupName": subnetGroupName,
-                    "vpcSecurityGroupIds": vpc.securityGroupIds,
+                    "vpcSecurityGroupIds": securityGroupIds,
                 ],
                 options: options,
                 context: context
             )
-
-            let publiclyAccessible =
-                switch vpc {
-                case .public: true
-                case .private: false
-                }
 
             instances = [
                 Resource(

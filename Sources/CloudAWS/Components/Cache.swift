@@ -36,7 +36,7 @@ extension AWS {
                 properties: [
                     "engine": engine.name,
                     "majorEngineVersion": engine.version,
-                    "securityGroupIds": vpc.securityGroupIds,
+                    "securityGroupIds": [vpc.securityGroupId],
                     "subnetIds": vpc.subnetIds,
                 ],
                 options: options,
