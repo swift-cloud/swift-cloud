@@ -65,7 +65,7 @@ extension AWS.Queue {
         _ function: AWS.Function,
         batchSize: Int = 1,
         maximumConcurrency: Int? = nil
-    ) -> AWS.Queue {
+    ) -> Self {
         function.link(self)
 
         let _ = Resource(

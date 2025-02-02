@@ -79,6 +79,37 @@ extension AWS.DynamoDB {
     }
 }
 
+extension AWS.DynamoDB {
+    public enum SubscriptionStartingPosition: String, Sendable {
+        case latest = "LATEST"
+        case trimHorizon = "TRIM_HORIZON"
+    }
+
+    @discardableResult
+    public func subscribe(
+        _ function: AWS.Function,
+        batchSize: Int = 1,
+        startingPosition: SubscriptionStartingPosition = .latest
+    ) -> Self {
+        function.link(self)
+
+        let _ = Resource(
+            name: "\(table.chosenName)-subscription",
+            type: "aws:lambda:EventSourceMapping",
+            properties: [
+                "eventSourceArn": table.output.keyPath("streamArn"),
+                "functionName": function.function.arn,
+                "batchSize": batchSize,
+                "startingPosition": startingPosition.rawValue,
+            ],
+            options: function.function.options,
+            context: function.function.context
+        )
+
+        return self
+    }
+}
+
 extension AWS.DynamoDB: Linkable {
     public var actions: [String] {
         [
