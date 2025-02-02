@@ -2,6 +2,8 @@ extension AWS {
     public struct DynamoDB: AWSComponent {
         public let table: Resource
 
+        public let streaming: StreamingConfiguration
+
         public var name: Output<String> {
             table.name
         }
@@ -18,6 +20,8 @@ extension AWS {
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
+            self.streaming = streaming
+
             table = Resource(
                 name: name,
                 type: "aws:dynamodb:Table",
@@ -113,6 +117,10 @@ extension AWS.DynamoDB {
         batchSize: Int = 1,
         startingPosition: SubscriptionStartingPosition = .latest
     ) -> Self {
+        guard streaming.isEnabled else {
+            fatalError("DynamoDB table does not have streaming enabled")
+        }
+
         function.link(self)
 
         let _ = Resource(
