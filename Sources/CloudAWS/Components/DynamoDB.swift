@@ -37,8 +37,8 @@ extension AWS {
                             "rangeKey": index.sortKey?.name,
                         ]
                     },
-                    "streamEnabled": streaming != .disabled,
-                    "streamViewType": streaming == .disabled ? nil : streaming.rawValue,
+                    "streamEnabled": streaming.isEnabled,
+                    "streamViewType": streaming.viewType?.rawValue,
                 ],
                 options: options,
                 context: context
@@ -70,12 +70,34 @@ extension AWS.DynamoDB {
 }
 
 extension AWS.DynamoDB {
-    public enum StreamingConfiguration: String, Sendable {
-        case disabled = "DISABLED"
-        case keysOnly = "KEYS_ONLY"
-        case oldImage = "OLD_IMAGE"
-        case newImage = "NEW_IMAGE"
-        case newAndOldImages = "NEW_AND_OLD_IMAGES"
+    public enum StreamingConfiguration: Sendable {
+        public enum StreamViewType: String, Sendable {
+            case keysOnly = "KEYS_ONLY"
+            case oldImage = "OLD_IMAGE"
+            case newImage = "NEW_IMAGE"
+            case newAndOldImages = "NEW_AND_OLD_IMAGES"
+        }
+
+        case disabled
+        case enabled(viewType: StreamViewType = .newImage)
+
+        public var isEnabled: Bool {
+            switch self {
+            case .disabled:
+                return false
+            case .enabled:
+                return true
+            }
+        }
+
+        public var viewType: StreamViewType? {
+            switch self {
+            case .disabled:
+                return nil
+            case .enabled(let viewType):
+                return viewType
+            }
+        }
     }
 }
 
