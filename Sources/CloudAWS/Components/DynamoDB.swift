@@ -14,6 +14,7 @@ extension AWS {
             _ name: String,
             primaryIndex: Index,
             secondaryIndexes: [Index] = [],
+            streamingConfiguration: StreamingConfiguration = .disabled,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -36,6 +37,8 @@ extension AWS {
                             "rangeKey": index.sortKey?.name,
                         ]
                     },
+                    "streamEnabled": streamingConfiguration != .disabled,
+                    "streamViewType": streamingConfiguration == .disabled ? nil : streamingConfiguration.rawValue,
                 ],
                 options: options,
                 context: context
@@ -63,6 +66,16 @@ extension AWS.DynamoDB {
         case string = "S"
         case number = "N"
         case binary = "B"
+    }
+}
+
+extension AWS.DynamoDB {
+    public enum StreamingConfiguration: String, Sendable {
+        case disabled = "DISABLED"
+        case keysOnly = "KEYS_ONLY"
+        case oldImage = "OLD_IMAGE"
+        case newImage = "NEW_IMAGE"
+        case newAndOldImages = "NEW_AND_OLD_IMAGES"
     }
 }
 
