@@ -14,7 +14,7 @@ extension AWS {
             _ name: String,
             primaryIndex: Index,
             secondaryIndexes: [Index] = [],
-            streamingConfiguration: StreamingConfiguration = .disabled,
+            streaming: StreamingConfiguration = .disabled,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -37,8 +37,8 @@ extension AWS {
                             "rangeKey": index.sortKey?.name,
                         ]
                     },
-                    "streamEnabled": streamingConfiguration != .disabled,
-                    "streamViewType": streamingConfiguration == .disabled ? nil : streamingConfiguration.rawValue,
+                    "streamEnabled": streaming != .disabled,
+                    "streamViewType": streaming == .disabled ? nil : streaming.rawValue,
                 ],
                 options: options,
                 context: context
