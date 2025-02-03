@@ -19,7 +19,7 @@ struct Command: ParsableCommand {
 
 extension Command {
     struct Options: ParsableArguments {
-        @Option var stage: String
+        @Option var stage: String? = nil
     }
 }
 
@@ -38,6 +38,15 @@ extension Command {
         let context: Context
         let client: Pulumi.Client
         let outputs: Outputs
+    }
+}
+
+extension Command.RunCommand {
+    func stage() async throws -> String {
+        if let stage = options.stage {
+            return stage
+        }
+        return try await Git.currentBranch()
     }
 }
 

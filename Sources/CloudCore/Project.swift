@@ -33,8 +33,9 @@ extension Project {
         let command = try? Command.parseAsRoot()
         switch command {
         case let command as Command.RunCommand:
+            let stage = try await command.stage()
             let context = try await Context(
-                stage: command.options.stage,
+                stage: stage,
                 project: Self(),
                 package: .current(),
                 store: .init(),
