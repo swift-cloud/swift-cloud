@@ -12,6 +12,13 @@ extension AWS {
             table.id
         }
 
+        fileprivate var streamArn: Output<String>? {
+            guard streaming.isEnabled else {
+                return nil
+            }
+            return table.output.keyPath("streamArn")
+        }
+
         public init(
             _ name: String,
             primaryIndex: Index,
@@ -117,7 +124,7 @@ extension AWS.DynamoDB {
         batchSize: Int = 1,
         startingPosition: SubscriptionStartingPosition = .latest
     ) -> Self {
-        guard streaming.isEnabled else {
+        guard let streamArn else {
             fatalError("DynamoDB table does not have streaming enabled")
         }
 
@@ -127,7 +134,7 @@ extension AWS.DynamoDB {
             name: "\(table.chosenName)-subscription",
             type: "aws:lambda:EventSourceMapping",
             properties: [
-                "eventSourceArn": table.output.keyPath("streamArn"),
+                "eventSourceArn": streamArn,
                 "functionName": function.function.arn,
                 "batchSize": batchSize,
                 "startingPosition": startingPosition.rawValue,
@@ -157,7 +164,7 @@ extension AWS.DynamoDB: Linkable {
     }
 
     public var resources: [Output<String>] {
-        [table.arn]
+        [table.arn, streamArn].compactMap { $0 }
     }
 
     public var properties: LinkProperties? {
