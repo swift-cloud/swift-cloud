@@ -163,7 +163,11 @@ extension AWS.Function: Linkable {
 extension AWS.Function {
     @discardableResult
     internal func grantInvokePermission(to resource: Resource, principal: String) -> Self {
-        return grantInvokePermission(name: resource.chosenName, arn: resource.arn, principal: principal)
+        return grantInvokePermission(
+            name: resource.chosenName,
+            arn: resource.arn,
+            principal: principal
+        )
     }
 
     @discardableResult
