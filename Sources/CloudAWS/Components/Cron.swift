@@ -35,7 +35,7 @@ extension AWS.Cron {
     @discardableResult
     public func invoke(_ function: AWS.Function) -> AWS.Cron {
         _ = Resource(
-            name: "\(name)-\(function.function.chosenName)-permission",
+            name: tokenize(eventRule.chosenName, function.function.chosenName, "permission"),
             type: "aws:lambda:Permission",
             properties: [
                 "action": "lambda:InvokeFunction",
@@ -47,12 +47,11 @@ extension AWS.Cron {
             context: function.function.context
         )
         _ = Resource(
-            name: "\(name)-\(function.function.chosenName)-target",
+            name: tokenize(eventRule.chosenName, function.function.chosenName, "target"),
             type: "aws:cloudwatch:EventTarget",
             properties: [
                 "rule": eventRule.name,
                 "arn": function.function.arn,
-                "targetId": "\(tokenize(name))-\(function.function.chosenName)-target-id",
             ],
             options: function.function.options,
             context: function.function.context
