@@ -32,6 +32,8 @@ extension AWS.Topic {
     public func subscribe(_ function: AWS.Function) -> AWS.Topic {
         function.link(self)
 
+        function.grantInvokePermission(to: topic, principal: "sns.amazonaws.com")
+
         let _ = Resource(
             name: "\(topic.chosenName)-\(function.function.chosenName)-subscription",
             type: "aws:sns:TopicSubscription",

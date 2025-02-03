@@ -68,6 +68,8 @@ extension AWS.Queue {
     ) -> Self {
         function.link(self)
 
+        function.grantInvokePermission(to: queue, principal: "sqs.amazonaws.com")
+
         let _ = Resource(
             name: "\(queue.chosenName)-subscription",
             type: "aws:lambda:EventSourceMapping",

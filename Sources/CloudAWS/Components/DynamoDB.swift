@@ -130,6 +130,12 @@ extension AWS.DynamoDB {
 
         function.link(self)
 
+        function.grantInvokePermission(
+            name: table.chosenName,
+            arn: streamArn,
+            principal: "dynamodb.amazonaws.com"
+        )
+
         let _ = Resource(
             name: "\(table.chosenName)-subscription",
             type: "aws:lambda:EventSourceMapping",

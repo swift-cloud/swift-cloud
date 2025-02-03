@@ -159,3 +159,31 @@ extension AWS.Function: Linkable {
         )
     }
 }
+
+extension AWS.Function {
+    @discardableResult
+    internal func grantInvokePermission(to resource: Resource, principal: String) -> Self {
+        return grantInvokePermission(name: resource.chosenName, arn: resource.arn, principal: principal)
+    }
+
+    @discardableResult
+    internal func grantInvokePermission(
+        name: any Input<String>,
+        arn: any Input<String>,
+        principal: String
+    ) -> Self {
+        _ = Resource(
+            name: tokenize(name, function.chosenName, "invoke-permission"),
+            type: "aws:lambda:Permission",
+            properties: [
+                "action": "lambda:InvokeFunction",
+                "function": function.name,
+                "principal": principal,
+                "sourceArn": arn,
+            ],
+            options: function.options,
+            context: function.context
+        )
+        return self
+    }
+}
