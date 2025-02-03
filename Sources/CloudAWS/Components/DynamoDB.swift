@@ -149,6 +149,10 @@ extension AWS.DynamoDB: Linkable {
             "dynamodb:DeleteItem",
             "dynamodb:Query",
             "dynamodb:Scan",
+            "dynamodb:GetRecords",
+            "dynamodb:GetShardIterator",
+            "dynamodb:DescribeStream",
+            "dynamodb:ListStreams",
         ]
     }
 
