@@ -132,6 +132,10 @@ extension UI {
                 return
             }
 
+            guard line != "." else {
+                return
+            }
+
             var lines =
                 line
                 .split(separator: .newlineSequence)
