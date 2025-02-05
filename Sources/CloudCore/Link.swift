@@ -10,7 +10,7 @@ public struct Link: Sendable, Linkable {
     public var properties: LinkProperties?
 
     public init(
-        name: any Input<String>,
+        _ name: any Input<String>,
         effect: any Input<String> = "Allow",
         actions: [any Input<String>] = ["*"],
         resources: [any Input<String>] = [],
