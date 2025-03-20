@@ -7,6 +7,7 @@ extension AWS {
         public let function: Resource
         public let functionUrl: Resource?
         public let environment: Environment
+        public let dockerImage: DockerImage?
 
         public var name: Output<String> {
             function.name
@@ -37,10 +38,25 @@ extension AWS {
             reservedConcurrency: Int? = nil,
             environment: [String: any Input<String>]? = nil,
             vpc: VPC.Configuration? = nil,
+            packageType: FunctionPackageType = .zip,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
+            let dockerFilePath = Docker.Dockerfile.filePath(name)
+
             self.environment = Environment(environment, shape: .keyValue)
+
+            dockerImage = switch packageType {
+            case .zip:
+                nil
+            case .image:
+                DockerImage(
+                    "\(name)-image",
+                    imageRepository: .shared(options: options),
+                    dockerFilePath: dockerFilePath,
+                    options: options
+                )
+            }
 
             role = AWS.Role(
                 "\(name)-role",
@@ -69,9 +85,10 @@ extension AWS {
                     "packageType": "Zip",
                     "runtime": "provided.al2",
                     "handler": "bootstrap",
-                    "code": [
-                        "fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName)/package.zip"
-                    ],
+                    "code": dockerImage == nil
+                        ? ["fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName)/package.zip"]
+                        : nil,
+                    "imageUri": dockerImage.map { "\($0.uri)" },
                     "architectures": [Architecture.current.lambdaArchitecture],
                     "memorySize": memory,
                     "timeout": timeout.components.seconds,
@@ -117,9 +134,15 @@ extension AWS {
                     )
                 }
 
-            context.store.build {
-                try await $0.builder.buildAmazonLinux(targetName: targetName)
-                try await $0.builder.packageForAwsLambda(targetName: targetName)
+            context.store.build { ctx in
+                try await ctx.builder.buildAmazonLinux(targetName: targetName)
+                switch packageType {
+                case .zip:
+                    try await ctx.builder.packageForAwsLambda(targetName: targetName)
+                case .image:
+                    let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
+                    try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
+                }
             }
         }
     }
@@ -134,6 +157,11 @@ extension AWS.Function {
     public enum FunctionInvokeMode: String {
         case buffered = "BUFFERED"
         case streaming = "RESPONSE_STREAM"
+    }
+
+    public enum FunctionPackageType {
+        case zip
+        case image
     }
 }
 
