@@ -36,10 +36,7 @@ extension AWS {
                     "billingMode": "PAY_PER_REQUEST",
                     "hashKey": primaryIndex.partitionKey.name,
                     "rangeKey": primaryIndex.sortKey?.name,
-                    "attributes": [
-                        ["name": primaryIndex.partitionKey.name, "type": primaryIndex.partitionKey.type.rawValue],
-                        primaryIndex.sortKey.map { ["name": $0.name, "type": $0.type.rawValue] },
-                    ].compactMap { $0 },
+                    "attributes": ([primaryIndex] + secondaryIndexes).asAttributes,
                     "globalSecondaryIndexes": secondaryIndexes.map { index in
                         [
                             "name": index.partitionKey.name,
@@ -181,5 +178,20 @@ extension AWS.DynamoDB: Linkable {
                 "name": name
             ]
         )
+    }
+}
+
+private extension AWS.DynamoDB.Index {
+    var asAttributes: [[String: String]] {
+        [
+            ["name": partitionKey.name, "type": partitionKey.type.rawValue],
+            sortKey.map { ["name": $0.name, "type": $0.type.rawValue] },
+        ].compactMap { $0 }
+    }
+}
+
+private extension [AWS.DynamoDB.Index] {
+    var asAttributes: [[String: String]] {
+        flatMap(\.asAttributes)
     }
 }
