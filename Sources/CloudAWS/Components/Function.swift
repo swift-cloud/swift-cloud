@@ -82,10 +82,10 @@ extension AWS {
                 type: "aws:lambda:Function",
                 properties: [
                     "role": "\(role.arn)",
-                    "packageType": "Zip",
-                    "runtime": "provided.al2",
-                    "handler": "bootstrap",
-                    "code": dockerImage == nil
+                    "packageType": packageType == .zip ? "Zip" : "Image",
+                    "runtime": packageType == .zip ? "provided.al2" : nil,
+                    "handler": packageType == .zip ? "bootstrap" : nil,
+                    "code": packageType == .zip
                         ? ["fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName)/package.zip"]
                         : nil,
                     "imageUri": dockerImage.map { "\($0.uri)" },
