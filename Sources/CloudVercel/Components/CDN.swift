@@ -34,7 +34,7 @@ extension Vercel {
                     "projectId": self.project.id,
                     "teamId": teamId,
                     "files": getProjectDirectory(path: vercelProjectPath).files,
-                    "pathPrefix": getProjectDirectory(path: vercelProjectPath).path
+                    "pathPrefix": getProjectDirectory(path: vercelProjectPath).keyPath("path")
                 ],
                 options: options,
                 context: context
