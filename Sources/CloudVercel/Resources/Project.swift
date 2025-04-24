@@ -14,7 +14,7 @@ extension Vercel {
                 properties: [
                     "name": "\(name)-\(context.stage)",
                     "teamId": teamId,
-                    "rootDirectory": ".cloud",
+                    "rootDirectory": ".",
                     "prioritiseProductionBuilds": true,
                 ],
                 options: options,
