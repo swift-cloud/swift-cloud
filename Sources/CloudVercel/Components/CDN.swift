@@ -29,7 +29,7 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": getProjectDirectory(path: Context.cloudDirectory).files
+                    "files": getPrebuiltProject(path: Context.cloudDirectory).output
                 ],
                 options: options,
                 context: context
