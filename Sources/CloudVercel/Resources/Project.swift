@@ -9,7 +9,7 @@ extension Vercel {
             context: Context = .current
         ) {
             resource = Resource(
-                name: name,
+                name: "\(name)-\(context.stage)",
                 type: "vercel:Project",
                 properties: [
                     "teamId": teamId,
