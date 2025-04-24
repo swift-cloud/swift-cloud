@@ -47,8 +47,8 @@ extension Vercel {
             context.store.build { _ in
                 let routes = origins.map { origin in
                     [
-                        "src": "\(origin.path)/(.*)".replacing("//(", with: "/("),
-                        "dest": "\(origin.url)/$1".replacing("//$", with: "/$")
+                        "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
+                        "dest": "\(origin.url)/$1".replacing("//$1", with: "/$1")
                     ]
                 }
                 let json = [
