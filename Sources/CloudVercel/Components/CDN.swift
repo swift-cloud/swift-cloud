@@ -85,9 +85,10 @@ extension Vercel {
                     atPath: "\(vercelProjectPath)/.vercel/output/functions/edge.func/index.js",
                     contents: """
                     export default async function handler(request) {
+                        const url = new URL(request.url);
                         return new Response("", {
                             headers: {
-                                "x-middleware-rewrite": process.env.SWIFT_ORIGIN_URL
+                                "x-middleware-rewrite": process.env.SWIFT_ORIGIN_URL + url.pathname
                             }
                         });
                     }
