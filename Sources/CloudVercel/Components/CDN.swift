@@ -21,7 +21,7 @@ extension Vercel {
 
             self.project = project ?? Project(name, options: options, context: context)
 
-            let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/vercel.json"
+            let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/output/vercel.json"
 
             self.deployment = Resource(
                 name: "\(name)-deployment",
@@ -29,7 +29,6 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": getFile(path: vercelJsonPath).file,
                 ],
                 options: options,
                 context: context
