@@ -29,6 +29,11 @@ extension Vercel {
 
             let prebuiltProject = getPrebuiltProject(path: vercelProjectPath)
 
+            var environment = [String: String]()
+            for (index, origin) in origins.enumerated() {
+                environment["SWIFT_CLOUD_CDN_ORIGIN_URL_\(index)"] = origin.url
+            }
+
             self.deployment = Resource(
                 name: "\(name)-deployment",
                 type: "vercel:Deployment",
@@ -38,9 +43,7 @@ extension Vercel {
                     "files": prebuiltProject.keyPath("output"),
                     "pathPrefix": prebuiltProject.keyPath("path"),
                     "production": true,
-                    "environment": [
-                        "SWIFT_ORIGIN_URL": origins[0].url
-                    ]
+                    "environment": environment
                 ],
                 options: options,
                 context: context
@@ -49,11 +52,11 @@ extension Vercel {
             context.store.build { _ in
                 let config = [
                     "version": 3,
-                    "routes": origins.map { origin in
+                    "routes": origins.enumerated().map { (index, origin) in
                         [
-                            "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
+                            "src": originPathToVercelSource(origin.path),
                             "middlewareRawSrc": [origin.path],
-                            "middlewarePath": "edge",
+                            "middlewarePath": "edge-\(index)",
                             "continue": true
                         ]
                     }
@@ -67,33 +70,35 @@ extension Vercel {
                     ])
                 )
 
-                let fnConfig = [
-                    "runtime": "edge",
-                    "entrypoint": "index.js",
-                    "envVarsInUse": ["SWIFT_ORIGIN_URL"]
-                ]
-                try Files.createFile(
-                    atPath: "\(vercelProjectPath)/.vercel/output/functions/edge.func/.vc-config.json",
-                    contents: JSONSerialization.data(withJSONObject: fnConfig, options: [
-                        .prettyPrinted,
-                        .sortedKeys,
-                        .withoutEscapingSlashes,
-                    ])
-                )
+                for (index, _) in origins.enumerated() {
+                    let fnConfig = [
+                        "runtime": "edge",
+                        "entrypoint": "index.js",
+                        "envVarsInUse": ["SWIFT_CLOUD_CDN_ORIGIN_URL_\(index)"]
+                    ]
+                    try Files.createFile(
+                        atPath: "\(vercelProjectPath)/.vercel/output/functions/edge-\(index).func/.vc-config.json",
+                        contents: JSONSerialization.data(withJSONObject: fnConfig, options: [
+                            .prettyPrinted,
+                            .sortedKeys,
+                            .withoutEscapingSlashes,
+                        ])
+                    )
 
-                try Files.createFile(
-                    atPath: "\(vercelProjectPath)/.vercel/output/functions/edge.func/index.js",
-                    contents: """
-                    export default async function handler(request) {
-                        const url = new URL(request.url);
-                        return new Response("", {
-                            headers: {
-                                "x-middleware-rewrite": process.env.SWIFT_ORIGIN_URL + url.pathname
-                            }
-                        });
-                    }
-                    """
-                )
+                    try Files.createFile(
+                        atPath: "\(vercelProjectPath)/.vercel/output/functions/edge-\(index).func/index.js",
+                        contents: """
+                        export default async function handler(request) {
+                            const url = new URL(request.url);
+                            return new Response("", {
+                                headers: {
+                                    "x-middleware-rewrite": process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index) + url.pathname
+                                }
+                            });
+                        }
+                        """
+                    )
+                }
             }
         }
     }
@@ -119,5 +124,16 @@ extension Vercel.CDN.Origin {
         _ url: any Input<String>, path: any Input<String>
     ) -> Self {
         .init(url: url, path: path)
+    }
+}
+
+fileprivate func originPathToVercelSource(_ input: String) -> String {
+    switch input {
+        case "/", "*":
+            return "/(.*)"
+        case _ where input.hasSuffix("/*"):
+            return "\(input.dropLast(2))/(.*)"
+        default:
+            return input
     }
 }
