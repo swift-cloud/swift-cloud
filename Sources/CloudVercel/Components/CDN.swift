@@ -52,7 +52,7 @@ extension Vercel {
                     "routes": origins.map { origin in
                         [
                             "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
-                            "middlewareRawSrc": origin.path,
+                            "middlewareRawSrc": [origin.path],
                             "middlewarePath": "edge",
                             "continue": true
                         ]
