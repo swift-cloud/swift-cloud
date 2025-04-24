@@ -37,7 +37,8 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": self.prebuiltProject.output
+                    "files": self.prebuiltProject.output,
+                    "production": true
                 ],
                 options: options,
                 context: context
