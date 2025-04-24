@@ -37,6 +37,7 @@ extension Vercel {
                     "teamId": teamId,
                     "files": prebuiltProject.keyPath("output"),
                     "pathPrefix": prebuiltProject.keyPath("path"),
+                    "production": true,
                     "environment": [
                         "SWIFT_ORIGIN_URL": origins[0].url
                     ]
