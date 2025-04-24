@@ -52,7 +52,7 @@ extension Vercel {
                     "routes": origins.map { origin in
                         [
                             "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
-                            "middlewarePath": "\(vercelProjectPath)/.vercel/output/functions/edge.func"
+                            "middlewarePath": "\(vercelProjectPath)/.vercel/output/functions/edge.func/index.js"
                         ]
                     }
                 ]
