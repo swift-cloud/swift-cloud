@@ -8,12 +8,18 @@ extension Vercel {
         public let project: Project
 
         public var url: Output<String> {
-            deployment.output.keyPath("url")
+            if let domainName {
+                return "https://\(domainName.hostname)"
+            } else {
+                return "https://\(deployment.output.keyPath("url"))"
+            }
         }
 
         private let deployment: Resource
 
         private let projectDomain: Resource?
+
+        private let domainName: DomainName?
 
         public init(
             _ name: String,
@@ -25,6 +31,8 @@ extension Vercel {
             context: Context = .current
         ) {
             self.name = "\(name)"
+
+            self.domainName = domainName
 
             self.project = project ?? Project(name, options: options, context: context)
 
