@@ -9,9 +9,10 @@ extension Vercel {
             context: Context = .current
         ) {
             resource = Resource(
-                name: "\(name)-\(context.stage)",
+                name: name,
                 type: "vercel:Project",
                 properties: [
+                    "name": "\(name)-\(context.stage)",
                     "teamId": teamId,
                     "outputDirectory": ".cloud/.vercel",
                     "prioritiseProductionBuilds": true,
