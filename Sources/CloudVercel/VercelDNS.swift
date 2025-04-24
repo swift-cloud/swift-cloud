@@ -1,5 +1,7 @@
 import CloudCore
 
+private let vercelAppDomain = "vercel.app"
+
 extension Vercel {
     public struct DNS: DNSProvider {
         public let domain: String
@@ -36,5 +38,9 @@ extension Vercel {
 extension DNSProvider where Self == Vercel.DNS {
     public static func vercel(domain: String) -> Vercel.DNS {
         .init(domain: domain)
+    }
+
+    public static func vercelDotApp() -> Vercel.DNS {
+        .init(domain: vercelAppDomain)
     }
 }
