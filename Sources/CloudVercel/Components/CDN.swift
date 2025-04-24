@@ -47,22 +47,50 @@ extension Vercel {
             )
 
             context.store.build { _ in
-                let routes = origins.map { origin in
-                    [
-                        "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
-                        "dest": "\(origin.url)/$1".replacing("//$1", with: "/$1")
-                    ]
-                }
-                let json = [
+                let config = [
                     "version": 3,
-                    "routes": routes
+                    "routes": origins.map { origin in
+                        [
+                            "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
+                            "middlewarePath": "edge.func"
+                        ]
+                    }
                 ]
-                let contents = try JSONSerialization.data(withJSONObject: json, options: [
-                    .prettyPrinted,
-                    .sortedKeys,
-                    .withoutEscapingSlashes,
-                ])
-                try Files.createFile(atPath: "\(vercelProjectPath)/.vercel/output/config.json", contents: contents)
+                try Files.createFile(
+                    atPath: "\(vercelProjectPath)/.vercel/output/config.json",
+                    contents: JSONSerialization.data(withJSONObject: config, options: [
+                        .prettyPrinted,
+                        .sortedKeys,
+                        .withoutEscapingSlashes,
+                    ])
+                )
+
+                let fnConfig = [
+                    "runtime": "edge",
+                    "entrypoint": "index.js",
+                    "envVarsInUse": ["SWIFT_ORIGIN_URL"]
+                ]
+                try Files.createFile(
+                    atPath: "\(vercelProjectPath)/.vercel/output/functions/edge.func/.vc-config.json",
+                    contents: JSONSerialization.data(withJSONObject: fnConfig, options: [
+                        .prettyPrinted,
+                        .sortedKeys,
+                        .withoutEscapingSlashes,
+                    ])
+                )
+
+                try Files.createFile(
+                    atPath: "\(vercelProjectPath)/.vercel/output/functions/edge.func/index.js",
+                    contents: """
+                    export default async function handler(request) {
+                        return new Response("", {
+                            headers: {
+                                "x-middleware-rewrite": process.env.SWIFT_ORIGIN_URL
+                            }
+                        });
+                    }
+                    """
+                )
             }
         }
     }
