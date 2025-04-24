@@ -29,7 +29,7 @@ extension Vercel {
 
             self.prebuiltProject = getPrebuiltProject(path: Context.cloudDirectory)
 
-            let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/output/vercel.json"
+            let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/output/config.json"
 
             self.deployment = Resource(
                 name: "\(name)-deployment",
@@ -44,16 +44,15 @@ extension Vercel {
             )
 
             context.store.build { _ in
-                let rewrites = origins.map { origin in
+                let routes = origins.map { origin in
                     [
-                        "source": "\(origin.path)/:match*".replacing("//:match*", with: "/:match*"),
-                        "destination": "\(origin.url)/:match*".replacing("//:match*", with: "/:match*")
+                        "src": "\(origin.path)/(.*)".replacing("//(", with: "/("),
+                        "dest": "\(origin.url)/$1".replacing("//$", with: "/$")
                     ]
                 }
                 let json = [
-                    "$schema": "https://openapi.vercel.sh/vercel.json",
-                    "cleanUrls": true,
-                    "rewrites": rewrites
+                    "version": 3,
+                    "routes": routes
                 ]
                 let contents = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
                 try Files.createFile(atPath: vercelJsonPath, contents: contents)
