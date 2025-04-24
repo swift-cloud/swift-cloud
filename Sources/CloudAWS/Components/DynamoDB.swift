@@ -157,6 +157,7 @@ extension AWS.DynamoDB: Linkable {
             "dynamodb:GetItem",
             "dynamodb:UpdateItem",
             "dynamodb:DeleteItem",
+            "dynamodb:BatchWriteItem",
             "dynamodb:Query",
             "dynamodb:Scan",
             "dynamodb:GetRecords",
@@ -167,7 +168,11 @@ extension AWS.DynamoDB: Linkable {
     }
 
     public var resources: [Output<String>] {
-        [table.arn, streamArn].compactMap { $0 }
+        [
+            table.arn,
+            "\(table.arn)/*",
+            streamArn
+        ].compactMap { $0 }
     }
 
     public var properties: LinkProperties? {
