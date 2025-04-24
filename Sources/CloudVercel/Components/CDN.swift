@@ -47,7 +47,7 @@ extension Vercel {
                     "cleanUrls": true,
                     "rewrites": rewrites
                 ]
-                let contents = try JSONSerialization.data(withJSONObject: json, options: [])
+                let contents = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
                 try Files.createFile(atPath: vercelJsonPath, contents: contents)
             }
         }
