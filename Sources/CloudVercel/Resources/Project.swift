@@ -12,7 +12,7 @@ extension Vercel {
                 name: name,
                 type: "vercel:Project",
                 properties: [
-                    "name": "\(name)-\(context.stage)",
+                    "name": "\(context.project.name)-\(name)-\(context.stage)",
                     "teamId": teamId,
                     "prioritiseProductionBuilds": true,
                 ],

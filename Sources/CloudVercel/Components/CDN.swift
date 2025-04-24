@@ -13,9 +13,12 @@ extension Vercel {
 
         private let deployment: Resource
 
+        private let projectDomain: Resource?
+
         public init(
             _ name: String,
             origins: [Vercel.CDN.Origin],
+            domainName: DomainName? = nil,
             project: Project? = nil,
             teamId: String? = nil,
             options: Resource.Options? = nil,
@@ -48,6 +51,25 @@ extension Vercel {
                 options: options,
                 context: context
             )
+
+            if let domainName {
+                self.projectDomain = Resource(
+                    name: "\(name)-project-domain",
+                    type: "vercel:ProjectDomain",
+                    properties: [
+                        "domain": domainName.hostname,
+                        "projectId": self.project.id,
+                    ],
+                    options: options,
+                    context: context
+                )
+
+                if !domainName.hostname.description.contains(".vercel.app") {
+                    domainName.aliasTo("cname.vercel-dns.com")
+                }
+            } else {
+                self.projectDomain = nil
+            }
 
             context.store.build { _ in
                 let config = [
