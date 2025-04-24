@@ -7,6 +7,12 @@ extension Vercel {
 
         public let project: Project
 
+        public let prebuiltProject: Output<GetPrebuiltProject>
+
+        public var url: Output<String> {
+            deployment.output.keyPath("url")
+        }
+
         private let deployment: Resource
 
         public init(
@@ -21,6 +27,8 @@ extension Vercel {
 
             self.project = project ?? Project(name, options: options, context: context)
 
+            self.prebuiltProject = getPrebuiltProject(path: Context.cloudDirectory)
+
             let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/output/vercel.json"
 
             self.deployment = Resource(
@@ -29,7 +37,7 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": getPrebuiltProject(path: "\(Context.cloudDirectory)/.vercel").output
+                    "files": self.prebuiltProject.output
                 ],
                 options: options,
                 context: context
