@@ -29,7 +29,7 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": getFile(path: vercelJsonPath),
+                    "files": getFile(path: vercelJsonPath).file,
                 ],
                 options: options,
                 context: context
