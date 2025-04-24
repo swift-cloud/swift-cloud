@@ -33,8 +33,8 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": getProjectDirectory(path: vercelProjectPath).files,
-                    "pathPrefix": getProjectDirectory(path: vercelProjectPath).keyPath("path")
+                    "files": getProjectDirectory(path: "./.cloud/.vercel").files,
+                    "pathPrefix": "./.cloud/.vercel"
                 ],
                 options: options,
                 context: context
