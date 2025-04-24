@@ -7,8 +7,6 @@ extension Vercel {
 
         public let project: Project
 
-        public let prebuiltProject: Output<GetPrebuiltProject>
-
         public var url: Output<String> {
             deployment.output.keyPath("url")
         }
@@ -27,9 +25,7 @@ extension Vercel {
 
             self.project = project ?? Project(name, options: options, context: context)
 
-            self.prebuiltProject = getPrebuiltProject(path: Context.cloudDirectory)
-
-            let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/output/config.json"
+            let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/vercel.json"
 
             self.deployment = Resource(
                 name: "\(name)-deployment",
@@ -37,23 +33,23 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": self.prebuiltProject.output,
-                    "production": true
+                    "files": getProjectDirectory(path: "\(Context.cloudDirectory)/.vercel").files
                 ],
                 options: options,
                 context: context
             )
 
             context.store.build { _ in
-                let routes = origins.map { origin in
+                let rewrites = origins.map { origin in
                     [
-                        "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
-                        "dest": "\(origin.url)/$1".replacing("//$1", with: "/$1")
+                        "source": "\(origin.path)/:match*".replacing("//:match*", with: "/:match*"),
+                        "destination": "\(origin.url)/:match*".replacing("//:match*", with: "/:match*")
                     ]
                 }
                 let json = [
-                    "version": 3,
-                    "routes": routes
+                    "$schema": "https://openapi.vercel.sh/vercel.json",
+                    "cleanUrls": true,
+                    "rewrites": rewrites
                 ]
                 let contents = try JSONSerialization.data(withJSONObject: json, options: [
                     .prettyPrinted,
