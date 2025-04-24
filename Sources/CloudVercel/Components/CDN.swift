@@ -54,7 +54,11 @@ extension Vercel {
                     "version": 3,
                     "routes": routes
                 ]
-                let contents = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
+                let contents = try JSONSerialization.data(withJSONObject: json, options: [
+                    .prettyPrinted,
+                    .sortedKeys,
+                    .withoutEscapingSlashes,
+                ])
                 try Files.createFile(atPath: vercelJsonPath, contents: contents)
             }
         }
