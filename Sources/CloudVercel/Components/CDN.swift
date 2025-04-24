@@ -120,9 +120,10 @@ extension Vercel {
                         contents: """
                         export default async function handler(request) {
                             const url = new URL(request.url);
+                            const origin = process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index);
                             return new Response("", {
                                 headers: {
-                                    "x-middleware-rewrite": process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index) + url.pathname + url.search
+                                    "x-middleware-rewrite": origin + url.pathname + url.search
                                 }
                             });
                         }
