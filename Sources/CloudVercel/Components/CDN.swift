@@ -25,7 +25,9 @@ extension Vercel {
 
             self.project = project ?? Project(name, options: options, context: context)
 
-            let vercelProjectPath = "\(Context.cloudDirectory)/.vercel"
+            let vercelProjectPath = "\(Context.cloudDirectory)/.vercel/\(context.project.name)"
+
+            let prebuiltProject = getPrebuiltProject(path: vercelProjectPath)
 
             self.deployment = Resource(
                 name: "\(name)-deployment",
@@ -33,32 +35,30 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": getProjectDirectory(path: "\(Context.cloudDirectory)/.vercel").keyPath("files"),
-                    "pathPrefix": "\(Context.cloudDirectory)/.vercel"
+                    "files": prebuiltProject.keyPath("output"),
+                    "pathPrefix": prebuiltProject.keyPath("path")
                 ],
                 options: options,
                 context: context
             )
 
             context.store.build { _ in
-                let rewrites = origins.map { origin in
+                let routes = origins.map { origin in
                     [
-                        "source": "\(origin.path)/:match*".replacing("//:match*", with: "/:match*"),
-                        "destination": "\(origin.url)/:match*".replacing("//:match*", with: "/:match*")
+                        "src": "\(origin.path)/(.*)".replacing("//(.*)", with: "/(.*)"),
+                        "dest": "\(origin.url)/$1".replacing("//$1", with: "/$1")
                     ]
                 }
                 let json = [
-                    "$schema": "https://openapi.vercel.sh/vercel.json",
-                    "cleanUrls": true,
-                    "rewrites": rewrites
+                    "version": 3,
+                    "routes": routes
                 ]
                 let contents = try JSONSerialization.data(withJSONObject: json, options: [
                     .prettyPrinted,
                     .sortedKeys,
                     .withoutEscapingSlashes,
                 ])
-                try Files.createFile(atPath: "\(vercelProjectPath)/vercel.json", contents: contents)
-                try Files.createFile(atPath: "\(vercelProjectPath)/public/file.txt", contents: "Hello, World.")
+                try Files.createFile(atPath: "\(vercelProjectPath)/.vercel/output/config.json", contents: contents)
             }
         }
     }
