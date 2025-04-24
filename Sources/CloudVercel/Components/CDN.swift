@@ -25,7 +25,7 @@ extension Vercel {
 
             self.project = project ?? Project(name, options: options, context: context)
 
-            let vercelJsonPath = "\(Context.cloudDirectory)/.vercel/vercel.json"
+            let vercelProjectPath = "\(Context.cloudDirectory)/.vercel"
 
             self.deployment = Resource(
                 name: "\(name)-deployment",
@@ -33,7 +33,7 @@ extension Vercel {
                 properties: [
                     "projectId": self.project.id,
                     "teamId": teamId,
-                    "files": getProjectDirectory(path: "\(Context.cloudDirectory)/.vercel").files
+                    "files": getProjectDirectory(path: vercelProjectPath).files
                 ],
                 options: options,
                 context: context
@@ -56,7 +56,8 @@ extension Vercel {
                     .sortedKeys,
                     .withoutEscapingSlashes,
                 ])
-                try Files.createFile(atPath: vercelJsonPath, contents: contents)
+                try Files.createFile(atPath: "\(vercelProjectPath)/vercel.json", contents: contents)
+                try Files.createFile(atPath: "\(vercelProjectPath)/public/file.txt", contents: "Hello, World.")
             }
         }
     }
