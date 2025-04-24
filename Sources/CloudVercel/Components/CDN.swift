@@ -92,7 +92,7 @@ extension Vercel {
                             const url = new URL(request.url);
                             return new Response("", {
                                 headers: {
-                                    "x-middleware-rewrite": process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index) + url.pathname
+                                    "x-middleware-rewrite": process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index) + url.pathname + url.search
                                 }
                             });
                         }
