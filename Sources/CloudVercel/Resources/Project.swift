@@ -14,7 +14,6 @@ extension Vercel {
                 properties: [
                     "name": "\(name)-\(context.stage)",
                     "teamId": teamId,
-                    "rootDirectory": ".",
                     "prioritiseProductionBuilds": true,
                 ],
                 options: options,
