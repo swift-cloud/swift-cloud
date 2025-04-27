@@ -41,6 +41,15 @@ extension Builder {
             zipArguments.append("Public")
         }
 
+        // Copy Resources directory if it exists
+        let resourcesDirectory = "\(Context.projectDirectory)/Resources"
+        if Files.fileExists(atPath: resourcesDirectory) {
+            let lambdaResourcesDirectory = "\(lambdaDirectory)/Resources"
+            try Files.createDirectory(atPath: lambdaResourcesDirectory)
+            try Files.copyDirectory(fromPath: resourcesDirectory, toPath: lambdaResourcesDirectory)
+            zipArguments.append("Resources")
+        }
+
         try await shellOut(
             to: "zip",
             arguments: zipArguments,
