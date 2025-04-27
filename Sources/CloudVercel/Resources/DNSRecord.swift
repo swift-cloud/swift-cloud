@@ -14,6 +14,7 @@ extension Vercel {
             name: any Input<String>,
             value: any Input<String>,
             ttl: Duration = .seconds(60),
+            teamId: String? = nil,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -27,6 +28,7 @@ extension Vercel {
                     "name": Strings.trimSuffix(name, suffix: ".\(domain)").result,
                     "value": value,
                     "ttl": ttl.components.seconds,
+                    "teamId": teamId,
                     "comment": "Managed by Swift Cloud",
                 ],
                 options: options,
