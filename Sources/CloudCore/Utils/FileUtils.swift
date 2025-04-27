@@ -114,4 +114,29 @@ public enum Files {
 
         return result
     }
+
+    public static func copyDirectory(fromPath: String, toPath: String) throws {
+        // Get contents of source directory
+        let contents = try FileManager.default.contentsOfDirectory(atPath: fromPath)
+
+        // Create destination directory if it doesn't exist
+        if !fileExists(atPath: toPath) {
+            try createDirectory(atPath: toPath)
+        }
+
+        // Copy each item from source to destination
+        for item in contents {
+            let sourceItemPath = "\(fromPath)/\(item)"
+            let destItemPath = "\(toPath)/\(item)"
+
+            var isDirectory: ObjCBool = false
+            if FileManager.default.fileExists(atPath: sourceItemPath, isDirectory: &isDirectory) {
+                if isDirectory.boolValue {
+                    try copyDirectory(fromPath: sourceItemPath, toPath: destItemPath)
+                } else {
+                    try copyFile(fromPath: sourceItemPath, toPath: destItemPath)
+                }
+            }
+        }
+    }
 }

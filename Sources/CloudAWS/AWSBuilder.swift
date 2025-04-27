@@ -22,6 +22,25 @@ extension Builder {
             try Files.copyFile(fromPath: filePath, toPath: "\(lambdaDirectory)/\(fileName)")
             zipArguments.append(fileName)
         }
+
+        // Copy Content directory if it exists
+        let contentDirectory = "\(Context.projectDirectory)/Content"
+        if Files.fileExists(atPath: contentDirectory) {
+            let lambdaContentDirectory = "\(lambdaDirectory)/Content"
+            try Files.createDirectory(atPath: lambdaContentDirectory)
+            try Files.copyDirectory(fromPath: contentDirectory, toPath: lambdaContentDirectory)
+            zipArguments.append("Content")
+        }
+
+        // Copy Public directory if it exists
+        let publicDirectory = "\(Context.projectDirectory)/Public"
+        if Files.fileExists(atPath: publicDirectory) {
+            let lambdaPublicDirectory = "\(lambdaDirectory)/Public"
+            try Files.createDirectory(atPath: lambdaPublicDirectory)
+            try Files.copyDirectory(fromPath: publicDirectory, toPath: lambdaPublicDirectory)
+            zipArguments.append("Public")
+        }
+
         try await shellOut(
             to: "zip",
             arguments: zipArguments,
