@@ -123,14 +123,12 @@ extension Vercel {
                     try Files.createFile(
                         atPath: "\(vercelProjectPath)/.vercel/output/functions/edge-\(index).func/index.js",
                         contents: """
+                            import { rewrite } from '@vercel/edge';
                             export default async function handler(request) {
                                 const url = new URL(request.url);
                                 const origin = process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index);
-                                return new Response("", {
-                                    headers: {
-                                        "x-middleware-rewrite": origin + url.pathname + url.search
-                                    }
-                                });
+                                const newUrl = new URL(origin + url.pathname + url.search);
+                                return rewrite(newUrl);
                             }
                             """
                     )
