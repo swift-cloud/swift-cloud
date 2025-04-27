@@ -70,6 +70,8 @@ extension Builder {
             imageName = "swift:5.10-noble"
         case "6.0":
             imageName = "swift:6.0-noble"
+        case "6.1":
+            imageName = "swift:6.1-noble"
         default:
             fatalError("Unsupported Swift version: \(swiftVersion)")
         }
@@ -95,10 +97,15 @@ extension Builder {
             flags = ["--triple", "wasm32-unknown-wasi"]
             pre = ":"
         case "6.0":
-            imageName = "swift:6.0.2"
+            imageName = "swift:6.0.3"
             flags = ["--swift-sdk", "wasm32-unknown-wasi"]
             pre =
-                "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.0.2-RELEASE/swift-wasm-6.0.2-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 6ffedb055cb9956395d9f435d03d53ebe9f6a8d45106b979d1b7f53358e1dcb4"
+                "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.0.3-RELEASE/swift-wasm-6.0.3-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 31d3585b06dd92de390bacc18527801480163188cd7473f492956b5e213a8618"
+        case "6.1":
+            imageName = "swift:6.1.0"
+            flags = ["--swift-sdk", "wasm32-unknown-wasi"]
+            pre =
+                "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.1-RELEASE/swift-wasm-6.1-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 7550b4c77a55f4b637c376f5d192f297fe185607003a6212ad608276928db992"
         default:
             fatalError("Unsupported Swift version: \(swiftVersion)")
         }
