@@ -24,10 +24,10 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources /var/runtime/
 
         # Copy directories if they exist
-        COPY --from-exists=ignore ./Content /var/task/Content
-        COPY --from-exists=ignore ./Public /var/task/Public
-        COPY --from-exists=ignore ./Resources /var/task/Resources
-        COPY --from-exists=ignore ./Output /var/task/Output
+        COPY ./Content* /var/task/Content
+        COPY ./Public* /var/task/Public
+        COPY ./Resources* /var/task/Resources
+        COPY ./Output* /var/task/Output
 
         CMD [ "\(targetName)" ]
         """
@@ -43,10 +43,10 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
         # Copy directories if they exist
-        COPY --from-exists=ignore ./Content /app/Content
-        COPY --from-exists=ignore ./Public /app/Public
-        COPY --from-exists=ignore ./Resources /app/Resources
-        COPY --from-exists=ignore ./Output /app/Output
+        COPY ./Content* /app/Content
+        COPY ./Public* /app/Public
+        COPY ./Resources* /app/Resources
+        COPY ./Output* /app/Output
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
@@ -76,10 +76,10 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
         # Copy directories if they exist
-        COPY --from-exists=ignore ./Content /app/Content
-        COPY --from-exists=ignore ./Public /app/Public
-        COPY --from-exists=ignore ./Resources /app/Resources
-        COPY --from-exists=ignore ./Output /app/Output
+        COPY ./Content* /app/Content
+        COPY ./Public* /app/Public
+        COPY ./Resources* /app/Resources
+        COPY ./Output* /app/Output
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
