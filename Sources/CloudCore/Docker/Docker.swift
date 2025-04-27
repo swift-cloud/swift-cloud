@@ -24,10 +24,10 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources /var/runtime/
 
         # Copy directories if they exist
-        COPY ./Content /var/task/Content 2>/dev/null || true
-        COPY ./Public /var/task/Public 2>/dev/null || true
-        COPY ./Resources /var/task/Resources 2>/dev/null || true
-        COPY ./Output /var/task/Output 2>/dev/null || true
+        COPY --from-exists=ignore ./Content /var/task/Content
+        COPY --from-exists=ignore ./Public /var/task/Public
+        COPY --from-exists=ignore ./Resources /var/task/Resources
+        COPY --from-exists=ignore ./Output /var/task/Output
 
         CMD [ "\(targetName)" ]
         """
@@ -43,10 +43,10 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
         # Copy directories if they exist
-        COPY ./Content /app/Content 2>/dev/null || true
-        COPY ./Public /app/Public 2>/dev/null || true
-        COPY ./Resources /app/Resources 2>/dev/null || true
-        COPY ./Output /app/Output 2>/dev/null || true
+        COPY --from-exists=ignore ./Content /app/Content
+        COPY --from-exists=ignore ./Public /app/Public
+        COPY --from-exists=ignore ./Resources /app/Resources
+        COPY --from-exists=ignore ./Output /app/Output
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
@@ -76,10 +76,10 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
         # Copy directories if they exist
-        COPY ./Content /app/Content 2>/dev/null || true
-        COPY ./Public /app/Public 2>/dev/null || true
-        COPY ./Resources /app/Resources 2>/dev/null || true
-        COPY ./Output /app/Output 2>/dev/null || true
+        COPY --from-exists=ignore ./Content /app/Content
+        COPY --from-exists=ignore ./Public /app/Public
+        COPY --from-exists=ignore ./Resources /app/Resources
+        COPY --from-exists=ignore ./Output /app/Output
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
