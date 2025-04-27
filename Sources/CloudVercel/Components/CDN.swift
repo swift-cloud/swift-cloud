@@ -54,7 +54,7 @@ extension Vercel {
                     "files": prebuiltProject.keyPath("output"),
                     "pathPrefix": prebuiltProject.keyPath("path"),
                     "production": true,
-                    "environment": environment
+                    "environment": environment,
                 ],
                 options: options,
                 context: context
@@ -67,6 +67,7 @@ extension Vercel {
                     properties: [
                         "domain": domainName.hostname,
                         "projectId": self.project.id,
+                        "teamId": teamId,
                     ],
                     options: options,
                     context: context
@@ -87,47 +88,51 @@ extension Vercel {
                             "src": originPathToVercelSource(origin.path),
                             "middlewareRawSrc": [origin.path],
                             "middlewarePath": "edge-\(index)",
-                            "continue": true
+                            "continue": true,
                         ]
-                    }
+                    },
                 ]
                 try Files.createFile(
                     atPath: "\(vercelProjectPath)/.vercel/output/config.json",
-                    contents: JSONSerialization.data(withJSONObject: config, options: [
-                        .prettyPrinted,
-                        .sortedKeys,
-                        .withoutEscapingSlashes,
-                    ])
+                    contents: JSONSerialization.data(
+                        withJSONObject: config,
+                        options: [
+                            .prettyPrinted,
+                            .sortedKeys,
+                            .withoutEscapingSlashes,
+                        ])
                 )
 
                 for (index, _) in origins.enumerated() {
                     let fnConfig = [
                         "runtime": "edge",
                         "entrypoint": "index.js",
-                        "envVarsInUse": ["SWIFT_CLOUD_CDN_ORIGIN_URL_\(index)"]
+                        "envVarsInUse": ["SWIFT_CLOUD_CDN_ORIGIN_URL_\(index)"],
                     ]
                     try Files.createFile(
                         atPath: "\(vercelProjectPath)/.vercel/output/functions/edge-\(index).func/.vc-config.json",
-                        contents: JSONSerialization.data(withJSONObject: fnConfig, options: [
-                            .prettyPrinted,
-                            .sortedKeys,
-                            .withoutEscapingSlashes,
-                        ])
+                        contents: JSONSerialization.data(
+                            withJSONObject: fnConfig,
+                            options: [
+                                .prettyPrinted,
+                                .sortedKeys,
+                                .withoutEscapingSlashes,
+                            ])
                     )
 
                     try Files.createFile(
                         atPath: "\(vercelProjectPath)/.vercel/output/functions/edge-\(index).func/index.js",
                         contents: """
-                        export default async function handler(request) {
-                            const url = new URL(request.url);
-                            const origin = process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index);
-                            return new Response("", {
-                                headers: {
-                                    "x-middleware-rewrite": origin + url.pathname + url.search
-                                }
-                            });
-                        }
-                        """
+                            export default async function handler(request) {
+                                const url = new URL(request.url);
+                                const origin = process.env.SWIFT_CLOUD_CDN_ORIGIN_URL_\(index);
+                                return new Response("", {
+                                    headers: {
+                                        "x-middleware-rewrite": origin + url.pathname + url.search
+                                    }
+                                });
+                            }
+                            """
                     )
                 }
             }
@@ -158,13 +163,13 @@ extension Vercel.CDN.Origin {
     }
 }
 
-fileprivate func originPathToVercelSource(_ input: String) -> String {
+private func originPathToVercelSource(_ input: String) -> String {
     switch input {
-        case "/", "*":
-            return "/(.*)"
-        case _ where input.hasSuffix("/*"):
-            return "\(input.dropLast(2))/(.*)"
-        default:
-            return input
+    case "/", "*":
+        return "/(.*)"
+    case _ where input.hasSuffix("/*"):
+        return "\(input.dropLast(2))/(.*)"
+    default:
+        return input
     }
 }

@@ -6,7 +6,10 @@ extension Vercel {
     public struct DNS: DNSProvider {
         public let domain: String
 
-        public init(domain: String) {
+        public let teamId: String?
+
+        public init(domain: String, teamId: String? = nil) {
+            self.teamId = teamId ?? Context.environment["VERCEL_TEAM_ID"]
             self.domain = domain
         }
 
@@ -21,7 +24,8 @@ extension Vercel {
                 type: type,
                 name: name,
                 value: target,
-                ttl: ttl
+                ttl: ttl,
+                teamId: teamId,
             )
         }
 
@@ -36,8 +40,8 @@ extension Vercel {
 }
 
 extension DNSProvider where Self == Vercel.DNS {
-    public static func vercel(domain: String) -> Vercel.DNS {
-        .init(domain: domain)
+    public static func vercel(domain: String, teamId: String? = nil) -> Vercel.DNS {
+        .init(domain: domain, teamId: teamId)
     }
 
     public static func vercelDotApp() -> Vercel.DNS {
