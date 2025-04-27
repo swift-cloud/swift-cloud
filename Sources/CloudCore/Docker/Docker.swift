@@ -23,10 +23,11 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) /var/runtime/bootstrap
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources /var/runtime/
 
-        COPY ./Content /var/task/Content
-        COPY ./Public /var/task/Public
-        COPY ./Resources /var/task/Resources
-        COPY ./Output /var/task/Output
+        # Copy directories if they exist
+        COPY ./Content /var/task/Content 2>/dev/null || true
+        COPY ./Public /var/task/Public 2>/dev/null || true
+        COPY ./Resources /var/task/Resources 2>/dev/null || true
+        COPY ./Output /var/task/Output 2>/dev/null || true
 
         CMD [ "\(targetName)" ]
         """
@@ -41,10 +42,11 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
-        COPY ./Content /app/Content
-        COPY ./Public /app/Public
-        COPY ./Resources /app/Resources
-        COPY ./Output /app/Output
+        # Copy directories if they exist
+        COPY ./Content /app/Content 2>/dev/null || true
+        COPY ./Public /app/Public 2>/dev/null || true
+        COPY ./Resources /app/Resources 2>/dev/null || true
+        COPY ./Output /app/Output 2>/dev/null || true
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
@@ -73,10 +75,11 @@ extension Docker.Dockerfile {
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) .
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources .
 
-        COPY ./Content /app/Content
-        COPY ./Public /app/Public
-        COPY ./Resources /app/Resources
-        COPY ./Output /app/Output
+        # Copy directories if they exist
+        COPY ./Content /app/Content 2>/dev/null || true
+        COPY ./Public /app/Public 2>/dev/null || true
+        COPY ./Resources /app/Resources 2>/dev/null || true
+        COPY ./Output /app/Output 2>/dev/null || true
 
         ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
 
