@@ -25,7 +25,7 @@ extension Vercel {
                 name: name,
                 value: target,
                 ttl: ttl,
-                teamId: teamId,
+                teamId: teamId
             )
         }
 
