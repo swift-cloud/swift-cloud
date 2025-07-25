@@ -49,7 +49,7 @@ extension Builder {
             case "6.1":
                 imageName = "swift:6.1-amazonlinux2"
             case "6.2":
-                imageName = "swift:nightly-6.2-amazonlinux2"
+                imageName = "swiftlang/swift:nightly-6.2-amazonlinux2"
             default: 
                 fatalError("Unsupported Swift version: \(swiftVersion)")
             }
@@ -75,7 +75,7 @@ extension Builder {
         case "6.1":
             imageName = "swift:6.1-noble"
         case "6.2":
-            imageName = "swift:nightly-6.2-noble"
+            imageName = "swiftlang/swift:nightly-6.2-noble"
         default:
             fatalError("Unsupported Swift version: \(swiftVersion)")
         }
@@ -111,10 +111,10 @@ extension Builder {
             pre =
                 "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-6.1-RELEASE/swift-wasm-6.1-RELEASE-wasm32-unknown-wasi.artifactbundle.zip --checksum 7550b4c77a55f4b637c376f5d192f297fe185607003a6212ad608276928db992"
         case "6.2":
-            imageName = "swift:nightly-6.2"
+            imageName = "swiftlang/swift:nightly-6.2"
             flags = ["--swift-sdk", "wasm32-unknown-wasi"]
             pre =
-                "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-DEVELOPMENT-SNAPSHOT-2025-06-22-a/swift-wasm-DEVELOPMENT-SNAPSHOT-2025-06-22-a-wasm32-unknown-wasi.artifactbundle.zip --checksum 37516de837411ea46e4f9e75d52bd742f6941febac49981aac0c4f20f02b8b54"
+                "swift sdk install https://github.com/swiftwasm/swift/releases/download/swift-wasm-DEVELOPMENT-SNAPSHOT-2025-07-18-a/swift-wasm-DEVELOPMENT-SNAPSHOT-2025-07-18-a-wasm32-unknown-wasi.artifactbundle.zip --checksum 249e8fc0dd6bc5e31583d6c63c778830ff0e3b9f98cff7ee6b31b2decf5f87cb"
         default:
             fatalError("Unsupported Swift version: \(swiftVersion)")
         }
