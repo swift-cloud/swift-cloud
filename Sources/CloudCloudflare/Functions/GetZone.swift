@@ -15,8 +15,6 @@ extension Cloudflare {
         public let originalRegistrar: String
         public let owner: GetZoneOwner
         public let paused: Bool
-        public let permissions: [String]
-        public let plan: GetZonePlan
         public let status: String
         public let tenant: GetZoneTenant
         public let tenantUnit: GetZoneTenantUnit
@@ -45,19 +43,6 @@ extension Cloudflare {
         public let id: String
         public let name: String
         public let type: String
-    }
-
-    public struct GetZonePlan {
-        public let canSubscribe: Bool
-        public let currency: String
-        public let externallyManaged: Bool
-        public let frequency: String
-        public let id: String
-        public let isSubscribed: Bool
-        public let legacyDiscount: Bool
-        public let legacyId: String
-        public let name: String
-        public let price: Int
     }
 
     public struct GetZoneTenant {
