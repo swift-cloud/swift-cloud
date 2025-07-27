@@ -50,7 +50,7 @@ extension Builder {
                 imageName = "swift:6.1-amazonlinux2"
             case "6.2":
                 imageName = "swiftlang/swift:nightly-6.2-amazonlinux2"
-            default: 
+            default:
                 fatalError("Unsupported Swift version: \(swiftVersion)")
             }
             try await buildDocker(
