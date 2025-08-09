@@ -2,14 +2,20 @@ import CloudCore
 
 extension AWS {
     public struct RDS: AWSComponent {
+        public let engine: Engine
+
         public let instance: Resource
+
         public let subnetGroup: Resource
+
         public let parameterGroupResource: Resource
+
         public let optionGroup: Resource?
 
-        public let engine: Engine
         public let instanceClass: InstanceClass
+
         public let storage: StorageConfiguration
+
         public let masterUsername: String
 
         public struct MasterPasswordSecret { public let kmsKeyId: String, secretArn: String, secretStatus: String }
@@ -54,9 +60,13 @@ extension AWS {
             context: Context = .current
         ) {
             self.engine = engine
+
             self.instanceClass = instanceClass
+
             self.storage = storage
+
             self.databaseName = databaseName ?? context.stage
+            
             self.masterUsername = masterUsername
 
             let instanceIdentifier = tokenize(context.stage, name)
@@ -146,9 +156,9 @@ extension AWS {
                     "allocatedStorage": storage.size,
                     "storageType": storage.type.rawValue,
                     "storageEncrypted": storage.encrypted,
-                    "iops": storage.iops,
-                    "throughput": storage.throughput,
-                    "dbName": databaseName,
+                    "iops": storage.type.supportsIOPS ? storage.iops : nil,
+                    "storageThroughput": storage.type.supportsThroughput ? storage.throughput : nil,
+                    "dbName": engine.supportsInitialDatabase ? databaseName : nil,
                     "username": masterUsername,
                     "manageMasterUserPassword": true,
                     "port": engine.port,
@@ -250,6 +260,13 @@ extension AWS.RDS {
             switch self {
             case .postgres, .mariadb: return false
             case .mysql, .oracle, .sqlserver: return true
+            }
+        }
+        
+        public var supportsInitialDatabase: Bool {
+            switch self {
+            case .postgres, .mysql, .mariadb: return true
+            case .oracle, .sqlserver: return false // These engines don't support dbName parameter
             }
         }
     }
@@ -431,6 +448,20 @@ extension AWS.RDS {
         case gp3 = "gp3"
         case io1 = "io1"
         case io2 = "io2"
+        
+        public var supportsIOPS: Bool {
+            switch self {
+            case .io1, .io2, .gp3: return true
+            case .standard, .gp2: return false
+            }
+        }
+        
+        public var supportsThroughput: Bool {
+            switch self {
+            case .gp3: return true
+            case .standard, .gp2, .io1, .io2: return false
+            }
+        }
     }
 }
 
