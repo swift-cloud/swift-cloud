@@ -55,6 +55,7 @@ extension AWS {
             performanceInsightsEnabled: Bool = false,
             monitoringInterval: Int = 0,
             deletionProtection: Bool = true,
+            engineLifecycleSupport: EngineLifecycleSupport = .disabled,
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
             context: Context = .current
@@ -179,6 +180,7 @@ extension AWS {
                     "finalSnapshotIdentifier": backupConfiguration.finalSnapshot
                         ? tokenize(context.stage, name, "final") : nil,
                     "applyImmediately": true,
+                    "engineLifecycleSupport": engine.supportsEngineLifecycleSupport ? engineLifecycleSupport.rawValue : nil,
                     "tags": ["Name": instanceIdentifier],
                 ],
                 options: options,
@@ -269,9 +271,17 @@ extension AWS.RDS {
             case .oracle, .sqlserver: return false // These engines don't support dbName parameter
             }
         }
+        
+        public var supportsEngineLifecycleSupport: Bool {
+            switch self {
+            case .postgres, .mysql: return true
+            case .mariadb, .oracle, .sqlserver: return false
+            }
+        }
     }
 
     public enum PostgresVersion: String, Sendable {
+        case v17_2 = "17.2"
         case v16_6 = "16.6"
         case v16_4 = "16.4"
         case v15_8 = "15.8"
@@ -280,6 +290,7 @@ extension AWS.RDS {
 
         public var majorVersion: String {
             switch self {
+            case .v17_2: return "17"
             case .v16_4, .v16_6: return "16"
             case .v15_8: return "15"
             case .v14_13: return "14"
@@ -501,6 +512,13 @@ extension AWS.RDS {
         public init(parameters: [String: any Input<String>]) {
             self.parameters = parameters
         }
+    }
+}
+
+extension AWS.RDS {
+    public enum EngineLifecycleSupport: String, Sendable {
+        case enabled = "open-source-rds-extended-support"
+        case disabled = "open-source-rds-extended-support-disabled"
     }
 }
 
