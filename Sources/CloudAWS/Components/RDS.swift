@@ -60,6 +60,9 @@ extension AWS {
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
+            // Validate that backup and maintenance windows don't overlap
+            Self.validateWindowsDoNotOverlap(backup: backupConfiguration.window, maintenance: maintenanceWindow.schedule)
+            
             self.engine = engine
 
             self.instanceClass = instanceClass
@@ -170,8 +173,8 @@ extension AWS {
                     "parameterGroupName": parameterGroupName,
                     "optionGroupName": optionGroup?.name,
                     "backupRetentionPeriod": backupConfiguration.retentionPeriod,
-                    "backupWindow": backupConfiguration.window,
-                    "maintenanceWindow": maintenanceWindow.window,
+                    "backupWindow": backupConfiguration.window.stringValue,
+                    "maintenanceWindow": maintenanceWindow.schedule.stringValue,
                     "autoMinorVersionUpgrade": maintenanceWindow.autoMinorVersionUpgrade,
                     "performanceInsightsEnabled": performanceInsightsEnabled,
                     "monitoringInterval": monitoringInterval,
@@ -188,6 +191,21 @@ extension AWS {
                 dependsOn: [subnetGroup, parameterGroupResource, optionGroup].compactMap { $0 }
             )
 
+        }
+        
+        private static func validateWindowsDoNotOverlap(backup: BackupWindow, maintenance: MaintenanceSchedule) {
+            let backupStart = backup.startMinutes
+            let backupEnd = backup.endMinutes
+            let maintenanceStart = maintenance.startMinutes
+            let maintenanceEnd = maintenance.endMinutes
+            
+            // Check if backup window overlaps with maintenance window
+            // Two ranges overlap if: !(range1.end <= range2.start || range2.end <= range1.start)
+            let overlaps = !(backupEnd <= maintenanceStart || maintenanceEnd <= backupStart)
+            
+            if overlaps {
+                fatalError("Backup window '\(backup.stringValue)' overlaps with maintenance window '\(maintenance.stringValue)'. Windows must not overlap.")
+            }
         }
     }
 }
@@ -477,14 +495,135 @@ extension AWS.RDS {
 }
 
 extension AWS.RDS {
+    public enum Timezone: String, Sendable, CaseIterable {
+        case utc = "UTC"
+        case est = "EST"  // UTC-5
+        case cst = "CST"  // UTC-6  
+        case mst = "MST"  // UTC-7
+        case pst = "PST"  // UTC-8
+        case gmt = "GMT"  // UTC+0
+        case cet = "CET"  // UTC+1
+        case jst = "JST"  // UTC+9
+        case ist = "IST"  // UTC+5:30
+        
+        internal var utcOffset: Int {
+            switch self {
+            case .utc, .gmt: return 0
+            case .est: return 5   // EST is UTC-5, so to convert to UTC we add 5
+            case .cst: return 6   // CST is UTC-6, so to convert to UTC we add 6
+            case .mst: return 7   // MST is UTC-7, so to convert to UTC we add 7
+            case .pst: return 8   // PST is UTC-8, so to convert to UTC we add 8
+            case .cet: return -1  // CET is UTC+1, so to convert to UTC we subtract 1
+            case .jst: return -9  // JST is UTC+9, so to convert to UTC we subtract 9
+            case .ist: return -5  // IST is UTC+5:30, so to convert to UTC we subtract 5:30
+            }
+        }
+        
+        internal var minuteOffset: Int {
+            switch self {
+            case .ist: return -30 // IST is UTC+5:30, so subtract 30 minutes to convert to UTC
+            default: return 0
+            }
+        }
+    }
+    
+    public struct Time: Sendable {
+        public let hour: Int    // 0-23
+        public let minute: Int  // 0, 15, 30, 45 (rounded to nearest 15-minute interval)
+        
+        public init(_ hour: Int, _ minute: Int = 0) {
+            // Clamp values to valid ranges instead of crashing
+            self.hour = max(0, min(23, hour))
+            // Round to nearest 15-minute interval (AWS requirement for backup/maintenance windows)
+            self.minute = [0, 15, 30, 45].min(by: { abs($0 - minute) < abs($1 - minute) }) ?? 0
+        }
+        
+        // Convert local time to UTC based on timezone
+        internal func toUTC(from timezone: Timezone) -> Time {
+            let offsetMinutes = timezone.utcOffset * 60 + timezone.minuteOffset
+            let totalMinutes = (hour * 60 + minute) + offsetMinutes
+            // Ensure we get a positive result in 0-1439 range (24 * 60 - 1)
+            let utcMinutes = ((totalMinutes % (24 * 60)) + (24 * 60)) % (24 * 60)
+            return Time(utcMinutes / 60, utcMinutes % 60)
+        }
+        
+        internal var stringValue: String {
+            let hourStr = hour < 10 ? "0\(hour)" : "\(hour)"
+            let minuteStr = minute < 10 ? "0\(minute)" : "\(minute)"
+            return "\(hourStr):\(minuteStr)"
+        }
+        
+        internal var totalMinutes: Int {
+            return hour * 60 + minute
+        }
+    }
+    
+    public struct BackupWindow: Sendable {
+        private let startTime: Time
+        private let durationHours: Int
+        private let timezone: Timezone
+        
+        public enum Duration: Int, Sendable, CaseIterable {
+            case thirtyMinutes = 0
+            case oneHour = 1, twoHours = 2, threeHours = 3, fourHours = 4
+            case fiveHours = 5, sixHours = 6, sevenHours = 7, eightHours = 8
+            
+            internal var minutes: Int {
+                return rawValue == 0 ? 30 : rawValue * 60
+            }
+        }
+        
+        public init(at time: Time, for duration: Duration, in timezone: Timezone = .utc) {
+            self.startTime = time
+            self.durationHours = duration.rawValue
+            self.timezone = timezone
+        }
+        
+        public init(at hour: Int, for duration: Duration, in timezone: Timezone = .utc) {
+            self.init(at: Time(hour), for: duration, in: timezone)
+        }
+        
+        public init(at hour: Int, _ minute: Int = 0, for durationHours: Int, in timezone: Timezone = .utc) {
+            // Clamp duration to valid AWS range
+            let clampedDuration = max(0, min(8, durationHours))
+            self.startTime = Time(hour, minute)
+            self.durationHours = clampedDuration
+            self.timezone = timezone
+        }
+        
+        internal var stringValue: String {
+            let utcStart = startTime.toUTC(from: timezone)
+            let endMinutes = utcStart.totalMinutes + (durationHours == 0 ? 30 : durationHours * 60)
+            let utcEndMinutes = endMinutes % (24 * 60)
+            let utcEnd = Time(utcEndMinutes / 60, utcEndMinutes % 60)
+            return "\(utcStart.stringValue)-\(utcEnd.stringValue)"
+        }
+        
+        internal var startMinutes: Int {
+            return startTime.toUTC(from: timezone).totalMinutes
+        }
+        
+        internal var endMinutes: Int {
+            let duration = durationHours == 0 ? 30 : durationHours * 60
+            return (startTime.toUTC(from: timezone).totalMinutes + duration) % (24 * 60)
+        }
+        
+        // Common backup windows - easy to understand
+        public static let earlyMorning = BackupWindow(at: 3, for: .oneHour)      // 3 AM UTC, 1 hour
+        public static let lateMorning = BackupWindow(at: 9, for: .oneHour)       // 9 AM UTC, 1 hour
+        public static let lateNight = BackupWindow(at: 23, for: .oneHour)        // 11 PM UTC, 1 hour
+        public static let quickBackup = BackupWindow(at: 2, for: .thirtyMinutes) // 2 AM UTC, 30 minutes
+        public static let longBackup = BackupWindow(at: 1, for: .eightHours)     // 1 AM UTC, 8 hours
+    }
+
     public struct BackupConfiguration: Sendable {
         public let retentionPeriod: Int
-        public let window: String
+        public let window: BackupWindow
         public let finalSnapshot: Bool
 
         public init(
             retentionPeriod: Int = 7,
-            window: String = "03:00-04:00",
+            window: BackupWindow = .earlyMorning,
             finalSnapshot: Bool = true
         ) {
             self.retentionPeriod = retentionPeriod
@@ -493,15 +632,103 @@ extension AWS.RDS {
         }
     }
 
+    public struct MaintenanceSchedule: Sendable {
+        private let weekday: Weekday
+        private let time: Time
+        private let timezone: Timezone
+        
+        // Maintenance windows are always 30 minutes (AWS requirement)
+        public init(on weekday: Weekday, at time: Time, in timezone: Timezone = .utc) {
+            self.weekday = weekday
+            self.time = time
+            self.timezone = timezone
+        }
+        
+        public init(on weekday: Weekday, at hour: Int, _ minute: Int = 0, in timezone: Timezone = .utc) {
+            self.weekday = weekday
+            self.time = Time(hour, minute)
+            self.timezone = timezone
+        }
+        
+        public enum Weekday: Int, Sendable, CaseIterable {
+            case sunday = 0, monday = 1, tuesday = 2, wednesday = 3
+            case thursday = 4, friday = 5, saturday = 6
+            
+            internal var shortName: String {
+                switch self {
+                case .sunday: return "sun"
+                case .monday: return "mon"
+                case .tuesday: return "tue"
+                case .wednesday: return "wed"
+                case .thursday: return "thu"
+                case .friday: return "fri"
+                case .saturday: return "sat"
+                }
+            }
+        }
+        
+        internal var stringValue: String {
+            let utcTime = time.toUTC(from: timezone)
+            let endMinutes = (utcTime.totalMinutes + 30) % (24 * 60) // Always 30 minutes
+            let endTime = Time(endMinutes / 60, endMinutes % 60)
+            
+            // Handle day rollover for maintenance window
+            // We need to check if the original local time + conversion causes day change
+            let originalMinutes = time.hour * 60 + time.minute
+            let offsetMinutes = timezone.utcOffset * 60 + timezone.minuteOffset
+            let utcTotalMinutes = originalMinutes + offsetMinutes
+            
+            var startWeekday = weekday
+            var endWeekday = weekday
+            
+            // Adjust start day if UTC conversion caused day rollover
+            if utcTotalMinutes < 0 {
+                startWeekday = Weekday(rawValue: (weekday.rawValue + 6) % 7) ?? .saturday // Previous day
+            } else if utcTotalMinutes >= 24 * 60 {
+                startWeekday = Weekday(rawValue: (weekday.rawValue + 1) % 7) ?? .sunday // Next day
+            }
+            
+            // Adjust end day if maintenance window crosses midnight
+            if utcTime.totalMinutes + 30 >= 24 * 60 {
+                endWeekday = Weekday(rawValue: (startWeekday.rawValue + 1) % 7) ?? .sunday
+            } else {
+                endWeekday = startWeekday
+            }
+            
+            return "\(startWeekday.shortName):\(utcTime.stringValue)-\(endWeekday.shortName):\(endTime.stringValue)"
+        }
+        
+        internal var startMinutes: Int {
+            return (weekday.rawValue * 24 * 60) + time.toUTC(from: timezone).totalMinutes
+        }
+        
+        internal var endMinutes: Int {
+            let utcTime = time.toUTC(from: timezone)
+            let endMinutes = (utcTime.totalMinutes + 30) % (24 * 60)
+            var endDay = weekday.rawValue
+            if utcTime.totalMinutes + 30 >= 24 * 60 {
+                endDay = (weekday.rawValue + 1) % 7
+            }
+            return (endDay * 24 * 60) + endMinutes
+        }
+        
+        // Common maintenance windows
+        public static let sundayEarlyMorning = MaintenanceSchedule(on: .sunday, at: 4)      // 4 AM UTC
+        public static let sundayLateNight = MaintenanceSchedule(on: .sunday, at: 23)        // 11 PM UTC
+        public static let mondayMorning = MaintenanceSchedule(on: .monday, at: 6)           // 6 AM UTC
+        public static let tuesdayNight = MaintenanceSchedule(on: .tuesday, at: 22)          // 10 PM UTC
+        public static let saturdayMidnight = MaintenanceSchedule(on: .saturday, at: 23, 30) // 11:30 PM UTC
+    }
+
     public struct MaintenanceWindow: Sendable {
-        public let window: String
+        public let schedule: MaintenanceSchedule
         public let autoMinorVersionUpgrade: Bool
 
         public init(
-            window: String = "sun:04:00-sun:05:00",
+            schedule: MaintenanceSchedule = .sundayEarlyMorning,
             autoMinorVersionUpgrade: Bool = false
         ) {
-            self.window = window
+            self.schedule = schedule
             self.autoMinorVersionUpgrade = autoMinorVersionUpgrade
         }
     }
