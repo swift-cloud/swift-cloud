@@ -54,7 +54,7 @@ extension AWS {
             parameterGroup: ParameterGroupConfiguration? = nil,
             performanceInsightsEnabled: Bool = false,
             monitoringInterval: Int = 0,
-            deletionProtection: Bool = true,
+            deletionProtection: Bool = false,
             engineLifecycleSupport: EngineLifecycleSupport = .disabled,
             vpc: VPC.Configuration,
             options: Resource.Options? = nil,
