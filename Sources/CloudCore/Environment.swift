@@ -50,10 +50,10 @@ public final class Environment: Encodable, @unchecked Sendable {
         case .keyValue:
             try container.encode(store.reduce(into: [:]) { $0[$1.key] = "\($1.value)" })
         case .keyValueList:
-            let pairs = store.map { KeyValuePair(key: $0.key, value: "\($0)") }
+            let pairs = store.map { KeyValuePair(key: $0.key, value: "\($0.value)") }
             try container.encode(pairs)
         case .nameValueList:
-            let pairs = store.map { NameValuePair(name: $0.key, value: "\($0)") }
+            let pairs = store.map { NameValuePair(name: $0.key, value: "\($0.value)") }
             try container.encode(pairs)
         }
     }
