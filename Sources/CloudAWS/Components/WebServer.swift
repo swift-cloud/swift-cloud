@@ -69,7 +69,7 @@ extension AWS {
             autoScaling: AutoScalingConfiguration? = nil,
             instancePort: Int = 8080,
             vpc: AWS.VPC? = nil,
-            environment: [String: String] = [:],
+            environment: [String: any Input<String>] = [:],
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
