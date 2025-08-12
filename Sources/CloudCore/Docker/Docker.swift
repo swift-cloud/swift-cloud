@@ -16,6 +16,12 @@ extension Docker.Dockerfile {
 }
 
 extension Docker.Dockerfile {
+    private static func formatCommandArguments(_ arguments: [String]) -> String {
+        arguments
+            .map { "\"\($0)\"" }
+            .joined(separator: ", ")
+    }
+    
     public static func awsLambda(targetName: String, architecture: Architecture = .current) -> String {
         """
         FROM public.ecr.aws/lambda/provided:al2
@@ -52,9 +58,7 @@ extension Docker.Dockerfile {
         port: Int,
         arguments: [String]
     ) -> String {
-        let commandArguments = arguments
-            .map { "\"\($0)\"" }
-            .joined(separator: ", ")
+        let commandArguments = formatCommandArguments(arguments)
 
         return """
         FROM amazonlinux:2
@@ -98,9 +102,7 @@ extension Docker.Dockerfile {
         port: Int,
         arguments: [String]
     ) -> String {
-        let commandArguments = arguments
-            .map { "\"\($0)\"" }
-            .joined(separator: ", ")
+        let commandArguments = formatCommandArguments(arguments)
 
         return """
         FROM ubuntu:noble
