@@ -33,8 +33,30 @@ extension Docker.Dockerfile {
         """
     }
 
-    public static func amazonLinux(targetName: String, architecture: Architecture = .current, port: Int) -> String {
-        """
+    public static func amazonLinux(
+        targetName: String,
+        architecture: Architecture = .current,
+        port: Int
+    ) -> String {
+        amazonLinux(
+            targetName: targetName,
+            architecture: architecture,
+            port: port,
+            arguments: ["--hostname", "0.0.0.0", "--port", "\(port)"]
+        )
+    }
+
+    public static func amazonLinux(
+        targetName: String,
+        architecture: Architecture = .current,
+        port: Int,
+        arguments: [String]
+    ) -> String {
+        let commandArguments = arguments
+            .map { "\"\($0)\"" }
+            .joined(separator: ", ")
+
+        return """
         FROM amazonlinux:2
 
         WORKDIR /app/
@@ -53,12 +75,34 @@ extension Docker.Dockerfile {
         EXPOSE \(port)
 
         ENTRYPOINT [ "./\(targetName)" ]
-        CMD ["--hostname", "0.0.0.0", "--port", "\(port)"]
+        CMD [\(commandArguments)]
         """
     }
 
-    public static func ubuntu(targetName: String, architecture: Architecture = .current, port: Int) -> String {
-        """
+    public static func ubuntu(
+        targetName: String,
+        architecture: Architecture = .current,
+        port: Int
+    ) -> String {
+        ubuntu(
+            targetName: targetName,
+            architecture: architecture,
+            port: port,
+            arguments: ["--hostname", "0.0.0.0", "--port", "\(port)"]
+        )
+    }
+
+    public static func ubuntu(
+        targetName: String,
+        architecture: Architecture = .current,
+        port: Int,
+        arguments: [String]
+    ) -> String {
+        let commandArguments = arguments
+            .map { "\"\($0)\"" }
+            .joined(separator: ", ")
+
+        return """
         FROM ubuntu:noble
 
         RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -86,7 +130,7 @@ extension Docker.Dockerfile {
         EXPOSE \(port)
 
         ENTRYPOINT [ "./\(targetName)" ]
-        CMD ["--hostname", "0.0.0.0", "--port", "\(port)"]
+        CMD [\(commandArguments)]
         """
     }
 }

@@ -27,6 +27,7 @@ extension DigitalOcean {
             instanceSize: InstanceSize = .shared_1vCPU_512mb,
             instancePort: Int = 8080,
             environment: [String: any Input<String>]? = nil,
+            arguments: [String]? = nil,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -99,11 +100,21 @@ extension DigitalOcean {
             )
 
             context.store.build {
-                let dockerFile = Docker.Dockerfile.ubuntu(
-                    targetName: targetName,
-                    architecture: architecture,
-                    port: instancePort
-                )
+                let dockerFile: String
+                if let arguments = arguments {
+                    dockerFile = Docker.Dockerfile.ubuntu(
+                        targetName: targetName,
+                        architecture: architecture,
+                        port: instancePort,
+                        arguments: arguments
+                    )
+                } else {
+                    dockerFile = Docker.Dockerfile.ubuntu(
+                        targetName: targetName,
+                        architecture: architecture,
+                        port: instancePort
+                    )
+                }
                 try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
                 try await $0.builder.buildUbuntu(targetName: targetName, architecture: architecture)
             }
