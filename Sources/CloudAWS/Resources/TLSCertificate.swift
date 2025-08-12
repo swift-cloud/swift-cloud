@@ -84,6 +84,22 @@ extension AWS {
             }
             return Output(prefix: "null", root: "", path: [])
         }
+        
+        /// Returns existing certificate if found, otherwise creates new one
+        public static func getOrCreate(
+            hostname: any Input<String>,
+            keyAlgorithm: KeyAlgorithm = .ecdsa,
+            options: Resource.Options? = nil,
+            context: Context = .current
+        ) -> TLSCertificate {
+            return TLSCertificate(
+                hostname: hostname,
+                keyAlgorithm: keyAlgorithm,
+                reuseExisting: true,
+                options: options,
+                context: context
+            )
+        }
     }
 }
 
