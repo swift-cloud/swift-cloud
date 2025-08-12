@@ -20,21 +20,21 @@ extension Pulumi.Plugin {
     // https://github.com/pulumi/pulumi-aws
     public static let aws = Pulumi.Plugin(
         name: "aws",
-        version: "6.65.0",
+        version: "7.3.1",
         repo: "pulumi/pulumi-aws"
     )
 
     // https://github.com/pulumi/pulumi-awsx
     public static let awsx = Pulumi.Plugin(
         name: "awsx",
-        version: "2.19.0",
+        version: "3.0.0",
         repo: "pulumi/pulumi-awsx"
     )
 
     // https://github.com/pulumi/pulumi-cloudflare
     public static let cloudflare = Pulumi.Plugin(
         name: "cloudflare",
-        version: "5.46.0",
+        version: "6.4.1",
         repo: "pulumi/pulumi-cloudflare"
     )
 
