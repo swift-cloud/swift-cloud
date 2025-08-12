@@ -70,6 +70,7 @@ extension AWS {
             instancePort: Int = 8080,
             vpc: AWS.VPC? = nil,
             environment: [String: any Input<String>] = [:],
+            arguments: [String]? = nil,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -197,7 +198,19 @@ extension AWS {
             domainName?.aliasTo(internalHostname)
 
             context.store.build {
-                let dockerFile = Docker.Dockerfile.ubuntu(targetName: targetName, port: instancePort)
+                let dockerFile: String
+                if let arguments = arguments {
+                    dockerFile = Docker.Dockerfile.ubuntu(
+                        targetName: targetName,
+                        port: instancePort,
+                        arguments: arguments
+                    )
+                } else {
+                    dockerFile = Docker.Dockerfile.ubuntu(
+                        targetName: targetName,
+                        port: instancePort
+                    )
+                }
                 try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
                 try await $0.builder.buildUbuntu(targetName: targetName)
             }
