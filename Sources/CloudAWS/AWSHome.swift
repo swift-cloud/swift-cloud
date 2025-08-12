@@ -20,7 +20,7 @@ extension AWS {
 
         public func bootstrap(with context: Context) async throws {
             let bucketName = try await s3BucketName()
-            _ = try await s3.createBucket(.init(bucket: bucketName))
+            _ = try await ensureBucketExists(bucketName)
         }
 
         public func putItem<T: HomeProviderItem>(_ item: T, fileName: String, with context: Context) async throws {
@@ -45,6 +45,24 @@ extension AWS.Home {
     private func s3BucketName() async throws -> String {
         let account = try await awsAccountId()
         return "swift-cloud-assets-\(account)"
+    }
+
+    private func ensureBucketExists(_ bucketName: String) async throws {
+        do {
+            _ = try await s3.createBucket(.init(bucket: bucketName))
+        } catch let error as S3ErrorType {
+            switch error {
+            case .bucketAlreadyOwnedByYou:
+                // Bucket already exists and is owned by us - this is expected behavior
+                return
+            case .bucketAlreadyExists:
+                // Bucket exists but owned by someone else - this is a real error
+                throw error
+            default:
+                // Any other S3 error should be propagated
+                throw error
+            }
+        }
     }
 }
 
