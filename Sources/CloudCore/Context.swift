@@ -61,7 +61,7 @@ extension Context {
 
 extension Context.Package {
     public static func current() async throws -> Self {
-        let (output, _) = try await shellOut(to: "swift", arguments: ["package", "dump-package"])
+        let (output, _) = try await shellOut(to: .name("swift"), arguments: ["package", "dump-package"])
         let data = Data(output.utf8)
         return try JSONDecoder().decode(Self.self, from: data)
     }

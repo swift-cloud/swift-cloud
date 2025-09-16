@@ -60,7 +60,7 @@ extension Builder {
         }
 
         try await shellOut(
-            to: "zip",
+            to: .name("zip"),
             arguments: zipArguments,
             workingDirectory: lambdaDirectory
         )

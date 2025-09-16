@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 
 import PackageDescription
 
@@ -22,7 +22,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-crypto", "1.0.0"..<"4.0.0"),
         .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.0.0"),
-        .package(url: "https://github.com/tuist/Command", from: "0.9.0"),
+        .package(url: "https://github.com/swiftlang/swift-subprocess", from: "0.1.0"),
         .package(url: "https://github.com/vapor/console-kit", from: "4.0.0"),
     ],
     targets: [
@@ -51,7 +51,7 @@ let package = Package(
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "Command", package: "Command"),
+                .product(name: "Subprocess", package: "swift-subprocess"),
                 .product(name: "ConsoleKitTerminal", package: "console-kit"),
                 .product(name: "Crypto", package: "swift-crypto"),
             ]

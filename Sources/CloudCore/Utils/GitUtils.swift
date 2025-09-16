@@ -4,7 +4,7 @@ public enum Git {
     }
 
     public static func currentBranch() async throws -> String {
-        let (stdout, _) = try await shellOut(to: "git", arguments: ["branch", "--show-current"])
+        let (stdout, _) = try await shellOut(to: .name("git"), arguments: ["branch", "--show-current"])
         let branch = stdout.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !branch.isEmpty else {
             throw GitError.invalidBranch

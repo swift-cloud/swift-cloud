@@ -15,7 +15,7 @@ public struct Builder: Sendable {
 
 extension Builder {
     public func currentSwiftVersion() async throws -> String {
-        let (output, _) = try await shellOut(to: "swift", arguments: ["--version"])
+        let (output, _) = try await shellOut(to: .name("swift"), arguments: ["--version"])
         let regex = Regex {
             "Swift version "
             Capture {
@@ -135,7 +135,7 @@ extension Builder {
         defer { spinner.stop() }
 
         try await shellOut(
-            to: "swift",
+            to: .name("swift"),
             arguments: [
                 "build",
                 "-c", "release",
@@ -159,7 +159,7 @@ extension Builder {
         spinner.push(buildCommand)
 
         try await shellOut(
-            to: "docker",
+            to: .name("docker"),
             arguments: [
                 "run",
                 "--platform", "linux/\(architecture.dockerPlatform)",
