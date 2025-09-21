@@ -380,8 +380,8 @@ The `DomainName` construct manages a TLS certificate and the necessary
 validation, and can be linked to a `WebServer` to provide a fully managed domain
 name.
 
-> Important: We support 3 providers for domains: `AWS`, `Cloudflare`, and
-> `Vercel`.
+> [!IMPORTANT]
+> SwiftCloud supports 3 providers for domains: **AWS**, **Cloudflare**, and **Vercel**.
 
 ```swift
 let domainName = DomainName(
