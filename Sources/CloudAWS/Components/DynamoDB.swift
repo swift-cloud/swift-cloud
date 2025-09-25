@@ -158,6 +158,7 @@ extension AWS.DynamoDB: Linkable {
             "dynamodb:UpdateItem",
             "dynamodb:DeleteItem",
             "dynamodb:BatchWriteItem",
+            "dynamodb:BatchGetItem",
             "dynamodb:Query",
             "dynamodb:Scan",
             "dynamodb:GetRecords",
