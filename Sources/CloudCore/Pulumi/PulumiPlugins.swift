@@ -20,7 +20,7 @@ extension Pulumi.Plugin {
     // https://github.com/pulumi/pulumi-aws
     public static let aws = Pulumi.Plugin(
         name: "aws",
-        version: "7.3.1",
+        version: "7.8.0",
         repo: "pulumi/pulumi-aws"
     )
 
@@ -34,35 +34,35 @@ extension Pulumi.Plugin {
     // https://github.com/pulumi/pulumi-cloudflare
     public static let cloudflare = Pulumi.Plugin(
         name: "cloudflare",
-        version: "6.4.1",
+        version: "6.10.0",
         repo: "pulumi/pulumi-cloudflare"
     )
 
     // https://github.com/pulumi/pulumi-digitalocean
     public static let digitalocean = Pulumi.Plugin(
         name: "digitalocean",
-        version: "4.38.0",
+        version: "4.53.0",
         repo: "pulumi/pulumi-digitalocean"
     )
 
     // https://github.com/pulumi/pulumi-fastly
     public static let fastly = Pulumi.Plugin(
         name: "fastly",
-        version: "8.13.0",
+        version: "11.0.0",
         repo: "pulumi/pulumi-fastly"
     )
 
     // https://github.com/pulumi/pulumi-random
     public static let random = Pulumi.Plugin(
         name: "random",
-        version: "4.16.8",
+        version: "4.18.3",
         repo: "pulumi/pulumi-random"
     )
 
     // https://github.com/pulumiverse/pulumi-vercel
     public static let vercel = Pulumi.Plugin(
         name: "vercel",
-        version: "1.14.3",
+        version: "3.15.1",
         repo: "pulumiverse/pulumi-vercel"
     )
 }

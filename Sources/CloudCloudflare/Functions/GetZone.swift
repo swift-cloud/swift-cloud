@@ -60,7 +60,8 @@ extension Cloudflare {
             function: "cloudflare:getZone",
             arguments: [
                 "filter": [
-                    "name": name
+                    "match": "all",
+                    "name": name,
                 ]
             ]
         )
