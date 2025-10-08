@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: swiftlang/swift:nightly-${{ matrix.swift }}-noble
+      image: swift:${{ matrix.swift }}
 
     strategy:
       matrix:
