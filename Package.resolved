@@ -1,5 +1,5 @@
 {
-  "originHash" : "fea677a99f82335aa9684a0705dbd3fbd30495e0e6dcc887d4cbfa8343cc279b",
+  "originHash" : "e5aefc2f1b44d5a564f659371c4a32f2482de28790fd9caa175f74ba13f545f0",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "8430dd49d4e2b417f472141805c9691ec2923cb8",
         "version" : "1.29.0"
+      }
+    },
+    {
+      "identity" : "command",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-cloud/Command",
+      "state" : {
+        "revision" : "a3da8b91e60b84ba2c54ce0d4ce9a7e844509697",
+        "version" : "0.14.0"
       }
     },
     {
@@ -26,6 +35,15 @@
       "state" : {
         "revision" : "3877a5060e85ae33e3b9fe51ab581784f65ec80e",
         "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "path",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tuist/Path",
+      "state" : {
+        "revision" : "7c74ac435e03a927c3a73134c48b61e60221abcb",
+        "version" : "0.3.8"
       }
     },
     {
@@ -224,15 +242,6 @@
       "state" : {
         "revision" : "0fcc4c9c2d58dd98504c06f7308c86de775396ff",
         "version" : "2.9.0"
-      }
-    },
-    {
-      "identity" : "swift-subprocess",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-subprocess",
-      "state" : {
-        "revision" : "44be5d56aa4b26dc2003a67c0288a6a68366a87d",
-        "version" : "0.1.0"
       }
     },
     {
