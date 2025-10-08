@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "swift-cloud",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v26)
     ],
     products: [
         .library(name: "Cloud", targets: ["Cloud"]),
