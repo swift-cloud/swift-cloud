@@ -17,6 +17,8 @@ extension Pulumi {
 
         private let passphrase: String
 
+        private let internalContext = InternalContext()
+
         public var isSetup: Bool {
             Files.fileExists(atPath: executablePath)
         }
@@ -29,6 +31,14 @@ extension Pulumi {
             self.context = context
             self.version = version
             self.passphrase = passphrase
+        }
+    }
+
+    fileprivate actor InternalContext {
+        private(set) var didNeedSetup: Bool = false
+
+        func setDidNeedSetup() {
+            self.didNeedSetup = true
         }
     }
 }
@@ -57,6 +67,8 @@ extension Pulumi.Client {
 
 extension Pulumi.Client {
     public func setup() async throws {
+        await internalContext.setDidNeedSetup()
+
         let spinner = UI.spinner(label: "Installing Swift Cloud")
         defer { spinner.stop() }
 
@@ -149,16 +161,18 @@ extension Pulumi.Client {
 
 extension Pulumi.Client {
     public func installPlugins(_ plugins: [Pulumi.Plugin]) async throws {
+        let reinstall = await internalContext.didNeedSetup
         for plugin in plugins {
-            try await installPlugin(plugin)
+            try await installPlugin(plugin, reinstall: reinstall)
         }
     }
 
-    public func installPlugin(_ plugin: Pulumi.Plugin) async throws {
-        try await invoke(
-            command: "plugin",
-            arguments: ["install", "resource", plugin.name, plugin.version, "--server", plugin.server]
-        )
+    public func installPlugin(_ plugin: Pulumi.Plugin, reinstall: Bool = false) async throws {
+        var aguments = ["install", "resource", plugin.name, plugin.version, "--server", plugin.server, "--exact"]
+        if reinstall {
+            aguments.append("--reinstall")
+        }
+        try await invoke(command: "plugin", arguments: aguments)
     }
 }
 
