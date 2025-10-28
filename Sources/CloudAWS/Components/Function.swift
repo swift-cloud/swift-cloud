@@ -135,6 +135,7 @@ extension AWS {
                     )
                 }
 
+            // AWS requires a new permission for public function url access
             if functionUrl != nil {
                 Resource(
                     name: "\(name)-invoke-permission",
@@ -143,18 +144,6 @@ extension AWS {
                         "action": "lambda:InvokeFunction",
                         "function": function.arn,
                         "principal": "*",
-                    ],
-                    options: options,
-                    context: context
-                )
-                Resource(
-                    name: "\(name)-url-permission",
-                    type: "aws:lambda:Permission",
-                    properties: [
-                        "action": "lambda:InvokeFunctionUrl",
-                        "function": function.arn,
-                        "principal": "*",
-                        "functionUrlAuthType": "NONE",
                     ],
                     options: options,
                     context: context
