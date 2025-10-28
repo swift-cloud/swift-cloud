@@ -144,6 +144,7 @@ extension AWS {
                         "action": "lambda:InvokeFunction",
                         "function": function.arn,
                         "principal": "*",
+                        "invokedViaFunctionUrl": true,
                     ],
                     options: options,
                     context: context
