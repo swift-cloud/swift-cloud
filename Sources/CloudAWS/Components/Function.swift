@@ -133,6 +133,29 @@ extension AWS {
                         options: options,
                         context: context
                     )
+                    Resource(
+                        name: "\(name)-invoke-permission",
+                        type: "aws:lambda:Permission",
+                        properties: [
+                            "action": "lambda:InvokeFunction",
+                            "function": function.arn,
+                            "principal": "*",
+                        ],
+                        options: options,
+                        context: context
+                    )
+                    Resource(
+                        name: "\(name)-url-permission",
+                        type: "aws:lambda:Permission",
+                        properties: [
+                            "action": "lambda:InvokeFunctionUrl",
+                            "function": function.arn,
+                            "principal": "*",
+                            "functionUrlAuthType": "NONE",
+                        ],
+                        options: options,
+                        context: context
+                    )
                 }
 
             context.store.build { ctx in
