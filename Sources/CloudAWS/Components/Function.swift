@@ -144,7 +144,8 @@ extension AWS {
                         "action": "lambda:InvokeFunction",
                         "function": function.arn,
                         "principal": "*",
-                        "invokedViaFunctionUrl": true,
+                            // TODO: Enable when Pulumi supports function url invocation context
+                            // "invokedViaFunctionUrl": true,
                     ],
                     options: options,
                     context: context
