@@ -1,0 +1,12 @@
+{
+  "authentication" : {
+
+  },
+  "registries" : {
+    "[default]" : {
+      "supportsAvailability" : false,
+      "url" : "https://tuist.dev/api/registry/swift"
+    }
+  },
+  "version" : 1
+}

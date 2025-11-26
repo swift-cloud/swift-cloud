@@ -1,14 +1,12 @@
 .DS_Store
 /.build
 /.index-build
-/.swiftpm
 /.vscode
 /Packages
 /*.xcodeproj
 xcuserdata/
 DerivedData/
-.swiftpm/config/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.swiftpm/xcode
 .netrc
 
 # swift cloud
