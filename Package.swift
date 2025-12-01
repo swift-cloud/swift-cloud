@@ -23,6 +23,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
         .package(url: "https://github.com/swift-cloud/Command", from: "0.14.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-subprocess", from: "0.2.1"),
         .package(url: "https://github.com/vapor/console-kit", from: "4.0.0"),
     ],
     targets: [
@@ -54,6 +55,7 @@ let package = Package(
                 .product(name: "Command", package: "Command"),
                 .product(name: "ConsoleKitTerminal", package: "console-kit"),
                 .product(name: "Crypto", package: "swift-crypto"),
+                .product(name: "Subprocess", package: "swift-subprocess"),
             ]
         ),
         .target(
