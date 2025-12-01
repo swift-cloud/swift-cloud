@@ -10,6 +10,15 @@ public enum ShellEvent: Sendable {
     case stdout(_: String)
     case stderr(_: String)
 
+    fileprivate init(_ event: CommandEvent) {
+        switch event {
+        case .standardOutput:
+            self = .stdout(event.string() ?? "")
+        case .standardError:
+            self = .stderr(event.string() ?? "")
+        }
+    }
+
     func string() -> String? {
         switch self {
         case .stderr(let text):
@@ -97,12 +106,5 @@ public func shellStream(
         arguments: [command.value] + arguments,
         environment: environment,
         workingDirectory: try workingDirectory.map { try .init(validating: $0) }
-    ).map { event in
-        switch event {
-        case .standardOutput:
-            return .stdout(event.string() ?? "")
-        case .standardError:
-            return .stderr(event.string() ?? "")
-        }
-    }
+    ).map(ShellEvent.init)
 }
