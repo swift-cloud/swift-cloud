@@ -20,42 +20,42 @@ extension Pulumi.Plugin {
     // https://github.com/pulumi/pulumi-aws
     public static let aws = Pulumi.Plugin(
         name: "aws",
-        version: "7.8.0",
+        version: "7.12.0",
         repo: "pulumi/pulumi-aws"
     )
 
     // https://github.com/pulumi/pulumi-awsx
     public static let awsx = Pulumi.Plugin(
         name: "awsx",
-        version: "3.0.0",
+        version: "3.1.0",
         repo: "pulumi/pulumi-awsx"
     )
 
     // https://github.com/pulumi/pulumi-cloudflare
     public static let cloudflare = Pulumi.Plugin(
         name: "cloudflare",
-        version: "6.10.0",
+        version: "6.11.0",
         repo: "pulumi/pulumi-cloudflare"
     )
 
     // https://github.com/pulumi/pulumi-digitalocean
     public static let digitalocean = Pulumi.Plugin(
         name: "digitalocean",
-        version: "4.53.0",
+        version: "4.55.0",
         repo: "pulumi/pulumi-digitalocean"
     )
 
     // https://github.com/pulumi/pulumi-fastly
     public static let fastly = Pulumi.Plugin(
         name: "fastly",
-        version: "11.0.0",
+        version: "11.2.0",
         repo: "pulumi/pulumi-fastly"
     )
 
     // https://github.com/pulumi/pulumi-random
     public static let random = Pulumi.Plugin(
         name: "random",
-        version: "4.18.3",
+        version: "4.18.4",
         repo: "pulumi/pulumi-random"
     )
 
