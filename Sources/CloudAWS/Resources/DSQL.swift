@@ -41,6 +41,7 @@ extension AWS.DSQL {
             forceDestroy: Bool = false,
             encryptionKey: EncryptionKey = .awsOwned,
             multiRegion: MultiRegion = .disabled,
+            region: (any Input<String>)? = nil,
             tags: [String: String]? = nil,
             options: Resource.Options? = nil,
             context: Context = .current
@@ -55,6 +56,7 @@ extension AWS.DSQL {
                     "forceDestroy": forceDestroy,
                     "kmsEncryptionKey": encryptionKey.value,
                     "multiRegionProperties": multiRegion.properties,
+                    "region": region,
                     "tags": tags,
                 ],
                 options: options,
@@ -138,6 +140,7 @@ extension AWS.DSQL {
             identifier: any Input<String>,
             clusters: [any Input<String>],
             witnessRegion: any Input<String>,
+            region: (any Input<String>)? = nil,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -148,6 +151,7 @@ extension AWS.DSQL {
                     "identifier": identifier,
                     "clusters": clusters,
                     "witnessRegion": witnessRegion,
+                    "region": region,
                 ],
                 options: options,
                 context: context
@@ -176,6 +180,7 @@ extension AWS.DSQL {
                 identifier: cluster.identifier,
                 clusters: peers.map(\.arn),
                 witnessRegion: witnessRegion,
+                region: cluster.region,
                 options: options ?? cluster.resource.options,
                 context: cluster.resource.context
             )

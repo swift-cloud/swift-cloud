@@ -354,11 +354,13 @@ function.link(database)
 ```swift
 let east = AWS.DSQL.Cluster(
     "orders-east",
+    region: "us-east-1",
     multiRegion: .enabled(witnessRegion: "us-west-2")
 )
 
 let west = AWS.DSQL.Cluster(
     "orders-west",
+    region: "us-east-2",
     multiRegion: .enabled(witnessRegion: "us-west-2")
 )
 
