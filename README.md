@@ -349,6 +349,23 @@ let database = AWS.SQLDatabase(
 function.link(database)
 ```
 
+#### Aurora DSQL
+
+```swift
+let east = AWS.DSQL.Cluster(
+    "orders-east",
+    multiRegion: .enabled(witnessRegion: "us-west-2")
+)
+
+let west = AWS.DSQL.Cluster(
+    "orders-west",
+    multiRegion: .enabled(witnessRegion: "us-west-2")
+)
+
+// Creates both directional aws:dsql:ClusterPeering resources
+east.peer(with: west)
+```
+
 #### Topic
 
 ```swift
