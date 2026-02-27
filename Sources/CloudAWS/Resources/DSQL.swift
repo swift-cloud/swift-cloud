@@ -249,3 +249,32 @@ extension AWS.DSQL {
         )
     }
 }
+
+extension AWS.DSQL.Cluster: Linkable {
+    public var actions: [String] {
+        [
+            "dsql:DbConnect",
+            "dsql:DbConnectAdmin",
+        ]
+    }
+
+    public var resources: [Output<String>] {
+        [arn]
+    }
+
+    public var properties: LinkProperties? {
+        .init(
+            type: "dsql",
+            name: resource.chosenName,
+            properties: [
+                "identifier": identifier,
+                "region": region,
+                "hostname": hostname,
+                "port": port,
+                "databaseName": "postgres",
+                "username": "admin",
+                "url": url,
+            ]
+        )
+    }
+}
