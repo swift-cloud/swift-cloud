@@ -20,7 +20,7 @@ extension Pulumi.Plugin {
     // https://github.com/pulumi/pulumi-aws
     public static let aws = Pulumi.Plugin(
         name: "aws",
-        version: "7.12.0",
+        version: "7.20.0",
         repo: "pulumi/pulumi-aws"
     )
 
