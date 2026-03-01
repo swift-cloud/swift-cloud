@@ -39,6 +39,7 @@ extension AWS {
             environment: [String: any Input<String>]? = nil,
             vpc: VPC.Configuration? = nil,
             packageType: FunctionPackageType = .zip,
+            runtime: FunctionRuntime = .al2023,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -84,7 +85,7 @@ extension AWS {
                 properties: [
                     "role": "\(role.arn)",
                     "packageType": packageType == .zip ? "Zip" : "Image",
-                    "runtime": packageType == .zip ? "provided.al2" : nil,
+                    "runtime": packageType == .zip ? runtime.runtimeIdentifier : nil,
                     "handler": packageType == .zip ? "bootstrap" : nil,
                     "code": packageType == .zip
                         ? ["fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName)/package.zip"]
@@ -158,7 +159,7 @@ extension AWS {
                 case .zip:
                     try await ctx.builder.packageForAwsLambda(targetName: targetName)
                 case .image:
-                    let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName)
+                    let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName, runtimeBaseImage: runtime.dockerBaseImage)
                     try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
                 }
             }
@@ -180,6 +181,27 @@ extension AWS.Function {
     public enum FunctionPackageType {
         case zip
         case image
+    }
+
+    public enum FunctionRuntime: Sendable {
+        case al2023
+
+        @available(*, deprecated, message: "Amazon Linux 2 (provided.al2) reaches end of life on July 31, 2026. Migrate to .al2023.")
+        case al2
+
+        var runtimeIdentifier: String {
+            switch self {
+            case .al2023: return "provided.al2023"
+            case .al2:    return "provided.al2"
+            }
+        }
+
+        var dockerBaseImage: String {
+            switch self {
+            case .al2023: return "public.ecr.aws/lambda/provided:al2023"
+            case .al2:    return "public.ecr.aws/lambda/provided:al2"
+            }
+        }
     }
 }
 
