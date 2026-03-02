@@ -252,6 +252,14 @@ let lambda = AWS.Function(
     memory: 512,
     timeout: .seconds(10)
 )
+
+// Optional: build with the static Linux SDK instead of Docker
+let staticLambda = AWS.Function(
+    "my-static-lambda-function",
+    targetName: "App",
+    runtime: .al2023,
+    build: .staticLinuxSDK
+)
 ```
 
 #### CDN

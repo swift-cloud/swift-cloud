@@ -64,6 +64,23 @@ extension Builder {
 }
 
 extension Builder {
+    public func buildStaticLinux(targetName: String, architecture: Architecture = .current) async throws {
+        let swiftSDK: String
+        switch architecture {
+        case .arm64:
+            swiftSDK = "aarch64-swift-linux-musl"
+        case .x86:
+            swiftSDK = "x86_64-swift-linux-musl"
+        }
+
+        try await buildNative(
+            targetName: targetName,
+            flags: ["--swift-sdk", swiftSDK]
+        )
+    }
+}
+
+extension Builder {
     public func buildUbuntu(targetName: String, architecture: Architecture = .current) async throws {
         let swiftVersion = try await currentSwiftVersion()
         let imageName: String

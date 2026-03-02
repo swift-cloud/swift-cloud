@@ -1,8 +1,13 @@
 import CloudCore
 
 extension Builder {
-    public func packageForAwsLambda(targetName: String, architecture: Architecture = .current) async throws {
-        let releaseDirectory = "\(Context.buildDirectory)/\(architecture.swiftBuildLinuxDirectory)/release"
+    public func packageForAwsLambda(
+        targetName: String,
+        architecture: Architecture = .current,
+        swiftBuildDirectory: String? = nil
+    ) async throws {
+        let swiftBuildDirectory = swiftBuildDirectory ?? architecture.swiftBuildLinuxDirectory
+        let releaseDirectory = "\(Context.buildDirectory)/\(swiftBuildDirectory)/release"
         let binaryPath = "\(releaseDirectory)/\(targetName)"
         let lambdaDirectory = "\(Context.buildDirectory)/lambda/\(targetName)"
         let bootstrapPath = "\(lambdaDirectory)/bootstrap"

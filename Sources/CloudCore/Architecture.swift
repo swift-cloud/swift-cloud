@@ -50,6 +50,15 @@ extension Architecture {
         }
     }
 
+    public var swiftBuildStaticLinuxDirectory: String {
+        switch self {
+        case .arm64:
+            return "aarch64-swift-linux-musl"
+        case .x86:
+            return "x86_64-swift-linux-musl"
+        }
+    }
+
     public var swiftBuildWasmDirectory: String {
         return "wasm32-unknown-wasi"
     }

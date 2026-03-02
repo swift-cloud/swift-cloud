@@ -25,13 +25,16 @@ extension Docker.Dockerfile {
     public static func awsLambda(
         targetName: String,
         architecture: Architecture = .current,
-        runtimeBaseImage: String = "public.ecr.aws/lambda/provided:al2023"
+        runtimeBaseImage: String = "public.ecr.aws/lambda/provided:al2023",
+        swiftBuildDirectory: String? = nil
     ) -> String {
-        """
+        let swiftBuildDirectory = swiftBuildDirectory ?? architecture.swiftBuildLinuxDirectory
+
+        return """
         FROM \(runtimeBaseImage)
 
-        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) /var/runtime/bootstrap
-        COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources /var/runtime/
+        COPY ./.build/\(swiftBuildDirectory)/release/\(targetName) /var/runtime/bootstrap
+        COPY ./.build/\(swiftBuildDirectory)/release/*.resources /var/runtime/
 
         # Copy directories if they exist
         COPY ./Content* /var/task/Content

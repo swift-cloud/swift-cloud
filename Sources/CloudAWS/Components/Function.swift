@@ -40,10 +40,12 @@ extension AWS {
             vpc: VPC.Configuration? = nil,
             packageType: FunctionPackageType = .zip,
             runtime: FunctionRuntime = .al2023,
+            build: FunctionBuild = .docker,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
             let dockerFilePath = Docker.Dockerfile.filePath(name)
+            let architecture = Architecture.current
 
             self.environment = Environment(environment, shape: .keyValue)
 
@@ -91,7 +93,7 @@ extension AWS {
                         ? ["fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName)/package.zip"]
                         : nil,
                     "imageUri": dockerImage.map { "\($0.uri)" },
-                    "architectures": [Architecture.current.lambdaArchitecture],
+                    "architectures": [architecture.lambdaArchitecture],
                     "memorySize": memory,
                     "timeout": timeout.components.seconds,
                     "environment": [
@@ -154,12 +156,30 @@ extension AWS {
             }
 
             context.store.build { ctx in
-                try await ctx.builder.buildAmazonLinux(targetName: targetName)
+                let swiftBuildDirectory: String
+                switch build {
+                case .docker:
+                    swiftBuildDirectory = architecture.swiftBuildLinuxDirectory
+                    try await ctx.builder.buildAmazonLinux(targetName: targetName, architecture: architecture)
+                case .staticLinuxSDK:
+                    swiftBuildDirectory = architecture.swiftBuildStaticLinuxDirectory
+                    try await ctx.builder.buildStaticLinux(targetName: targetName, architecture: architecture)
+                }
+
                 switch packageType {
                 case .zip:
-                    try await ctx.builder.packageForAwsLambda(targetName: targetName)
+                    try await ctx.builder.packageForAwsLambda(
+                        targetName: targetName,
+                        architecture: architecture,
+                        swiftBuildDirectory: swiftBuildDirectory
+                    )
                 case .image:
-                    let dockerFile = Docker.Dockerfile.awsLambda(targetName: targetName, runtimeBaseImage: runtime.dockerBaseImage)
+                    let dockerFile = Docker.Dockerfile.awsLambda(
+                        targetName: targetName,
+                        architecture: architecture,
+                        runtimeBaseImage: runtime.dockerBaseImage,
+                        swiftBuildDirectory: swiftBuildDirectory
+                    )
                     try Docker.Dockerfile.write(dockerFile, to: dockerFilePath)
                 }
             }
@@ -181,6 +201,11 @@ extension AWS.Function {
     public enum FunctionPackageType {
         case zip
         case image
+    }
+
+    public enum FunctionBuild: Sendable {
+        case docker
+        case staticLinuxSDK
     }
 
     public enum FunctionRuntime: Sendable {
