@@ -24,7 +24,7 @@ extension Docker.Dockerfile {
     
     public static func awsLambda(targetName: String, architecture: Architecture = .current) -> String {
         """
-        FROM public.ecr.aws/lambda/provided:al2
+        FROM public.ecr.aws/lambda/provided:al2023
 
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/\(targetName) /var/runtime/bootstrap
         COPY ./.build/\(architecture.swiftBuildLinuxDirectory)/release/*.resources /var/runtime/

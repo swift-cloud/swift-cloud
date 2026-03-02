@@ -84,7 +84,7 @@ extension AWS {
                 properties: [
                     "role": "\(role.arn)",
                     "packageType": packageType == .zip ? "Zip" : "Image",
-                    "runtime": packageType == .zip ? "provided.al2" : nil,
+                    "runtime": packageType == .zip ? "provided.al2023" : nil,
                     "handler": packageType == .zip ? "bootstrap" : nil,
                     "code": packageType == .zip
                         ? ["fn::fileArchive": "\(Context.buildDirectory)/lambda/\(targetName)/package.zip"]
