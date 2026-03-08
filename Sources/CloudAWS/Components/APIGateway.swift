@@ -3,6 +3,7 @@ import CloudCore
 extension AWS {
     public struct APIGateway: AWSComponent {
         public let api: Resource
+        public let logGroup: Resource
         public let stage: Resource
         public let secureDomainName: AWS.SecureDomainName?
         public let apiDomainName: Resource?
@@ -57,6 +58,17 @@ extension AWS {
                 context: context
             )
 
+            logGroup = Resource(
+                name: "\(name)-logs",
+                type: "aws:cloudwatch:LogGroup",
+                properties: [
+                    "name": "/aws/apigateway/\(name)",
+                    "retentionInDays": 7,
+                ],
+                options: options,
+                context: context
+            )
+
             stage = Resource(
                 name: "\(name)-stage",
                 type: "aws:apigatewayv2:Stage",
@@ -64,6 +76,9 @@ extension AWS {
                     "apiId": api.id,
                     "name": "$default",
                     "autoDeploy": true,
+                    "accessLogSettings": [
+                        "destinationArn": logGroup.arn,
+                    ],
                 ],
                 options: options,
                 context: context
