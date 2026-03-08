@@ -262,6 +262,61 @@ let staticLambda = AWS.Function(
 )
 ```
 
+#### API Gateway
+
+This component creates an Amazon API Gateway v2 HTTP API that routes requests to
+one or more Lambda functions. It's a lightweight alternative to a full web
+server for serverless HTTP APIs.
+
+```swift
+let api = AWS.APIGateway("my-api")
+    .route("$default", function: myFunction)
+
+return Outputs([
+    "url": api.url
+])
+```
+
+You can route different HTTP methods and paths to different functions:
+
+```swift
+let api = AWS.APIGateway("my-api")
+    .route("GET /users", function: listUsers)
+    .route("POST /users", function: createUser)
+    .route("DELETE /users/{id}", function: deleteUser)
+```
+
+Custom domains are supported with any DNS provider:
+
+```swift
+// Route53
+let api = AWS.APIGateway(
+    "my-api",
+    domainName: .init(hostname: "api.example.com", dns: .aws(zoneName: "example.com"))
+)
+.route("$default", function: myFunction)
+
+// Cloudflare
+let api = AWS.APIGateway(
+    "my-api",
+    domainName: .init(hostname: "api.example.com", dns: .cloudflare(zoneName: "example.com"))
+)
+.route("$default", function: myFunction)
+```
+
+Access logs are written to CloudWatch automatically. You can customise the log format using the built-in presets or provide your own:
+
+```swift
+// Default JSON format (used when logFormat is omitted)
+AWS.APIGateway("my-api", logFormat: .default)
+
+// Common Log Format (CLF)
+AWS.APIGateway("my-api", logFormat: .clf)
+
+// Custom format using API Gateway $context variables
+AWS.APIGateway("my-api", logFormat: "$context.requestId $context.status $context.routeKey")
+```
+
 #### CDN
 
 This component creates a CDN that sits in front of your application. It can be
