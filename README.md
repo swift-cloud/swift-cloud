@@ -262,6 +262,40 @@ let staticLambda = AWS.Function(
 )
 ```
 
+#### API Gateway
+
+This component creates an Amazon API Gateway v2 HTTP API that routes requests to
+one or more Lambda functions. It's a lightweight alternative to a full web
+server for serverless HTTP APIs.
+
+```swift
+let api = AWS.APIGateway("my-api")
+    .route("$default", function: myFunction)
+
+return Outputs([
+    "url": api.url
+])
+```
+
+You can route different HTTP methods and paths to different functions:
+
+```swift
+let api = AWS.APIGateway("my-api")
+    .route("GET /users", function: listUsers)
+    .route("POST /users", function: createUser)
+    .route("DELETE /users/{id}", function: deleteUser)
+```
+
+Custom domains are supported too:
+
+```swift
+let api = AWS.APIGateway(
+    "my-api",
+    domainName: .init(hostname: "api.example.com", dns: .aws(zoneName: "example.com"))
+)
+.route("$default", function: myFunction)
+```
+
 #### CDN
 
 This component creates a CDN that sits in front of your application. It can be
