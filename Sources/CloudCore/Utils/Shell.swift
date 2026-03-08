@@ -29,6 +29,12 @@ public enum ShellEvent: Sendable {
     }
 }
 
+public extension StringProtocol {
+    var isWarning: Bool {
+        localizedCaseInsensitiveContains("warning: ")
+    }
+}
+
 public enum ShellExecutable {
     case name(_ value: String)
     case path(_ value: String)
