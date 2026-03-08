@@ -41,8 +41,7 @@ extension AWS {
                         [
                             "name": index.partitionKey.name,
                             "projectionType": "ALL",
-                            "hashKey": index.partitionKey.name,
-                            "rangeKey": index.sortKey?.name,
+                            "keySchemas": index.asKeySchema,
                         ]
                     },
                     "streamEnabled": streaming.isEnabled,
@@ -188,6 +187,13 @@ extension AWS.DynamoDB: Linkable {
 }
 
 private extension AWS.DynamoDB.Index {
+    var asKeySchema: [[String: String]] {
+        [
+            ["attributeName": partitionKey.name, "keyType": "HASH"],
+            sortKey.map { ["attributeName": $0.name, "keyType": "RANGE"] },
+        ].compactMap { $0 }
+    }
+
     var asAttributes: [[String: String]] {
         [
             ["name": partitionKey.name, "type": partitionKey.type.rawValue],
