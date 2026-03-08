@@ -36,6 +36,7 @@ extension AWS {
             _ name: String,
             domainName: DomainName? = nil,
             cors: Bool = true,
+            logFormat: LogFormat = .default,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -62,7 +63,7 @@ extension AWS {
                 name: "\(name)-logs",
                 type: "aws:cloudwatch:LogGroup",
                 properties: [
-                    "name": "/aws/apigateway/\(name)",
+                    "name": "/aws/apigateway/\(api.name)",
                     "retentionInDays": 7,
                 ],
                 options: options,
@@ -78,7 +79,7 @@ extension AWS {
                     "autoDeploy": true,
                     "accessLogSettings": [
                         "destinationArn": logGroup.arn,
-                        "format": #"{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","routeKey":"$context.routeKey","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength","integrationError":"$context.integrationErrorMessage"}"#,
+                        "format": logFormat.value,
                     ],
                 ],
                 options: options,
@@ -165,5 +166,25 @@ extension AWS {
 
             return self
         }
+    }
+}
+
+extension AWS.APIGateway {
+    public struct LogFormat: ExpressibleByStringLiteral, Sendable {
+        public let value: String
+
+        public init(stringLiteral value: String) {
+            self.value = value
+        }
+
+        /// JSON format capturing common request/response fields.
+        public static let `default` = LogFormat(
+            stringLiteral: #"{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","routeKey":"$context.routeKey","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength","integrationError":"$context.integrationErrorMessage"}"#
+        )
+
+        /// Common Log Format (CLF).
+        public static let clf = LogFormat(
+            stringLiteral: "$context.identity.sourceIp - - [$context.requestTime] \"$context.httpMethod $context.routeKey $context.protocol\" $context.status $context.responseLength"
+        )
     }
 }

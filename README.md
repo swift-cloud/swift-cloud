@@ -304,6 +304,19 @@ let api = AWS.APIGateway(
 .route("$default", function: myFunction)
 ```
 
+Access logs are written to CloudWatch automatically. You can customise the log format using the built-in presets or provide your own:
+
+```swift
+// Default JSON format (used when logFormat is omitted)
+AWS.APIGateway("my-api", logFormat: .default)
+
+// Common Log Format (CLF)
+AWS.APIGateway("my-api", logFormat: .clf)
+
+// Custom format using API Gateway $context variables
+AWS.APIGateway("my-api", logFormat: "$context.requestId $context.status $context.routeKey")
+```
+
 #### CDN
 
 This component creates a CDN that sits in front of your application. It can be
