@@ -47,6 +47,16 @@ extension AWS {
             let dockerFilePath = Docker.Dockerfile.filePath(name)
             let architecture = Architecture.current
 
+            if case .enabled = url, AWS.Function.unsupportedFunctionURLRegions.contains(context.region) {
+                fatalError(
+                    """
+                    Lambda function URLs are not supported in region '\(context.region)'.
+                    Unsupported regions: \(AWS.Function.unsupportedFunctionURLRegions.sorted().joined(separator: ", ")).
+                    Use a supported region or remove `url: .enabled()` and route traffic through an AWS.APIGateway instead.
+                    """
+                )
+            }
+
             self.environment = Environment(environment, shape: .keyValue)
 
             dockerImage =
@@ -228,6 +238,24 @@ extension AWS.Function {
             }
         }
     }
+}
+
+extension AWS.Function {
+    // Regions that do not support Lambda function URLs.
+    // Source: https://docs.aws.amazon.com/lambda/latest/dg/urls-configuration.html
+    static let unsupportedFunctionURLRegions: Set<String> = [
+        "ap-south-2",     // Asia Pacific (Hyderabad)
+        "ap-southeast-4", // Asia Pacific (Melbourne)
+        "ap-southeast-5", // Asia Pacific (Malaysia)
+        "ap-southeast-6", // Asia Pacific (New Zealand)
+        "ap-southeast-7", // Asia Pacific (Thailand)
+        "ap-east-2",      // Asia Pacific (Taipei)
+        "ca-west-1",      // Canada West (Calgary)
+        "eu-south-2",     // Europe (Spain)
+        "eu-central-2",   // Europe (Zurich)
+        "il-central-1",   // Israel (Tel Aviv)
+        "me-central-1",   // Middle East (UAE)
+    ]
 }
 
 extension AWS.Function: RoleProvider {}
