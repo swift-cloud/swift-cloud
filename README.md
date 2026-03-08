@@ -286,12 +286,20 @@ let api = AWS.APIGateway("my-api")
     .route("DELETE /users/{id}", function: deleteUser)
 ```
 
-Custom domains are supported too:
+Custom domains are supported with any DNS provider:
 
 ```swift
+// Route53
 let api = AWS.APIGateway(
     "my-api",
     domainName: .init(hostname: "api.example.com", dns: .aws(zoneName: "example.com"))
+)
+.route("$default", function: myFunction)
+
+// Cloudflare
+let api = AWS.APIGateway(
+    "my-api",
+    domainName: .init(hostname: "api.example.com", dns: .cloudflare(zoneName: "example.com"))
 )
 .route("$default", function: myFunction)
 ```
