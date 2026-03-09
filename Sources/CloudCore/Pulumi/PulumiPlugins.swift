@@ -20,14 +20,14 @@ extension Pulumi.Plugin {
     // https://github.com/pulumi/pulumi-aws
     public static let aws = Pulumi.Plugin(
         name: "aws",
-        version: "7.20.0",
+        version: "7.21.0",
         repo: "pulumi/pulumi-aws"
     )
 
     // https://github.com/pulumi/pulumi-awsx
     public static let awsx = Pulumi.Plugin(
         name: "awsx",
-        version: "3.1.0",
+        version: "3.3.0",
         repo: "pulumi/pulumi-awsx"
     )
 

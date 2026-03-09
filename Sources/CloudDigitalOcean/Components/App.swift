@@ -57,6 +57,15 @@ extension DigitalOcean {
                             "password": digitalOceanToken,
                         ]
                     ],
+                    "cacheFrom": [[
+                        "registry": ["ref": "registry.digitalocean.com/\(registryName)/\(repository):cache"]
+                    ]],
+                    "cacheTo": [[
+                        "registry": [
+                            "ref": "registry.digitalocean.com/\(registryName)/\(repository):cache",
+                            "mode": "max",
+                        ]
+                    ]],
                 ],
                 options: options,
                 context: context

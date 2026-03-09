@@ -26,6 +26,7 @@ extension AWS {
                     "dockerfile": "\(dockerFilePath)",
                     "platform": "linux/\(dockerPlatform)",
                     "args": ["DOCKER_BUILDKIT": "1"],
+                    "cacheFrom": ["\(imageRepository.url)"],
                 ],
                 options: options,
                 context: context
