@@ -19,7 +19,7 @@ extension Architecture {
         case .arm64:
             return "arm64"
         case .x86:
-            return "x86_64"
+            return "amd64"
         }
     }
 

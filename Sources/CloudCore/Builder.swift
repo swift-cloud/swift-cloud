@@ -195,18 +195,33 @@ extension Builder {
         spinner.push(buildCommand)
 
         let runtime = await resolveContainerRuntime()
+
+        var arguments = ["run", "--rm"]
+
+        switch runtime {
+        case .appleContainer:
+            arguments += ["--arch", architecture.dockerPlatform]
+            arguments += ["--init"]
+            let memory = ProcessInfo.processInfo.environment["SWIFT_CLOUD_CONTAINER_MEMORY"] ?? "4g"
+            arguments += ["--memory", memory]
+            if let cpus = ProcessInfo.processInfo.environment["SWIFT_CLOUD_CONTAINER_CPUS"] {
+                arguments += ["--cpus", cpus]
+            }
+        case .docker:
+            arguments += ["--platform", "linux/\(architecture.dockerPlatform)"]
+        }
+
+        arguments += [
+            "-v", "\(Files.currentDirectoryPath()):/workspace",
+            "-w", "/workspace",
+            imageName,
+            "bash", "-cl",
+            "\(pre) && \(buildCommand)",
+        ]
+
         try await shellOut(
             to: .name(runtime.rawValue),
-            arguments: [
-                "run",
-                "--platform", "linux/\(architecture.dockerPlatform)",
-                "--rm",
-                "-v", "\(Files.currentDirectoryPath()):/workspace",
-                "-w", "/workspace",
-                imageName,
-                "bash", "-cl",
-                "\(pre) && \(buildCommand)",
-            ],
+            arguments: arguments,
             onEvent: { spinner.push($0.string()) }
         )
     }
