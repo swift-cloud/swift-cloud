@@ -3,6 +3,7 @@ extension AWS {
         internal let bucket: Resource
         internal let ownershipControls: Resource
         internal let publicAccessBlock: Resource
+        internal let corsConfiguration: Resource?
 
         public var name: Output<String> {
             bucket.id
@@ -18,6 +19,7 @@ extension AWS {
 
         public init(
             _ name: String,
+            cors: [CORSRule]? = nil,
             forceDestroy: Bool = true,
             options: Resource.Options? = nil,
             context: Context = .current
@@ -55,6 +57,95 @@ extension AWS {
                 options: options,
                 context: context
             )
+
+            if let cors {
+                corsConfiguration = Resource(
+                    name: "\(name)-cors",
+                    type: "aws:s3:BucketCorsConfigurationV2",
+                    properties: [
+                        "bucket": bucket.output,
+                        "corsRules": cors.map { rule in
+                            var ruleDict: [String: AnyEncodable] = [
+                                "allowedMethods": AnyEncodable(rule.allowedMethods.map { $0.rawValue }),
+                                "allowedOrigins": AnyEncodable(rule.allowedOrigins),
+                            ]
+                            if !rule.allowedHeaders.isEmpty {
+                                ruleDict["allowedHeaders"] = AnyEncodable(rule.allowedHeaders)
+                            }
+                            if !rule.exposeHeaders.isEmpty {
+                                ruleDict["exposeHeaders"] = AnyEncodable(rule.exposeHeaders)
+                            }
+                            if let maxAge = rule.maxAgeSeconds {
+                                ruleDict["maxAgeSeconds"] = AnyEncodable(maxAge)
+                            }
+                            return AnyEncodable(ruleDict)
+                        },
+                    ],
+                    options: options,
+                    context: context
+                )
+            } else {
+                corsConfiguration = nil
+            }
+        }
+    }
+}
+
+extension AWS.Bucket {
+    public struct CORSRule {
+        public enum HTTPMethod: String {
+            case get = "GET"
+            case put = "PUT"
+            case post = "POST"
+            case delete = "DELETE"
+            case head = "HEAD"
+        }
+
+        public var allowedMethods: [HTTPMethod]
+        public var allowedOrigins: [String]
+        public var allowedHeaders: [String]
+        public var exposeHeaders: [String]
+        public var maxAgeSeconds: Int?
+
+        public init(
+            allowedMethods: [HTTPMethod] = [.get, .head],
+            allowedOrigins: [String] = ["*"],
+            allowedHeaders: [String] = [],
+            exposeHeaders: [String] = [],
+            maxAgeSeconds: Int? = nil
+        ) {
+            for origin in allowedOrigins {
+                Self.validateOrigin(origin)
+            }
+            self.allowedMethods = allowedMethods
+            self.allowedOrigins = allowedOrigins
+            self.allowedHeaders = allowedHeaders
+            self.exposeHeaders = exposeHeaders
+            self.maxAgeSeconds = maxAgeSeconds
+        }
+
+        private static func validateOrigin(_ origin: String) {
+            guard origin != "*" else { return }
+            let isHTTP = origin.hasPrefix("http://")
+            let isHTTPS = origin.hasPrefix("https://")
+            guard isHTTP || isHTTPS else {
+                fatalError(
+                    "[CloudAWS] Invalid CORS origin '\(origin)': must be '*' or start with 'http://' or 'https://'."
+                )
+            }
+            let afterScheme = origin.dropFirst(isHTTPS ? 8 : 7)
+            // Split on '/' to isolate host[:port] from any path
+            let parts = afterScheme.split(separator: "/", maxSplits: 1, omittingEmptySubsequences: false)
+            guard !parts.isEmpty, !parts[0].isEmpty else {
+                fatalError(
+                    "[CloudAWS] Invalid CORS origin '\(origin)': missing host."
+                )
+            }
+            guard parts.count == 1 || parts[1].isEmpty else {
+                fatalError(
+                    "[CloudAWS] Invalid CORS origin '\(origin)': origins must not include a path. Use 'https://example.com' not 'https://example.com/path'."
+                )
+            }
         }
     }
 }
