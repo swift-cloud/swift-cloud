@@ -1,4 +1,3 @@
-import NIOHTTP1
 import Foundation
 
 extension AWS {
@@ -96,6 +95,13 @@ extension AWS {
 
 extension AWS.Bucket {
     public struct CORSRule {
+        public enum HTTPMethod: String {
+            case get = "GET"
+            case put = "PUT"
+            case post = "POST"
+            case delete = "DELETE"
+            case head = "HEAD"
+        }
         public var allowedMethods: [HTTPMethod]
         public var allowedOrigins: [String]
         public var allowedHeaders: [String]
@@ -103,7 +109,7 @@ extension AWS.Bucket {
         public var maxAgeSeconds: Int?
         
         public init(
-            allowedMethods: [HTTPMethod] = [.GET, .HEAD],
+            allowedMethods: [HTTPMethod] = [.get, .head],
             allowedOrigins: [String] = ["*"],
             allowedHeaders: [String] = [],
             exposeHeaders: [String] = [],
@@ -126,10 +132,10 @@ extension AWS.Bucket {
                 )
             }
         }
-
+        
         internal static func isValidOrigin(_ origin: String) -> Bool {
             guard origin != "*" else { return true }
-
+            
             guard let url = URL(string: origin),
                   let scheme = url.scheme,
                   (scheme == "http" || scheme == "https"),
@@ -140,7 +146,7 @@ extension AWS.Bucket {
                   url.fragment == nil else {
                 return false
             }
-
+            
             return true
         }
     }
