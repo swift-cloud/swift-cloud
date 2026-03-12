@@ -6,19 +6,19 @@ extension AWS {
         internal let ownershipControls: Resource
         internal let publicAccessBlock: Resource
         internal let corsConfiguration: Resource?
-        
+
         public var name: Output<String> {
             bucket.id
         }
-        
+
         public var region: Output<String> {
             getARN(bucket).region
         }
-        
+
         public var hostname: Output<String> {
             bucket.output.keyPath("bucketRegionalDomainName")
         }
-        
+
         public init(
             _ name: String,
             cors: [CORSRule]? = nil,
@@ -35,7 +35,7 @@ extension AWS {
                 options: options,
                 context: context
             )
-            
+
             ownershipControls = Resource(
                 name: "\(name)-oc",
                 type: "aws:s3:BucketOwnershipControls",
@@ -48,7 +48,7 @@ extension AWS {
                 options: options,
                 context: context
             )
-            
+
             publicAccessBlock = Resource(
                 name: "\(name)-pab",
                 type: "aws:s3:BucketPublicAccessBlock",
@@ -59,7 +59,7 @@ extension AWS {
                 options: options,
                 context: context
             )
-            
+
             if let cors {
                 corsConfiguration = Resource(
                     name: "\(name)-cors",
@@ -107,7 +107,7 @@ extension AWS.Bucket {
         public var allowedHeaders: [String]
         public var exposeHeaders: [String]
         public var maxAgeSeconds: Int?
-        
+
         public init(
             allowedMethods: [HTTPMethod] = [.get, .head],
             allowedOrigins: [String] = ["*"],
@@ -124,7 +124,7 @@ extension AWS.Bucket {
             self.exposeHeaders = exposeHeaders
             self.maxAgeSeconds = maxAgeSeconds
         }
-        
+
         private static func validateOrigin(_ origin: String) {
             guard isValidOrigin(origin) else {
                 fatalError(
@@ -132,21 +132,22 @@ extension AWS.Bucket {
                 )
             }
         }
-        
+
         internal static func isValidOrigin(_ origin: String) -> Bool {
             guard origin != "*" else { return true }
-            
+
             guard let url = URL(string: origin),
-                  let scheme = url.scheme,
-                  (scheme == "http" || scheme == "https"),
-                  let host = url.host,
-                  !host.isEmpty,
-                  url.path == "/" || url.path.isEmpty,
-                  url.query == nil,
-                  url.fragment == nil else {
+                let scheme = url.scheme,
+                scheme == "http" || scheme == "https",
+                let host = url.host,
+                !host.isEmpty,
+                url.path == "/" || url.path.isEmpty,
+                url.query == nil,
+                url.fragment == nil
+            else {
                 return false
             }
-            
+
             return true
         }
     }
@@ -161,14 +162,14 @@ extension AWS.Bucket: Linkable {
             "s3:ListBucket",
         ]
     }
-    
+
     public var resources: [Output<String>] {
         [
             "\(bucket.arn)",
             "\(bucket.arn)/*",
         ]
     }
-    
+
     public var properties: LinkProperties? {
         return .init(
             type: "bucket",
