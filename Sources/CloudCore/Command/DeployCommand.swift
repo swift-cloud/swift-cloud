@@ -21,6 +21,7 @@ extension Command {
                 )
                 let outputs = try await prepared.client.stackOutputs()
                 spinner.stop()
+                UI.writeWarnings(spinner.warnings)
                 UI.writeOutputs(outputs)
             } catch {
                 spinner.stop()

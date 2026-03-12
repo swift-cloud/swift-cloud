@@ -82,6 +82,14 @@ extension UI {
 }
 
 extension UI {
+    public static func writeWarnings(_ warnings: [String]) {
+        for warning in warnings {
+            writeBlock(warning, color: .yellow)
+        }
+    }
+}
+
+extension UI {
     public static func error(_ error: Error) {
         Self.error("\(error)")
     }
@@ -111,10 +119,16 @@ extension UI {
             set { queue.sync { _spinner = newValue } }
         }
 
+        private var _warnings: [String] = []
+        public var warnings: [String] {
+            queue.sync { _warnings }
+        }
+
         private init() {}
 
         fileprivate func start(_ label: String) {
             spinner?.succeed()
+            queue.sync { _warnings = [] }
             labels.append(label)
             spinner = cli.customActivity(
                 frames: frames.map { "\($0) \(label)\n" },
@@ -134,6 +148,10 @@ extension UI {
 
             guard line != "." else {
                 return
+            }
+
+            if line.isWarning {
+                queue.sync { _warnings.append(line) }
             }
 
             var lines =

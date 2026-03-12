@@ -21,6 +21,33 @@ extension AWS {
                 options: options,
                 context: context
             )
+
+            _ = Resource(
+                name: "\(name)-lifecycle-policy",
+                type: "aws:ecr:LifecyclePolicy",
+                properties: [
+                    "repository": resource.output.keyPath("name"),
+                    "policy": """
+                    {
+                        "rules": [{
+                            "rulePriority": 1,
+                            "description": "Expire untagged images older than 1 day",
+                            "selection": {
+                                "tagStatus": "untagged",
+                                "countType": "sinceImagePushed",
+                                "countUnit": "days",
+                                "countNumber": 1
+                            },
+                            "action": {
+                                "type": "expire"
+                            }
+                        }]
+                    }
+                    """,
+                ],
+                options: options,
+                context: context
+            )
         }
     }
 }
