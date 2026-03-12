@@ -19,6 +19,7 @@ extension Command {
                     onEvent: { spinner.push($0.string()) }
                 )
                 spinner.stop()
+                UI.writeWarnings(spinner.warnings)
                 UI.writeBlock(output)
             } catch {
                 spinner.stop()
