@@ -32,10 +32,10 @@ extension Builder {
 }
 
 extension Builder {
-    public func buildAmazonLinux(targetName: String, architecture: Architecture = .current, stripSymbols: Bool = false) async throws {
+    public func buildAmazonLinux(targetName: String, architecture: Architecture = .current, buildOptions: BuildOptions = []) async throws {
         var flags = ["--static-swift-stdlib"]
-        if stripSymbols {
-            flags += ["-Xlinker", "-s"] // strip symbols
+        if buildOptions.contains(.stripSymbols) {
+            flags += ["-Xlinker", "-s"]
         }
 
         if isAmazonLinux() {
@@ -71,7 +71,7 @@ extension Builder {
 }
 
 extension Builder {
-    public func buildStaticLinux(targetName: String, architecture: Architecture = .current, stripSymbols: Bool = false) async throws {
+    public func buildStaticLinux(targetName: String, architecture: Architecture = .current, buildOptions: BuildOptions = []) async throws {
         let swiftSDK: String
         switch architecture {
         case .arm64:
@@ -81,8 +81,8 @@ extension Builder {
         }
 
         var flags = ["--swift-sdk", swiftSDK]
-        if stripSymbols {
-            flags += ["-Xlinker", "-s"] // strip symbols
+        if buildOptions.contains(.stripSymbols) {
+            flags += ["-Xlinker", "-s"]
         }
 
         try await buildNative(

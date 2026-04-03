@@ -41,7 +41,7 @@ extension AWS {
             packageType: FunctionPackageType = .zip,
             runtime: FunctionRuntime = .al2023,
             build: FunctionBuild = .docker,
-            stripSymbols: Bool = false,
+            buildOptions: BuildOptions = [],
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -171,10 +171,10 @@ extension AWS {
                 switch build {
                 case .docker:
                     swiftBuildDirectory = architecture.swiftBuildLinuxDirectory
-                    try await ctx.builder.buildAmazonLinux(targetName: targetName, architecture: architecture, stripSymbols: stripSymbols)
+                    try await ctx.builder.buildAmazonLinux(targetName: targetName, architecture: architecture, buildOptions: buildOptions)
                 case .staticLinuxSDK:
                     swiftBuildDirectory = architecture.swiftBuildStaticLinuxDirectory
-                    try await ctx.builder.buildStaticLinux(targetName: targetName, architecture: architecture, stripSymbols: stripSymbols)
+                    try await ctx.builder.buildStaticLinux(targetName: targetName, architecture: architecture, buildOptions: buildOptions)
                 }
 
                 switch packageType {
