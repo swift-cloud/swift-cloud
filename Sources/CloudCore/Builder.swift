@@ -35,7 +35,7 @@ extension Builder {
     public func buildAmazonLinux(targetName: String, architecture: Architecture = .current, buildOptions: BuildOptions = []) async throws {
         var flags = ["--static-swift-stdlib"]
         if buildOptions.contains(.stripSymbols) {
-            flags += ["-Xlinker", "-s"]
+            flags += ["-Xlinker", "-s"] // strip symbols
         }
 
         if isAmazonLinux() {
@@ -82,7 +82,7 @@ extension Builder {
 
         var flags = ["--swift-sdk", swiftSDK]
         if buildOptions.contains(.stripSymbols) {
-            flags += ["-Xlinker", "-s"]
+            flags += ["-Xlinker", "-s"] // strip symbols
         }
 
         try await buildNative(
