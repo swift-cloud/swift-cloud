@@ -35,6 +35,7 @@ extension AWS {
             url: FunctionURL = .disabled,
             memory: Int = 1769,
             timeout: Duration = .seconds(10),
+            ephemeralStorage: Int? = nil,
             reservedConcurrency: Int? = nil,
             environment: [String: any Input<String>]? = nil,
             vpc: VPC.Configuration? = nil,
@@ -110,6 +111,7 @@ extension AWS {
                     "environment": [
                         "variables": self.environment
                     ],
+                    "ephemeralStorage": ephemeralStorage.map { ["size": $0] },
                     "reservedConcurrentExecutions": reservedConcurrency,
                     "vpcConfig": vpc.map {
                         [
