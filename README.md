@@ -260,6 +260,14 @@ let staticLambda = AWS.Function(
     runtime: .al2023,
     build: .staticLinuxSDK
 )
+
+// Optional: more /tmp space (in MB, 512-10240) for large files
+let mediaLambda = AWS.Function(
+    "my-media-lambda-function",
+    targetName: "App",
+    timeout: .seconds(900),
+    ephemeralStorage: 4096
+)
 ```
 
 #### API Gateway
