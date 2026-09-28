@@ -130,6 +130,10 @@ extension UI {
             spinner?.succeed()
             queue.sync { _warnings = [] }
             labels.append(label)
+            guard UI.isInteractive else {
+                UI.write(label, color: .cyan, newLine: true)
+                return
+            }
             spinner = cli.customActivity(
                 frames: frames.map { "\($0) \(label)\n" },
                 success: "",
@@ -154,12 +158,29 @@ extension UI {
                 queue.sync { _warnings.append(line) }
             }
 
-            var lines =
+            let sanitized =
                 line
                 .split(separator: .newlineSequence)
                 .map { sanitizeLine($0.description) }
-                .map { $0.prefix(cli.size.width - 10) }
                 .filter { !$0.isEmpty }
+
+            guard !sanitized.isEmpty else {
+                return
+            }
+
+            guard UI.isInteractive else {
+                // No animated spinner off a TTY: emit plain progress lines so
+                // CI/agent logs still show what is happening.
+                for entry in sanitized {
+                    UI.write(entry, newLine: true)
+                }
+                return
+            }
+
+            // Clamp so a 0-width (undetectable) terminal can't yield a negative
+            // prefix length, which would trap.
+            let width = max(cli.size.width - 10, 0)
+            var lines = sanitized.map { $0.prefix(width) }.filter { !$0.isEmpty }
 
             guard !lines.isEmpty else {
                 return
@@ -204,6 +225,9 @@ extension UI {
         public func stop() {
             spinner?.succeed()
             labels.removeLast()
+            guard UI.isInteractive else {
+                return
+            }
             cli.clear(lines: 1)
             if let label = labels.last {
                 spinner = cli.customActivity(
