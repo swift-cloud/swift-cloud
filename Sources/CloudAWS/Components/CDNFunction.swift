@@ -28,7 +28,8 @@ extension AWS.CDN {
                     // Function names allow up to 64 characters.
                     "name": tokenize(context.stage, name, maxLength: 64),
                     "runtime": "cloudfront-js-2.0",
-                    "code": code,
+                    // Pulumi YAML interpolates `${...}`; `$${` keeps JS template literals intact.
+                    "code": code.replacingOccurrences(of: "${", with: "$${"),
                     "comment": comment,
                     // Publishing promotes the code to the LIVE stage, which is what distributions run.
                     "publish": true,
