@@ -126,6 +126,7 @@ extension AWS {
                         "defaultTtl": 0,
                         "cachePolicyId": cachePolicy.id,
                         "originRequestPolicyId": originRequestPolicy.id,
+                        "functionAssociations": defaultOrigin.functionAssociations,
                     ],
                     "orderedCacheBehaviors": origins.withoutDefaultOrigin().map { origin in
                         [
@@ -150,6 +151,7 @@ extension AWS {
                             "defaultTtl": 0,
                             "cachePolicyId": cachePolicy.id,
                             "originRequestPolicyId": originRequestPolicy.id,
+                            "functionAssociations": origin.functionAssociations,
                         ]
                     },
                     "viewerCertificate": [
@@ -174,6 +176,8 @@ extension AWS.CDN {
         public let url: String
         public let path: String
         public let shieldRegion: String?
+        /// CloudFront Functions that run on this path's cache behavior.
+        public let functions: [AWS.CDN.Function.Association]
 
         public var id: String {
             tokenize("origin", isDefault ? "default" : isRoot ? "root" : path)
@@ -195,35 +199,50 @@ extension AWS.CDN {
             path == "/"
         }
 
+        var functionAssociations: [[String: String]]? {
+            functions.isEmpty ? nil : functions.map { ["eventType": $0.eventType.rawValue, "functionArn": $0.functionArn] }
+        }
+
         public init(
             url: any Input<String>,
             path: any Input<String>,
-            shieldRegion: (any Input<String>)? = nil
+            shieldRegion: (any Input<String>)? = nil,
+            functions: [AWS.CDN.Function.Association] = []
         ) {
             self.url = url.description
             self.path = path.description
             self.shieldRegion = shieldRegion?.description
+            self.functions = functions
         }
     }
 }
 
 extension AWS.CDN.Origin {
     public static func function(
-        _ function: AWS.Function, path: any Input<String>, shieldRegion: (any Input<String>)? = nil
+        _ function: AWS.Function,
+        path: any Input<String>,
+        shieldRegion: (any Input<String>)? = nil,
+        functions: [AWS.CDN.Function.Association] = []
     ) -> Self {
-        .init(url: function.url, path: path, shieldRegion: shieldRegion)
+        .init(url: function.url, path: path, shieldRegion: shieldRegion, functions: functions)
     }
 
     public static func webServer(
-        _ server: AWS.WebServer, path: any Input<String>, shieldRegion: (any Input<String>)? = nil
+        _ server: AWS.WebServer,
+        path: any Input<String>,
+        shieldRegion: (any Input<String>)? = nil,
+        functions: [AWS.CDN.Function.Association] = []
     ) -> Self {
-        .init(url: server.url, path: path, shieldRegion: shieldRegion)
+        .init(url: server.url, path: path, shieldRegion: shieldRegion, functions: functions)
     }
 
     public static func url(
-        _ url: any Input<String>, path: any Input<String>, shieldRegion: (any Input<String>)? = nil
+        _ url: any Input<String>,
+        path: any Input<String>,
+        shieldRegion: (any Input<String>)? = nil,
+        functions: [AWS.CDN.Function.Association] = []
     ) -> Self {
-        .init(url: url, path: path, shieldRegion: shieldRegion)
+        .init(url: url, path: path, shieldRegion: shieldRegion, functions: functions)
     }
 }
 
