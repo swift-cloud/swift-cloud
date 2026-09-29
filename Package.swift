@@ -78,5 +78,9 @@ let package = Package(
             name: "CloudCoreTests",
             dependencies: ["CloudCore"]
         ),
+        .testTarget(
+            name: "CloudAWSTests",
+            dependencies: ["CloudAWS"]
+        ),
     ]
 )
