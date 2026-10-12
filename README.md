@@ -360,6 +360,65 @@ let cdn = AWS.CDN(
 )
 ```
 
+##### CloudFront Functions and KeyValueStore
+
+`AWS.CDN.Function` runs a [CloudFront Function](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-functions.html)
+(`cloudfront-js-2.0`) at the edge for a path, e.g. to rewrite or redirect requests.
+`AWS.CDN.KeyValueStore` is a small global store replicated to every edge location that functions can read with
+`cf.kvs().get(key)`. Link it to a Lambda to write to it:
+
+```swift
+let routes = AWS.CDN.KeyValueStore("routes")
+lambda.link(routes) // Cloud.Resource.Routes.arn
+
+let router = AWS.CDN.Function(
+    "router",
+    code: """
+    import cf from 'cloudfront';
+    const kvs = cf.kvs();
+    async function handler(event) {
+        const target = await kvs.get(event.request.uri).catch(() => null);
+        if (!target) return event.request;
+        return { statusCode: 302, statusDescription: 'Found', headers: { location: { value: target } } };
+    }
+    """,
+    keyValueStores: [routes]
+)
+
+let cdn = AWS.CDN(
+    "my-cdn",
+    origins: [
+        .url(bucketURL, path: "*"),
+        .url(bucketURL, path: "/go/*", functions: [.viewerRequest(router)]),
+    ]
+)
+```
+
+Instead of an inline string, the code can live in a `.js` file bundled as a resource of your Infra target, which
+keeps it readable and lets editors lint it:
+
+```swift
+// Package.swift
+.executableTarget(
+    name: "Infra",
+    dependencies: [.product(name: "Cloud", package: "swift-cloud")],
+    resources: [.copy("Resources/router.js")]
+)
+
+// Sources/Infra/Project.swift
+let routerURL = Bundle.module.url(forResource: "router", withExtension: "js")!
+let router = AWS.CDN.Function(
+    "router",
+    code: try String(contentsOf: routerURL, encoding: .utf8),
+    keyValueStores: [routes]
+)
+```
+
+JavaScript template literals (`${...}`) are safe to use: they're escaped so Pulumi doesn't interpolate them. The
+KeyValueStore data plane requires SigV4A signing: with Soto, create the `AWSClient` with
+`options: .init(signingAlgorithm: .sigV4a)` and pass `https://<account-id>.cloudfront-kvs.global.api.aws` as the
+`CloudFrontKeyValueStore` endpoint.
+
 #### Bucket
 
 ```swift
