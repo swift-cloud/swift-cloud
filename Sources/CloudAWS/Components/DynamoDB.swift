@@ -24,6 +24,7 @@ extension AWS {
             primaryIndex: Index,
             secondaryIndexes: [Index] = [],
             streaming: StreamingConfiguration = .disabled,
+            timeToLiveAttribute: String? = nil,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -46,6 +47,12 @@ extension AWS {
                     },
                     "streamEnabled": streaming.isEnabled,
                     "streamViewType": streaming.viewType?.rawValue,
+                    "ttl": timeToLiveAttribute.map {
+                        [
+                            "attributeName": $0,
+                            "enabled": true,
+                        ]
+                    },
                 ],
                 options: options,
                 context: context
