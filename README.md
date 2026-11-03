@@ -390,6 +390,14 @@ let table = AWS.DynamoDB(
 
 // Link the table to a function or web server
 function.link(table)
+
+// Optional: let DynamoDB delete items automatically once the given
+// attribute (a Number holding a Unix epoch timestamp in seconds) is in the past
+let sessions = AWS.DynamoDB(
+    "Sessions",
+    primaryIndex: .init(partitionKey: ("id", .string)),
+    timeToLiveAttribute: "expiresAt"
+)
 ```
 
 #### Cache
