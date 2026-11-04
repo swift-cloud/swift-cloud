@@ -419,10 +419,44 @@ KeyValueStore data plane requires SigV4A signing: with Soto, create the `AWSClie
 `options: .init(signingAlgorithm: .sigV4a)` and pass `https://<account-id>.cloudfront-kvs.global.api.aws` as the
 `CloudFrontKeyValueStore` endpoint.
 
+##### Private buckets
+
+A bucket origin serves files from S3 while the bucket stays private: CloudFront reads it through
+[Origin Access Control](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html),
+and the CDN sets the bucket policy to allow only its own distribution. Bucket paths use the managed
+`Managed-CachingOptimized` cache policy and only allow `GET`, `HEAD` and `OPTIONS`.
+
+```swift
+let media = AWS.Bucket("media", blockPublicAccess: true)
+
+let cdn = AWS.CDN(
+    "media-cdn",
+    origins: .bucket(media),
+    domainName: .init("media.example.com")
+)
+```
+
+A bucket has a single policy, so a bucket can be the origin of one CDN only.
+
+##### Invalidations
+
+Link a CDN to a function to let it invalidate cached paths, e.g. after deleting a file:
+
+```swift
+lambda.link(cdn) // Cloud.Resource.MediaCdn.id
+```
+
 #### Bucket
 
 ```swift
 let bucket = AWS.Bucket("my-s3-bucket")
+```
+
+`blockPublicAccess` turns on all four S3 Block Public Access settings and disables ACLs, for buckets that are only
+read through presigned URLs or a CDN:
+
+```swift
+let bucket = AWS.Bucket("my-private-bucket", blockPublicAccess: true)
 ```
 
 #### Queue

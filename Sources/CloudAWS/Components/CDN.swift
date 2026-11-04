@@ -4,6 +4,8 @@ extension AWS {
     public struct CDN: AWSComponent {
         public let distribution: Resource
         public let secureDomainName: AWS.SecureDomainName?
+        /// Signs CloudFront's requests to bucket origins, so the buckets can stay private. Nil without any.
+        public let originAccessControl: Resource?
 
         public var name: Output<String> {
             distribution.name
@@ -41,7 +43,11 @@ extension AWS {
                 )
             }
 
-            let cachePolicy = Resource(
+            let bucketOrigins = origins.filter { $0.bucket != nil }
+            // Only the paths in front of an app use it, not the ones in front of buckets.
+            let needsAppPolicies = bucketOrigins.count < origins.count
+
+            let cachePolicy = !needsAppPolicies ? nil : Resource(
                 name: "\(name)-cache-policy",
                 type: "aws:cloudfront:CachePolicy",
                 properties: [
@@ -66,10 +72,52 @@ extension AWS {
                 context: context
             )
 
-            let originRequestPolicy = Cloudfront.getOriginRequestPolicy(name: "Managed-AllViewerExceptHostHeader")
+            let originRequestPolicy = !needsAppPolicies ? nil : Cloudfront.getOriginRequestPolicy(name: "Managed-AllViewerExceptHostHeader")
+
+            let originAccessControl = bucketOrigins.isEmpty ? nil : Resource(
+                name: "\(name)-oac",
+                type: "aws:cloudfront:OriginAccessControl",
+                properties: [
+                    // Names are unique per account and allow up to 64 characters.
+                    "name": tokenize(context.stage, name, maxLength: 64),
+                    "originAccessControlOriginType": "s3",
+                    "signingBehavior": "always",
+                    "signingProtocol": "sigv4",
+                ],
+                options: .provider(cfProvider),
+                context: context
+            )
+            self.originAccessControl = originAccessControl
+
+            // Files in a bucket don't change behind a key: cache them up to a year, keyed on the path alone.
+            let bucketCachePolicy = bucketOrigins.isEmpty ? nil : Cloudfront.getCachePolicy(name: "Managed-CachingOptimized")
 
             guard let defaultOrigin = origins.defaultOrigin() else {
                 fatalError("Missing a default origin. You must specify at least one origin with `path: *`.")
+            }
+
+            func cacheBehavior(_ origin: Origin) -> AnyEncodable {
+                var behavior: [String: Any?] = [
+                    "targetOriginId": origin.id,
+                    "viewerProtocolPolicy": "redirect-to-https",
+                    "cachedMethods": ["GET", "HEAD", "OPTIONS"],
+                    "compress": true,
+                    "functionAssociations": origin.functionAssociations,
+                ]
+                // The default behavior has no path, and rejects the key altogether.
+                if !origin.isDefault {
+                    behavior["pathPattern"] = origin.path
+                }
+                if origin.bucket != nil {
+                    behavior["allowedMethods"] = ["GET", "HEAD", "OPTIONS"]
+                    behavior["cachePolicyId"] = bucketCachePolicy?.id
+                } else {
+                    behavior["allowedMethods"] = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+                    behavior["defaultTtl"] = 0
+                    behavior["cachePolicyId"] = cachePolicy?.id
+                    behavior["originRequestPolicyId"] = originRequestPolicy?.id
+                }
+                return AnyEncodable(behavior)
             }
 
             distribution = Resource(
@@ -90,8 +138,18 @@ extension AWS {
                     "aliases": domainName.map {
                         [$0.hostname]
                     },
-                    "origins": origins.map { origin in
-                        [
+                    "origins": origins.map { origin -> AnyEncodable in
+                        if origin.bucket != nil {
+                            return [
+                                "domainName": origin.hostname,
+                                "originId": origin.id,
+                                "originAccessControlId": originAccessControl?.id,
+                                "originShield": origin.shieldRegion.map {
+                                    ["enabled": true, "originShieldRegion": $0] as Any
+                                },
+                            ]
+                        }
+                        return [
                             "domainName": origin.hostname,
                             "originId": origin.id,
                             "customOriginConfig": [
@@ -105,55 +163,8 @@ extension AWS {
                             },
                         ]
                     },
-                    "defaultCacheBehavior": [
-                        "targetOriginId": defaultOrigin.id,
-                        "viewerProtocolPolicy": "redirect-to-https",
-                        "allowedMethods": [
-                            "GET",
-                            "HEAD",
-                            "OPTIONS",
-                            "PUT",
-                            "POST",
-                            "PATCH",
-                            "DELETE",
-                        ],
-                        "cachedMethods": [
-                            "GET",
-                            "HEAD",
-                            "OPTIONS",
-                        ],
-                        "compress": true,
-                        "defaultTtl": 0,
-                        "cachePolicyId": cachePolicy.id,
-                        "originRequestPolicyId": originRequestPolicy.id,
-                        "functionAssociations": defaultOrigin.functionAssociations,
-                    ],
-                    "orderedCacheBehaviors": origins.withoutDefaultOrigin().map { origin in
-                        [
-                            "pathPattern": origin.path,
-                            "targetOriginId": origin.id,
-                            "viewerProtocolPolicy": "redirect-to-https",
-                            "allowedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS",
-                                "PUT",
-                                "POST",
-                                "PATCH",
-                                "DELETE",
-                            ],
-                            "cachedMethods": [
-                                "GET",
-                                "HEAD",
-                                "OPTIONS",
-                            ],
-                            "compress": true,
-                            "defaultTtl": 0,
-                            "cachePolicyId": cachePolicy.id,
-                            "originRequestPolicyId": originRequestPolicy.id,
-                            "functionAssociations": origin.functionAssociations,
-                        ]
-                    },
+                    "defaultCacheBehavior": cacheBehavior(defaultOrigin),
+                    "orderedCacheBehaviors": origins.withoutDefaultOrigin().map(cacheBehavior),
                     "viewerCertificate": [
                         "cloudfrontDefaultCertificate": domainName == nil ? true : nil,
                         "acmCertificateArn": secureDomainName.map { $0.certificate.arn },
@@ -165,6 +176,38 @@ extension AWS {
                 context: context,
                 dependsOn: secureDomainName.map { [$0.validation] }
             )
+
+            // A bucket has a single policy: this one lets only this distribution read it.
+            var bucketsWithPolicy: Set<String> = []
+            for bucket in bucketOrigins.compactMap(\.bucket) {
+                guard bucketsWithPolicy.insert(bucket.bucket.chosenName).inserted else {
+                    continue
+                }
+                _ = Resource(
+                    name: "\(name)-\(bucket.bucket.chosenName)-policy",
+                    type: "aws:s3:BucketPolicy",
+                    properties: [
+                        "bucket": bucket.name,
+                        "policy": Resource.JSON([
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                [
+                                    "Effect": "Allow",
+                                    "Principal": ["Service": "cloudfront.amazonaws.com"],
+                                    "Action": "s3:GetObject",
+                                    "Resource": "\(bucket.bucket.arn)/*",
+                                    "Condition": [
+                                        "StringEquals": ["AWS:SourceArn": distribution.arn]
+                                    ],
+                                ]
+                            ],
+                        ]),
+                    ],
+                    options: options,
+                    context: context,
+                    dependsOn: [bucket.publicAccessBlock]
+                )
+            }
 
             domainName?.aliasTo(self.hostname)
         }
@@ -178,6 +221,8 @@ extension AWS.CDN {
         public let shieldRegion: String?
         /// CloudFront Functions that run on this path's cache behavior.
         public let functions: [AWS.CDN.Function.Association]
+        /// Set for a private S3 bucket, read through Origin Access Control.
+        let bucket: AWS.Bucket?
 
         public var id: String {
             tokenize("origin", isDefault ? "default" : isRoot ? "root" : path)
@@ -209,10 +254,21 @@ extension AWS.CDN {
             shieldRegion: (any Input<String>)? = nil,
             functions: [AWS.CDN.Function.Association] = []
         ) {
+            self.init(url: url, path: path, shieldRegion: shieldRegion, functions: functions, bucket: nil)
+        }
+
+        init(
+            url: any Input<String>,
+            path: any Input<String>,
+            shieldRegion: (any Input<String>)?,
+            functions: [AWS.CDN.Function.Association],
+            bucket: AWS.Bucket?
+        ) {
             self.url = url.description
             self.path = path.description
             self.shieldRegion = shieldRegion?.description
             self.functions = functions
+            self.bucket = bucket
         }
     }
 }
@@ -244,6 +300,17 @@ extension AWS.CDN.Origin {
     ) -> Self {
         .init(url: url, path: path, shieldRegion: shieldRegion, functions: functions)
     }
+
+    /// A private S3 bucket. CloudFront reads it through Origin Access Control, and the CDN sets the
+    /// bucket's policy to allow only that, so the bucket can block all public access.
+    public static func bucket(
+        _ bucket: AWS.Bucket,
+        path: any Input<String>,
+        shieldRegion: (any Input<String>)? = nil,
+        functions: [AWS.CDN.Function.Association] = []
+    ) -> Self {
+        .init(url: "https://\(bucket.hostname)", path: path, shieldRegion: shieldRegion, functions: functions, bucket: bucket)
+    }
 }
 
 extension [AWS.CDN.Origin] {
@@ -259,11 +326,41 @@ extension [AWS.CDN.Origin] {
         [.url(url, path: "*", shieldRegion: shieldRegion)]
     }
 
+    public static func bucket(_ bucket: AWS.Bucket, shieldRegion: (any Input<String>)? = nil) -> Self {
+        [.bucket(bucket, path: "*", shieldRegion: shieldRegion)]
+    }
+
     fileprivate func defaultOrigin() -> AWS.CDN.Origin? {
         self.first(where: { $0.isDefault })
     }
 
     fileprivate func withoutDefaultOrigin() -> [AWS.CDN.Origin] {
         self.filter { !$0.isDefault }
+    }
+}
+
+extension AWS.CDN: Linkable {
+    /// Linking a CDN lets a function invalidate its cached paths, e.g. after deleting a file.
+    public var actions: [String] {
+        [
+            "cloudfront:CreateInvalidation",
+            "cloudfront:GetInvalidation",
+        ]
+    }
+
+    public var resources: [Output<String>] {
+        [distribution.arn]
+    }
+
+    public var properties: LinkProperties? {
+        .init(
+            type: "cdn",
+            name: distribution.chosenName,
+            properties: [
+                "id": distribution.id,
+                "hostname": hostname,
+                "url": url,
+            ]
+        )
     }
 }

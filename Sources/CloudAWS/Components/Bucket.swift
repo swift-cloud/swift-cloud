@@ -19,6 +19,7 @@ extension AWS {
         public init(
             _ name: String,
             forceDestroy: Bool = true,
+            blockPublicAccess: Bool = false,
             options: Resource.Options? = nil,
             context: Context = .current
         ) {
@@ -38,7 +39,8 @@ extension AWS {
                 properties: [
                     "bucket": bucket.output,
                     "rule": [
-                        "objectOwnership": "ObjectWriter"
+                        // A private bucket has no use for ACLs.
+                        "objectOwnership": blockPublicAccess ? "BucketOwnerEnforced" : "ObjectWriter"
                     ],
                 ],
                 options: options,
@@ -50,7 +52,10 @@ extension AWS {
                 type: "aws:s3:BucketPublicAccessBlock",
                 properties: [
                     "bucket": bucket.output,
-                    "blockPublicAcls": false,
+                    "blockPublicAcls": blockPublicAccess,
+                    "ignorePublicAcls": blockPublicAccess,
+                    "blockPublicPolicy": blockPublicAccess,
+                    "restrictPublicBuckets": blockPublicAccess,
                 ],
                 options: options,
                 context: context
