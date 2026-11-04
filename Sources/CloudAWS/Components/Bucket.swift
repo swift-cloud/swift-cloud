@@ -71,6 +71,9 @@ extension AWS.Bucket: Linkable {
             "s3:GetObject",
             "s3:DeleteObject",
             "s3:ListBucket",
+            // `s3:PutObject` covers creating, uploading and completing multipart uploads, but not these.
+            "s3:AbortMultipartUpload",
+            "s3:ListMultipartUploadParts",
         ]
     }
 
